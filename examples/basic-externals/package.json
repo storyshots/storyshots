@@ -7,6 +7,7 @@
   "scripts": {
     "start": "storyshots --ui src/storyshots/config.ts",
     "ci": "storyshots src/storyshots/config.ts",
+    "debug": "node --inspect-brk ../../packages/core/cli.js --ui src/storyshots/config.ts",
     "compile": "tsc --noEmit"
   },
   "devDependencies": {

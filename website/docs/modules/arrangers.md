@@ -49,20 +49,32 @@ it('...', {
 });
 ```
 
-## compose
-
-Устанавливает новое значение на базе текущего:
+Также может принимать реализацию:
 
 ```ts
 it('...', {
-    arrange: compose(
-        'business.getBalanceAt',
-        (getBalanceAt) => () => getBalanceAt().then(balance => balance * 2)
-    ),
+    // Помимо записи, также будет установлено и поведение
+    arrange: record('business.getBalanceAt', async () => 100_000),
 });
 ```
 
-Может использоваться и для обычных свойств:
+## transform
+
+Преобразует возвращаемое значение метода:
+
+```ts
+it('...', {
+  arrange: transform('business.getBalanceAt', balance => balance * 2),
+});
+```
+
+:::note
+Работает только с асинхронными функциями. Для всех других, рекомендуется [compose](/modules/arrangers#compose)
+:::
+
+## compose
+
+Устанавливает новое значение на базе текущего:
 
 ```ts
 it('...', {
@@ -172,19 +184,6 @@ it('...', {
 Методы `arrange` и `iterated` являются общими. Arranger утилиты, такие как `set`, `focus`, `record` и так далее, зависят
 от контекста задаваемого `focus`.
 :::
-
-## transform
-
-Преобразует возвращаемое значение метода, используется в связке с `compose`:
-
-```ts
-it('...', {
-  arrange: compose(
-    'business.getBalanceAt',
-    transform(balance => balance * 2),
-  ),
-});
-```
 
 ## resolves
 

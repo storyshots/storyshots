@@ -1,9 +1,11 @@
+import { StoryEnvironment } from '../story-config';
 import { assertScreenshotNameConditions, ScreenshotName } from './screenshot';
 import { ActionMeta, Actor } from './types';
 
-export const actor = createActor();
-
-function createActor(meta: ActionMeta[] = []): Actor {
+export function createActor(
+  config: StoryEnvironment,
+  meta: ActionMeta[] = [],
+): Actor {
   const actor: Actor = {
     click: (on, options) =>
       withAction({
@@ -48,10 +50,8 @@ function createActor(meta: ActionMeta[] = []): Actor {
         action: 'screenshot',
         payload: {
           name: name as ScreenshotName,
-          options: {
-            mask: options?.mask?.map((selector) => selector.__toMeta()),
-            maskColor: options?.maskColor,
-          },
+          mask: options?.mask?.map((selector) => selector.__toMeta()),
+          maskColor: options?.maskColor,
         },
       }),
     press: (input) =>
@@ -77,13 +77,16 @@ function createActor(meta: ActionMeta[] = []): Actor {
       }),
     exec: (fn) =>
       withAction({ action: 'exec', payload: { fn: fn.toString() } }),
-    do: (transform) => transform(actor),
+    waitFor: (on, state) =>
+      withAction({ action: 'waitFor', payload: { on: on.__toMeta(), state } }),
+    wheel: (dx, dy) => withAction({ action: 'wheel', payload: { dx, dy } }),
+    do: (transform) => transform(actor, config),
     stop: () => createIdleActor(actor),
     __toMeta: () => assertScreenshotNameConditions(meta),
   };
 
   function withAction(action: ActionMeta) {
-    return createActor([...meta, action]);
+    return createActor(config, [...meta, action]);
   }
 
   return actor;

@@ -1,9 +1,12 @@
-import { body, native } from '@storyshots/msw-externals';
 import { finder } from '@storyshots/core';
+import { body, native } from '@storyshots/msw-externals';
 import { HttpResponse } from 'msw';
-import { AddPetApiArg, Pet } from '../../src/externals/pets-api';
+import {
+  AddPetApiArg,
+  FindPetsByStatusApiResponse,
+} from '../../src/externals/pets-api';
 import { it } from '../preview/config';
-import { arrange, handle, record } from './arrangers';
+import { arrange, handle, record, transform } from './arrangers';
 import { setup } from './setup';
 
 export const stories = [
@@ -14,18 +17,23 @@ export const stories = [
     arrange: arrange(setup(), withFewPets()),
   }),
   it('is able to add new pet', {
-    arrange: arrange(setup(), withAddingPetsEmulated()),
+    arrange: arrange(setup(), withNoPets(), withAddingPetsEmulated()),
     act: (actor) =>
       actor.click(finder.getByRole('button', { name: 'Add a pet' })),
   }),
   it('handles internal server error', {
-    arrange: arrange(setup(), withRetrievalError()),
+    arrange: arrange(
+      setup(),
+      handle('findPetsByStatus', () =>
+        native(new HttpResponse(null, { status: 500 })),
+      ),
+    ),
   }),
   it('handles adding error', {
     arrange: arrange(
       setup(),
       withNoPets(),
-      withAddingError(),
+      handle('addPet', () => native(new HttpResponse(null, { status: 406 }))),
       record('addPet'),
     ),
     act: (actor) =>
@@ -36,27 +44,15 @@ export const stories = [
   }),
 ];
 
-function withAddingError() {
-  return handle('addPet', () =>
-    native(new HttpResponse(null, { status: 406 })),
-  );
-}
-
-function withRetrievalError() {
-  return handle('findPetsByStatus', () =>
-    native(new HttpResponse(null, { status: 500 })),
-  );
-}
-
 function withAddingPetsEmulated() {
-  let pets: Pet[] = [];
+  const pets: FindPetsByStatusApiResponse = [];
 
   return arrange(
-    handle('findPetsByStatus', () => pets),
+    transform('findPetsByStatus', (response) => [...response, ...pets]),
     handle('addPet', async (arg) => {
       const added: AddPetApiArg = await body(arg);
 
-      pets = [...pets, added];
+      pets.push(added);
     }),
   );
 }

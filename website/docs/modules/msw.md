@@ -90,6 +90,7 @@ const msw = createMSWArrangers(
 it('...', {
     arrange: endpoint('findPetsByStatus', {
         url: '/api/pet/findByStatus',
+        // handle является опциональным
         handle: () => [],
     })
 });
@@ -129,14 +130,16 @@ declare module '@storyshots/msw-externals' {
 
 ## record
 
-Делает переданные эндпоинты отслеживаемыми:
+Делает переданные методы отслеживаемыми, также может принимать реализацию:
 
 ```ts
 it('...', {
     arrange: arrange(
         setup(),
-        // Вызовы findPetsByStatus теперь будут записаны в журнал
+        // Вызовы методов теперь будут записаны в журнал
         record('findPetsByStatus'),
+        // Для данного метода также определено поведение 
+        record('getStatuses', () => [/* ... */]),
     )
 });
 ```
@@ -154,6 +157,21 @@ it('...', {
     )
 });
 ```
+
+## transform
+
+Преобразует возвращаемое значение метода:
+
+```ts
+it('...', {
+  arrange: transform('findPetsByStatus', pets => pets.slice(0, 2)),
+});
+```
+
+:::note
+Работает только с асинхронными функциями. Для всех других, рекомендуется [compose](/modules/arrangers#compose)
+:::
+
 
 :::tip
 `endpoint`, `record` и `handle` являются такими же утилитами arrangers что и описанные в `@storyshots/arrangers`.

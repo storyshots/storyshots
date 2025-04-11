@@ -10,4 +10,6 @@ export type Endpoint<TResponse> = {
 
 export type EndpointArgs = Parameters<HttpResponseResolver>[0];
 
+export type EndpointResult<T> = T extends Endpoint<infer R> ? R : unknown;
+
 export type UnknownEndpoint = Endpoint<unknown>;

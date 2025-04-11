@@ -1,26 +1,24 @@
 import { isNil } from '@lib';
 import { http, HttpResponse, RequestHandler } from 'msw';
-import { setupWorker } from 'msw/browser';
+import { setupWorker, StartOptions } from 'msw/browser';
 import React, { useEffect, useState } from 'react';
 import { EndpointArgs, Endpoints, UnknownEndpoint } from './types';
-import { native } from './utils';
 
 type Props = {
   endpoints: Endpoints;
+  options?: StartOptions;
 };
 
 export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   endpoints,
+  options,
   children,
 }) => {
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    void setupWorker(
-      ...toRequestHandlers(endpoints as UnknownEndpoints),
-      createUnknownEndpointsFallback(),
-    )
-      .start()
+    void setupWorker(...toRequestHandlers(endpoints as UnknownEndpoints))
+      .start(options)
       .then(() => setInitializing(false));
   }, []);
 
@@ -37,15 +35,6 @@ function toRequestHandlers(endpoints: UnknownEndpoints): RequestHandler[] {
       endpoint.url,
       toMSWResolver(endpoint.handle),
     ),
-  );
-}
-
-function createUnknownEndpointsFallback() {
-  const MATCH_NON_FILE_URL_ONLY = /^(?!.*\/[^/]+\.[^/]+(\?.*)?$).*/;
-
-  return http.all(
-    MATCH_NON_FILE_URL_ONLY,
-    toMSWResolver(() => native(new HttpResponse(null, { status: 404 }))),
   );
 }
 

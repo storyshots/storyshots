@@ -69,6 +69,14 @@
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-press-sequentially)
 
+## waitFor
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-wait-for)
+
+## wheel
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-wheel)
+
 ## screenshot
 
 Осуществляет промежуточные снимки во время действий на странице.
@@ -147,6 +155,16 @@ function enterCredentials(): ActorTransformer {
 }
 
 actor.do(enterCredentials())
+```
+
+Функция также принимает [окружение истории](/API/story-elements/story-config) как второй аргумент:
+
+```ts
+function closePopup(): ActorTransformer {
+    return (actor, config) => config.device.name === 'mobile'
+      ? actor.do(swipe())
+      : actor.click(finder.get(cross()));
+}
 ```
 
 ## stop

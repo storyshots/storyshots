@@ -1,5 +1,10 @@
 import { Actor, MetaActionsFactory } from '../actor/types';
-import { Device, StoryConfig } from '../story-config';
+import {
+  Device,
+  DeviceDimensions,
+  StoryConfig,
+  StoryEnvironment,
+} from '../story-config';
 import { GroupID, StoryID } from '../story-id';
 import { StoryTree } from '../types';
 
@@ -10,11 +15,13 @@ interface StoryMeta {
 }
 
 export interface StoryPayload<TExternals> {
+  resize(device: Device): DeviceDimensions;
+
   retries(device: Device): number;
 
   arrange(externals: TExternals, config: StoryConfig): TExternals;
 
-  act(actor: Actor, device: Device): MetaActionsFactory;
+  act(actor: Actor, config: StoryEnvironment): MetaActionsFactory;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
