@@ -4,7 +4,7 @@ import { Frame } from 'playwright';
 import { PageScreenshotOptions } from 'playwright-core';
 import { select } from '../../../../select';
 
-export function captureBase(preview: Frame, action: ScreenshotAction) {
+export async function captureBase(preview: Frame, action: ScreenshotAction) {
   return preview.page().screenshot({
     type: 'png',
     caret: 'hide',
@@ -17,7 +17,7 @@ function toMaskOptions(
   preview: Frame,
   action: ScreenshotAction,
 ): PageScreenshotOptions {
-  const mask = action.payload.options?.mask;
+  const mask = action.payload?.mask;
 
   if (isNil(mask) || mask.length === 0) {
     return {};
@@ -25,6 +25,6 @@ function toMaskOptions(
 
   return {
     mask: mask.map((finder) => select(preview, finder)),
-    maskColor: action.payload.options?.maskColor,
+    maskColor: action.payload?.maskColor,
   };
 }

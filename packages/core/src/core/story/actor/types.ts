@@ -1,8 +1,12 @@
 import type { Locator } from 'playwright';
 import { Finder, FinderMeta } from '../finder/types';
+import { StoryEnvironment } from '../story-config';
 import { ScreenshotName } from './screenshot';
 
-export type ActorTransformer = (actor: Actor) => Actor;
+export type ActorTransformer = (
+  actor: Actor,
+  config: StoryEnvironment,
+) => Actor;
 
 export type Actor = MetaActionsFactory & {
   hover(on: Finder, options?: HoverAction['payload']['options']): Actor;
@@ -50,6 +54,10 @@ export type Actor = MetaActionsFactory & {
   ): Actor;
 
   exec(fn: () => unknown): Actor;
+
+  waitFor(on: Finder, state: WaitForAction['payload']['state']): Actor;
+
+  wheel(dx: number, dy: number): Actor;
 
   do(transformer: ActorTransformer): Actor;
 
@@ -144,9 +152,8 @@ export type WaitAction = {
 
 export type ScreenshotAction = {
   action: 'screenshot';
-  payload: {
+  payload: ScreenshotOptions & {
     name: ScreenshotName;
-    options?: ScreenshotOptions;
   };
 };
 
@@ -157,7 +164,6 @@ export type ScreenshotOptions = {
 
 export type UserScreenshotOptions = {
   mask?: Finder[];
-
   maskColor?: string;
 };
 
@@ -190,6 +196,22 @@ export type ExecAction = {
   payload: { fn: string };
 };
 
+export type WaitForAction = {
+  action: 'waitFor';
+  payload: {
+    on: FinderMeta;
+    state: 'attached' | 'detached' | 'visible' | 'hidden';
+  };
+};
+
+export type WheelAction = {
+  action: 'wheel';
+  payload: {
+    dx: number;
+    dy: number;
+  };
+};
+
 export type ActionMeta =
   | ClickAction
   | FillAction
@@ -205,4 +227,6 @@ export type ActionMeta =
   | DragAction
   | BlurAction
   | PressSequentiallyAction
-  | ExecAction;
+  | ExecAction
+  | WaitForAction
+  | WheelAction;

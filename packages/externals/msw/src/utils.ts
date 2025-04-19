@@ -12,7 +12,10 @@ export function query(args: EndpointArgs) {
 }
 
 export async function body(args: EndpointArgs) {
-  return (await args.request.clone().json()) as never;
+  return args.request
+    .clone()
+    .json()
+    .catch(() => undefined) as Promise<never>;
 }
 
 export const native = (response: HttpResponse): never => {

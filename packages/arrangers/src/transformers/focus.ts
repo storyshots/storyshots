@@ -1,16 +1,18 @@
+import { UnknownArrangers } from '../arrangers-types';
+import { arrange } from './arrange';
 import { compose } from './compose';
+import { iterated } from './iterated';
 import { record } from './record';
 import { set } from './set';
-import { arrange } from './arrange';
-import { iterated } from './iterated';
-import { UnknownArrangers } from '../arrangers-types';
+import { transform } from './transform';
 
 export const focus: UnknownArrangers['focus'] = (parent) => {
   return {
     arrange,
     iterated,
     set: (path, value) => set(join(parent, path), value),
-    record: (...paths) => record(...paths.map((path) => join(parent, path))),
+    record: (path, handler) => record(join(parent, path), handler),
+    transform: (path, handler) => transform(join(parent, path), handler),
     compose: (path, transform) => compose(join(parent, path), transform),
     focus: (sub) => focus(join(parent, sub)),
   };

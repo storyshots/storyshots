@@ -10,12 +10,10 @@ export function setup() {
   return arrange(
     endpoint('findPetsByStatus', {
       url: '/api/pet/findByStatus',
-      handle: () => notImplemented('findPetsByStatus'),
     }),
     endpoint('addPet', {
       url: '/api/pet',
       method: 'POST',
-      handle: () => notImplemented('addPet'),
     }),
   );
 }
@@ -25,8 +23,4 @@ declare module '@storyshots/msw-externals' {
     findPetsByStatus: Endpoint<FindPetsByStatusApiResponse>;
     addPet: Endpoint<AddPetApiResponse>;
   }
-}
-
-function notImplemented(method: string): never {
-  throw new Error(`${method} is not implemented`);
 }

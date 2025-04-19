@@ -11,6 +11,9 @@
 * Add coverage tool
 * Run only changed stories first
 * Describe masking technique
+* Describe technique of taking long page pictures (need more data)
+* Impl settle function. Certain action may cause layout shifts, for example clicks on accordions. It will produce
+  non-deterministic behaviour when not treated properly. For preview, settle function does nothing
 
 ## Low priority
 
@@ -35,9 +38,6 @@
         * failure message
         * jump to story causing failure
         * display failure messages
-
-## Low priority
-
 * Verify that package meta is correct (module type, tags, dependencies etc.)
 
 # Useful links

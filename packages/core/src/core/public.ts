@@ -3,6 +3,7 @@ export {
   filter,
   only,
   finder,
+  mapScreenshot,
   __bindStoryFactories,
   type StoryConfig,
   type StoryTree,

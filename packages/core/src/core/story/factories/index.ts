@@ -13,9 +13,10 @@ export const __bindStoryFactories = <TExternals>() => {
         id: createStoryID(title),
         type: 'story',
         title,
-        act: (actor) => actor,
-        arrange: (externals) => externals,
         retries: () => 0,
+        act: (actor) => actor,
+        resize: (device) => device,
+        arrange: (externals) => externals,
         ...config,
       } satisfies Story<TExternals>;
     },

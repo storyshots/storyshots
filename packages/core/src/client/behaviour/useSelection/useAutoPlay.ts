@@ -1,4 +1,4 @@
-import { actor } from '@core';
+import { createActor, StoryEnvironment } from '@core';
 import { useEffect, useMemo, useState } from 'react';
 import { driver } from '../../../reusables/runner/driver';
 import { PlayingState, Selection } from './types';
@@ -24,9 +24,12 @@ export function useAutoPlay(
 
     setPlaying({ type: 'playing' });
 
-    const actions = selection.story
-      .act(actor, manager.device.preview)
-      .__toMeta();
+    const env: StoryEnvironment = {
+      testing: false,
+      device: manager.device.preview,
+    };
+
+    const actions = selection.story.act(createActor(env), env).__toMeta();
 
     const result = await driver.play(actions);
 
