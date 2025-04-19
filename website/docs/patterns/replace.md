@@ -6,8 +6,8 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Подмена поведений
 
-`storyshots` требует заменить методы [внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage) на функции заглушки, в противном случае эталонное
-тестирование станет невозможным.
+`storyshots` требует заменить методы [внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage) на функции заглушки,
+для того чтобы сделать эталонное тестирование возможным.
 
 ## Подмена через инверсию
 
@@ -77,7 +77,7 @@ async function placeAnOrder(order: OrderRepository) {
 
 ### Инверсия в React
 
-Инверсия зависимостей очень часто пересекается с другой концепцией - внедрение зависимостей (dependency injection). DI
+Инверсия зависимостей зачастую сопровождается механизмами внедрение зависимостей (dependency injection). DI
 можно разделить на две стадии:
 
 * Создание зависимостей
@@ -87,7 +87,8 @@ React предоставляет свой аналог DI, так называе
 зависимости, а `Consumer` позволяет их считывать, сквозь дерево компонентов.
 
 :::note
-Это позволяет уменьшить связанность компонентов и повышает их гибкость.
+С одной стороны это позволяет уменьшить связанность компонентов и повышает их гибкость. С другой - уменьшает возможности
+для статической типизации.
 :::
 
 В таком случае можно создать корневой провайдер определяющий подменяемые зависимости:
@@ -273,16 +274,33 @@ declare function createMockRepositories(): typeof registry;
 Далее объявить компонент, который будет осуществлять внедрение описанных зависимостей:
 
 ```ts
-const RepositoryReplacer: React.FC<React.PropsWithChildren<{
-    repositories: typeof registry
-}>> = ({ repositories, children }) => {
+type Props = React.PropsWithChildren<{ repositories: typeof registry }>;
+
+const RepositoryReplacer: React.FC<Props> = ({ repositories, children }) => {
     useMemo(() => {
-        Array.from(Object.entries(repositories))
-            .forEach(([name, repository]) => registry[name] = repository);
+      /**
+       * *Опционально* можно помечать не замоканные методы как не реализованные по умолчанию.
+       * Это упростит отладку и исключит нежелательные сайд-эффекты.
+       */
+      markAllAsNotImplemented();
+      
+      injectImplementations(repositories);
     }, []);
 
     return children;
 };
+
+function markAllAsNotImplemented() {
+  forEveryMethod(registry).forEach((repository, method) =>
+    registry[repository][method] = notImplemented
+  );
+}
+
+function injectImplementations(overrides: Props['repositories']) {
+  forEveryMethod(overrides).forEach((repository, method, impl) =>
+    registry[repository][method] = impl
+  );
+}
 ```
 
 Интеграция `storyshots`:

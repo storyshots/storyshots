@@ -15,6 +15,8 @@ import { doScrollTo } from './actions/doScrollTo';
 import { doSelect } from './actions/doSelect';
 import { doUploadFile } from './actions/doUpload';
 import { doWait } from './actions/doWait';
+import { doWaitFor } from './actions/doWaitFor';
+import { doWheel } from './actions/doWheel';
 
 export async function act(
   preview: Frame,
@@ -49,6 +51,10 @@ export async function act(
       return doPressSequentially(preview, action);
     case 'exec':
       return doExec(preview, action);
+    case 'waitFor':
+      return doWaitFor(preview, action);
+    case 'wheel':
+      return doWheel(preview, action);
   }
 
   assertIsNever(action);

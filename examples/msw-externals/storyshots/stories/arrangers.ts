@@ -3,5 +3,5 @@ import { createArrangers } from '@storyshots/arrangers';
 
 const arrangers = createArrangers<Endpoints>();
 
-export const { endpoint, handle, record } = createMSWArrangers(arrangers);
+export const { endpoint, handle, record, transform } = createMSWArrangers(arrangers);
 export const { arrange } = arrangers;

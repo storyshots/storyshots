@@ -10,6 +10,9 @@ on:
       - reopened
       - edited
 
+permissions:
+  contents: write
+
 jobs:
   run_visual_tests:
     runs-on: ubuntu-latest

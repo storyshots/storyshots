@@ -74,7 +74,7 @@ npm i
 Связанные со `storyshots` файлы в данном руководстве располагаются в `src/storyshots` (см. [дислокация тестов](/patterns/files#дислокация-тестов)).
 :::
 
-После установки всё готово для описания зоны превью и первых историй. Начнём с preview:
+После установки всё готово для описания [зоны превью](/modules/scheme#ipreviewdisplay) и первых историй. Начнём с preview:
 
 ```ts title="/src/storyshots/preview/config.ts"
 import { createPreviewApp } from '@storyshots/react';

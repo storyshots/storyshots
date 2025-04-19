@@ -3,7 +3,8 @@ import { GetByPath, PathsOf } from './path-types';
 
 export type UnknownArrangers = {
   focus(path: string): UnknownArrangers;
-  record(...paths: string[]): UnknownArranger;
+  record(path: string, handler?: UnknownFunction): UnknownArranger;
+  transform(path: string, handler: UnknownFunction): UnknownArranger;
   set(path: string, value: unknown): UnknownArranger;
   arrange(...arrangers: UnknownArranger[]): UnknownArranger;
   iterated(
@@ -21,6 +22,8 @@ export type UnknownArranger = (
   config: StoryConfig,
 ) => unknown;
 
+export type UnknownFunction = (...args: unknown[]) => unknown;
+
 export type Arrangers<TExternals, TFocus> = {
   arrange(...arrangers: Arranger<TExternals>[]): Arranger<TExternals>;
 
@@ -34,23 +37,32 @@ export type Arrangers<TExternals, TFocus> = {
     value: GetByPath<TPath, TFocus>,
   ): Arranger<TExternals>;
 
-  compose<TPath extends PathsOf<TFocus>>(
+  transform<TPath extends PathsOf<TFocus>>(
     path: TPath,
-    transform: (
-      value: GetByPath<TPath, TFocus>,
-      config: StoryConfig,
-    ) => GetByPath<TPath, TFocus>,
+    handle: AsyncMap<GetByPath<TPath, TFocus>>,
   ): Arranger<TExternals>;
 
   record<TPath extends PathsOf<TFocus>>(
-    ...paths: TPath[]
-    // eslint-disable-next-line @typescript-eslint/ban-types
-  ): GetByPath<TPath, TFocus> extends Function ? Arranger<TExternals> : unknown;
+    path: TPath,
+    handle?: GetByPath<TPath, TFocus>,
+  ): Arranger<TExternals>;
 
   focus<TPath extends PathsOf<TFocus>>(
     path: TPath,
   ): Arrangers<TExternals, GetByPath<TPath, TFocus>>;
+
+  compose<TPath extends PathsOf<TFocus>>(
+      path: TPath,
+      transform: (
+          value: GetByPath<TPath, TFocus>,
+          config: StoryConfig,
+      ) => GetByPath<TPath, TFocus>,
+  ): Arranger<TExternals>;
 };
+
+type AsyncMap<T> = T extends (...args: infer P) => Promise<infer R>
+  ? (result: R, ...args: P) => R | Promise<R>
+  : never;
 
 export type Arranger<TExternals> = (
   externals: TExternals,

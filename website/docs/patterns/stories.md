@@ -149,11 +149,11 @@ declare module '@storyshots/core' {
 После, разметить тесты по приоритетам:
 
 ```ts
-const authStories = [
+const stories = [
     // Важно чтобы в приложении работал вход 
     it('allows to login'),
-    // При этом, сброс пароля относится к второстепенным сценариям 
-    it('allows to reset password', {
+    // При этом, выбор темы относится к второстепенным сценариям 
+    it('allows to set dark theme', {
       secondary: true,
     }),
 ];

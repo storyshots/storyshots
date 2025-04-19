@@ -167,7 +167,7 @@ const withUser = (repository: UserRepository): UserRepository => ({
 })
 
 /**
- * Функции легко могут быть параметризированы. Керрирование не обязательно
+ * Функции легко могут быть параметризированы.
  */
 const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRepository => ({
     ...repository,
@@ -188,7 +188,9 @@ it('allows admin to access panel', {
 });
 
 it('allows user to change name', {
-    arrange: compose(withUser, withSetUser), // Здесь нужны только эти эндпоинты
+    // Здесь нужны только эти эндпоинты
+    arrange: (repository) =>
+      withUser(withSetUser(repository)), // <- Можно использовать функцию композиции для чистоты
 });
 ```
 
@@ -312,7 +314,7 @@ it('removes user from a list', {
 ```ts
 it('removes user from a list', {
     arrange: (externals) => {
-        // Arrange держит в замыкании состояние истории. В данном случае это список пользователей 
+        // Локальное состояние. В данном случае это список пользователей 
         let users = [createVasiliyStub(), createIvanStub()];
 
         return {
@@ -383,16 +385,15 @@ it('...', {
 <p style={{ color: 'green' }}>Делать это:</p>
 
 ```ts
-import { createArrangers, transform } from '@storyshots/arrangers';
+import { createArrangers } from '@storyshots/arrangers';
 
-const arrangers = createArrangers<Externals>();
-const { compose } = arrangers.focus('repositories');
+const { transform } = createArrangers<Externals>().focus('repositories');
 
 it('...', {
   // Код делает тоже самое, но читается лучше
-  arrange: compose(
+  arrange: transform(
     'UserRepository.getUser',
-    transform((user) => ({ ...user, login: 'test-user' })),
+    (user) => ({ ...user, login: 'test-user' })
   ),
 });
 ```

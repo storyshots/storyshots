@@ -62,7 +62,7 @@ describe('devices run complete', () => {
     'displays errors independently',
     devices()
       .story(({ finder }) => ({
-        act: (actor, device) =>
+        act: (actor, { device }) =>
           device.name === 'desktop'
             ? actor
             : actor.click(finder.getByText('Submit')),

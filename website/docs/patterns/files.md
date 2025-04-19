@@ -63,7 +63,153 @@ project/
 ```
 :::
 
+## Виды компонентов
+
+<MetricsTip improves={[Metric.Maintainability]} />
+
+В тестах достаточно выделять следующие компоненты:
+
+Компонент общей настройки окружения:
+
+```ts
+describe('User', [
+  it('allows to login', {
+    arrange: setup(),
+    /* ... */
+  }),
+  it('allows to logout', {
+    arrange: setup(),
+    /* ... */
+  }),
+  it('allows to change password', {
+    arrange: setup(),
+    /* ... */
+  }),
+]);
+
+// Все истории готовят окружение одинаковым образом, следовательно, функция setup является таким компонентом
+function setup() {
+  /* ... */
+}
+```
+
+Функции частичного изменения окружения:
+
+```ts
+describe('User', [
+  it('allows to login', {
+    arrange: arrange(setup(), unauthorized()),
+    /* ... */
+  }),
+  it('allows to logout', {
+    arrange: arrange(setup(), authorized()),
+    /* ... */
+  }),
+  it('allows to change password', {
+    arrange: arrange(setup(), authorized()),
+    /* ... */
+  }),
+]);
+
+/**
+ * Не смотря на общую логику инициализации, историям могут потребоваться частичные корректировки.
+ * В эту категорию попадают функции отвечающие как раз за это.
+ */
+function authorized() {
+  /* ... */
+}
+
+function unauthorized() {
+  /* ... */
+}
+
+/* ... */
+```
+
+Функции взаимодействия с интерфейсом и работы с актором:
+
+```ts
+describe('User', [
+  it('allows to login', {
+    arrange: arrange(setup(), unauthorized()),
+    act: (actor) => actor.do(enterCredentials()).do(submit())
+    /* ... */
+  }),
+  it('allows to logout', {
+    arrange: arrange(setup(), authorized()),
+    act: (actor) => actor.click(finder.get(button('Выйти')))
+    /* ... */
+  }),
+  it('allows to change password', {
+    arrange: arrange(setup(), authorized()),
+    /* ... */
+  }),
+]);
+
+// Функции работающие с актором и селекторами принадлежат данной категории компонентов
+function button() {
+  /* ... */
+}
+
+function enterCredentials() {
+  /* ... */
+}
+
+function submit() {
+  /* ... */
+}
+
+/* ... */
+```
+
+Заглушки:
+
+```ts
+function authorized() {
+  /* использует createUserStub */
+}
+
+function unauthorized() {
+  /* использует create401ErrorStub */
+}
+
+// Фабрики POJO относятся к категории заглушек
+function createUserStub() {
+  /* ... */
+}
+
+function create401ErrorStub() {
+  /* ... */
+}
+
+/* ... */
+```
+
+При вопросе разделения декомпозиция истории может выглядеть следующим образом:
+
+```plaintext
+productsStories.ts
+utils // Локальные компоненты
+├── arrangers.ts // Локальная установка окружения
+├── setup.ts // Общая установка окружения
+├── stubs.ts // Заглушки
+└── actors.ts // Взаимодействие с интерфейсом
+```
+
+:::tip
+Если требуется дополнительное разделение на уровне взятого компонента, можно агрегировать файлы под одноименной папкой:
+
+```plaintext
+stubs/
+├── createUserStub.ts
+├── createRoleStub.ts
+└── index.ts // Файл реекспорта
+```
+:::
+
 ## Расположение компонентов
+
+<MetricsTip improves={[Metric.Maintainability]} />
 
 Расположение элементов в историях (и в целом в инфраструктуре `storyshots`) должна быть таковой, чтобы расстояние между
 связанными сущностями было как можно меньшим:
@@ -86,12 +232,25 @@ stories/
 ├── producStories/
 │   └── removeProductsStories.ts // Клиент #2
 ├── utils/
-│   └── createRolesStub.ts // <-- Общая часть
+│   └── stubs.ts // <-- Общая часть
 └── index.ts
 ```
 
 **Глобальный файл** - если сущность используется в нескольких не связанных между собой историях, то в таком случае она
-выносится на самый высокий уровень в `storyshots`. Чаще всего это папка `externals`.
+выносится на самый высокий уровень в `storyshots`.
+
+```plaintext
+storyshots/
+├── utils/
+│   ..... // Глобальные компоненты, используются в не связанных историях.
+└── stories/
+    ├── userStories.ts
+    └── producStories/
+        ├── utils // Локальные компоненты
+        │   ..... // Используются только в папке producStories
+        ├── productRemoveStories.ts
+        └── productsStories.ts
+```
 
 :::tip
 Таким образом, следуя данной методологии можно легко понять насколько ответственным является компонент - чем он выше по

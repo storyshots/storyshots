@@ -73,19 +73,6 @@ export function filter<TExternals>(
   }
 }
 
-export function only<TExternals>(
-  devices: string[],
-  stories: StoryTree<TExternals>,
-): StoryTree<TExternals> {
-  return map(stories, (story) => ({
-    ...story,
-    act: (actor, device) =>
-      devices.includes(device.name)
-        ? story.act(actor, device)
-        : { __toMeta: () => [] },
-  }));
-}
-
 export function find<TExternals>(
   id: StoryID,
   stories: StoryTree<TExternals>,
