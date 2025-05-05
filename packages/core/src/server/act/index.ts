@@ -4,6 +4,7 @@ import { Frame } from 'playwright';
 import { doBlur } from './actions/doBlur';
 import { doClear } from './actions/doClear';
 import { doClick } from './actions/doClick';
+import { doDblclick } from './actions/doDblclick';
 import { doDrag } from './actions/doDrag';
 import { doExec } from './actions/doExec';
 import { doFill } from './actions/doFill';
@@ -25,6 +26,8 @@ export async function act(
   switch (action.action) {
     case 'click':
       return doClick(preview, action);
+    case 'dblclick':
+      return doDblclick(preview, action);
     case 'fill':
       return doFill(preview, action);
     case 'hover':

@@ -12,6 +12,10 @@
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-click)
 
+## dblclick
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-dblclick)
+
 ## fill
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-fill)

@@ -13,6 +13,8 @@ export type Actor = MetaActionsFactory & {
 
   click(on: Finder, options?: ClickAction['payload']['options']): Actor;
 
+  dblclick(on: Finder, options?: DblClickAction['payload']['options']): Actor;
+
   fill(
     on: Finder,
     text: string,
@@ -98,6 +100,14 @@ export type ClickAction = {
   payload: {
     on: FinderMeta;
     options: Parameters<Locator['click']>[0];
+  };
+};
+
+export type DblClickAction = {
+  action: 'dblclick';
+  payload: {
+    on: FinderMeta;
+    options: Parameters<Locator['dblclick']>[0];
   };
 };
 
@@ -214,6 +224,7 @@ export type WheelAction = {
 
 export type ActionMeta =
   | ClickAction
+  | DblClickAction
   | FillAction
   | HoverAction
   | WaitAction
