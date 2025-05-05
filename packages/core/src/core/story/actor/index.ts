@@ -12,6 +12,11 @@ export function createActor(
         action: 'click',
         payload: { on: on.__toMeta(), options },
       }),
+    dblclick: (on, options) =>
+      withAction({
+        action: 'dblclick',
+        payload: { on: on.__toMeta(), options },
+      }),
     fill: (on, text, options) =>
       withAction({
         action: 'fill',
