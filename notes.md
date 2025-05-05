@@ -1,6 +1,4 @@
-# Functional improvements
-
-## High priority
+# High priority
 
 * Clipboard copy for action picker
 * Integrate react-devtools
@@ -15,7 +13,7 @@
 * Impl settle function. Certain action may cause layout shifts, for example clicks on accordions. It will produce
   non-deterministic behaviour when not treated properly. For preview, settle function does nothing
 
-## Low priority
+# Low priority
 
 * Add baseline read button
 * Support HMR
@@ -39,6 +37,7 @@
         * jump to story causing failure
         * display failure messages
 * Verify that package meta is correct (module type, tags, dependencies etc.)
+* Add tests for error display during CI mode
 
 # Useful links
 

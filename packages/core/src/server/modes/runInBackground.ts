@@ -28,6 +28,13 @@ export async function runInBackground(config: ManagerConfig) {
       await browser.close();
 
       if (summary.errors.length > 0) {
+        summary.errors.forEach((error, index) => {
+          console.log(`\n`);
+          console.log(`#${index + 1} ${error.id}`);
+          console.log(`Device: ${error.device.name}`);
+          console.log(`Error : ${error.message}`);
+        });
+
         throw new Error('Failed to run tests, check errors above');
       }
 
