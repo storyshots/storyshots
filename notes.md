@@ -38,6 +38,7 @@
         * display failure messages
 * Verify that package meta is correct (module type, tags, dependencies etc.)
 * Add tests for error display during CI mode
+* Add doc about stubs factories vs const declarations
 
 # Useful links
 
