@@ -27,6 +27,7 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/arrangers/lib" />
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/next-framework/temp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

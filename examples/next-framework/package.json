@@ -1,0 +1,13 @@
+{
+  "name": "next-framework",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "storyshots": "storyshots --ui storyshots/config.ts",
+    "debug": "node --inspect-brk ../../packages/core/cli.js --ui storyshots/config.ts"
+  },
+  "dependencies": {
+    "next": "15.3.2"
+  }
+}

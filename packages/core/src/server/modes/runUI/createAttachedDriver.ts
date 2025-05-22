@@ -15,7 +15,6 @@ export async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
         `--app=${createManagerRootURL(config).href}`,
         '--start-maximized',
         '--test-type=gpu',
-        ...createDevtoolsArgs(config),
       ],
     },
   );
@@ -25,13 +24,4 @@ export async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
   const [page] = context.pages();
 
   return page;
-}
-
-function createDevtoolsArgs(config: ManagerConfig): string[] {
-  return config.devtools
-    ? [
-        `--disable-extensions-except=${config.devtools}`,
-        `--load-extension=${config.devtools}`,
-      ]
-    : [];
 }

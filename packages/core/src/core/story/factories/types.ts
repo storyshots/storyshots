@@ -15,12 +15,24 @@ interface StoryMeta {
 }
 
 export interface StoryPayload<TExternals> {
+  /**
+   * https://storyshots.github.io/storyshots/API/factories/it#resize
+   */
   resize(device: Device): DeviceDimensions;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/factories/it#retries
+   */
   retries(device: Device): number;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/factories/it#arrange
+   */
   arrange(externals: TExternals, config: StoryConfig): TExternals;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/factories/it#act
+   */
   act(actor: Actor, config: StoryEnvironment): MetaActionsFactory;
 }
 

@@ -7,14 +7,23 @@ import { IPreviewServer, ManagerConfig as FullManagerConfig } from './types';
 
 export type { IPreviewServer } from './types';
 
+/**
+ * https://storyshots.github.io/storyshots/API/manager/manager-config
+ */
 export type ManagerConfig = Omit<
   Optional<FullManagerConfig, 'runner' | 'compare' | 'capture'>,
   'createManagerCompiler'
 >;
 
+/**
+ * https://storyshots.github.io/storyshots/API/manager/runUI
+ */
 export const runUI = (config: ManagerConfig) =>
   _runUI(fromOptimizedConfig(config));
 
+/**
+ * https://storyshots.github.io/storyshots/API/manager/runInBackground
+ */
 export const runInBackground = async (config: ManagerConfig) => {
   const { run, cleanup } = await _runInBackground(fromOptimizedConfig(config));
 

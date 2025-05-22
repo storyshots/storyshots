@@ -1,5 +1,8 @@
 import { Group, parseStoryID, Story, StoryID, StoryTree } from './story';
 
+/**
+ * https://storyshots.github.io/storyshots/API/operators/map
+ */
 export function map<TExternals>(
   stories: StoryTree<TExternals>,
   transform: (story: Story<TExternals>) => Story<TExternals>,
@@ -42,6 +45,9 @@ export function flat<TExternals>(
   }
 }
 
+/**
+ * https://storyshots.github.io/storyshots/API/operators/filter
+ */
 export function filter<TExternals>(
   stories: StoryTree<TExternals>,
   predicate: (story: Story<TExternals>) => boolean,
