@@ -113,7 +113,7 @@ const server = mergeServe(createImageStubber(), createPreviewServer());
   onUpdate: (handler) =>
     /**
      * handler принимает текущий hash обозначающий содержимое превью, если хеш изменился,
-     * то storyshots будет считать что AUT обновился.
+     * то storyshots будет считать что AUT обновился и историю нужно перезапустить.
      */
     compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
   /* ... */

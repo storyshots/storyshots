@@ -20,10 +20,16 @@ export type UnknownMSWArrangers = {
 };
 
 export type MSWArrangers<TExternals> = {
+  /**
+   * https://storyshots.github.io/storyshots/modules/msw#handle
+   */
   handle<TEndpoint extends keyof Endpoints>(
     name: TEndpoint,
     handle: Endpoints[TEndpoint]['handle'],
   ): Arranger<TExternals>;
+  /**
+   * https://storyshots.github.io/storyshots/modules/msw#transform
+   */
   transform<TEndpoint extends keyof Endpoints>(
     name: TEndpoint,
     fn: (
@@ -31,10 +37,16 @@ export type MSWArrangers<TExternals> = {
       args: EndpointArgs,
     ) => ReturnType<Endpoints[TEndpoint]['handle']>,
   ): Arranger<TExternals>;
+  /**
+   * https://storyshots.github.io/storyshots/modules/msw#record
+   */
   record<TEndpoint extends keyof Endpoints>(
     name: TEndpoint,
     handle?: Endpoints[TEndpoint]['handle'],
   ): Arranger<TExternals>;
+  /**
+   * https://storyshots.github.io/storyshots/modules/msw#endpoint
+   */
   endpoint<TEndpoint extends keyof Endpoints>(
     name: TEndpoint,
     endpoint: PartialByKey<Endpoints[TEndpoint], 'handle'>,

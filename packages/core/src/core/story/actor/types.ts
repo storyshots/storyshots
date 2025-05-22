@@ -8,61 +8,130 @@ export type ActorTransformer = (
   config: StoryEnvironment,
 ) => Actor;
 
+/**
+ * https://storyshots.github.io/storyshots/API/story-elements/actor
+ */
 export type Actor = MetaActionsFactory & {
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#hover
+   */
   hover(on: Finder, options?: HoverAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#click
+   */
   click(on: Finder, options?: ClickAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#dblclick
+   */
   dblclick(on: Finder, options?: DblClickAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#fill
+   */
   fill(
     on: Finder,
     text: string,
     options?: FillAction['payload']['options'],
   ): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#wait
+   */
   wait(ms: number): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#screenshot
+   */
   screenshot(name: string, options?: UserScreenshotOptions): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#scrollto
+   */
   scrollTo(to: Finder, options?: ScrollToAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#select
+   */
   select(
     on: Finder,
     values: SelectAction['payload']['values'],
     options?: SelectAction['payload']['options'],
   ): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#press
+   */
   press(input: string): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#down
+   */
   down(input: string): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#up
+   */
   up(input: string): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#clear
+   */
   clear(on: Finder, options?: ClearAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#uploadfile
+   */
   uploadFile(chooser: Finder, ...paths: string[]): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#highlight
+   */
   highlight(on: Finder): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#drag
+   */
   drag(draggable: Finder, to: Finder): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#blur
+   */
   blur(on: Finder, options?: BlurAction['payload']['options']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#presssequentially
+   */
   pressSequentially(
     on: Finder,
     text: string,
     options?: BlurAction['payload']['options'],
   ): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#exec
+   */
   exec(fn: () => unknown): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#waitfor
+   */
   waitFor(on: Finder, state: WaitForAction['payload']['state']): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#wheel
+   */
   wheel(dx: number, dy: number): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#do
+   */
   do(transformer: ActorTransformer): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/story-elements/actor#stop
+   */
   stop(): Actor;
 };
 

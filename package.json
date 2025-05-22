@@ -32,9 +32,10 @@
     "packages/externals/web-api",
     "examples/basic-externals",
     "examples/msw-externals",
+    "examples/next-framework",
     "tests"
   ],
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=20.0.0"
   }
 }

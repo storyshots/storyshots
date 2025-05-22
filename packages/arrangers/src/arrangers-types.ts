@@ -32,31 +32,46 @@ export type Arrangers<TExternals, TFocus> = {
     transform: (next: () => T) => Arranger<TExternals>,
   ): Arranger<TExternals>;
 
+  /**
+   * https://storyshots.github.io/storyshots/modules/arrangers#set
+   */
   set<TPath extends PathsOf<TFocus>>(
     path: TPath,
     value: GetByPath<TPath, TFocus>,
   ): Arranger<TExternals>;
 
+  /**
+   * https://storyshots.github.io/storyshots/modules/arrangers#transform
+   */
   transform<TPath extends PathsOf<TFocus>>(
     path: TPath,
     handle: AsyncMap<GetByPath<TPath, TFocus>>,
   ): Arranger<TExternals>;
 
+  /**
+   * https://storyshots.github.io/storyshots/modules/arrangers#record
+   */
   record<TPath extends PathsOf<TFocus>>(
     path: TPath,
     handle?: GetByPath<TPath, TFocus>,
   ): Arranger<TExternals>;
 
+  /**
+   * https://storyshots.github.io/storyshots/modules/arrangers#focus
+   */
   focus<TPath extends PathsOf<TFocus>>(
     path: TPath,
   ): Arrangers<TExternals, GetByPath<TPath, TFocus>>;
 
+  /**
+   * https://storyshots.github.io/storyshots/modules/arrangers#compose
+   */
   compose<TPath extends PathsOf<TFocus>>(
-      path: TPath,
-      transform: (
-          value: GetByPath<TPath, TFocus>,
-          config: StoryConfig,
-      ) => GetByPath<TPath, TFocus>,
+    path: TPath,
+    transform: (
+      value: GetByPath<TPath, TFocus>,
+      config: StoryConfig,
+    ) => GetByPath<TPath, TFocus>,
   ): Arranger<TExternals>;
 };
 
