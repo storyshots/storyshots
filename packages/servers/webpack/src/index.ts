@@ -2,6 +2,9 @@ import { IPreviewServer } from '@storyshots/core/manager';
 import { Configuration, webpack } from 'webpack';
 import dev from 'webpack-dev-middleware';
 
+/**
+ * https://storyshots.github.io/storyshots/modules/webpack#createwebpackserver
+ */
 export function createWebpackServer(config: Configuration): IPreviewServer {
   const compiler = webpack(config);
 

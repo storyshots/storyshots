@@ -1,6 +1,9 @@
 import { StoryTree } from './story';
 import { map } from './transformers';
 
+/**
+ * https://storyshots.github.io/storyshots/API/operators/only
+ */
 export function only<TExternals>(
   devices: string[],
   stories: StoryTree<TExternals>,

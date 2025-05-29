@@ -9,6 +9,9 @@ type Props = {
   options?: StartOptions;
 };
 
+/**
+ * https://storyshots.github.io/storyshots/modules/msw#mswreplacer
+ */
 export const MSWReplacer: React.FC<React.PropsWithChildren<Props>> = ({
   endpoints,
   options,

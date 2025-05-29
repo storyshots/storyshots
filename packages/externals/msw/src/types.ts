@@ -1,5 +1,8 @@
 import type { HttpResponseResolver } from 'msw';
 
+/**
+ * https://storyshots.github.io/storyshots/modules/msw#endpoints
+ */
 export interface Endpoints {}
 
 export type Endpoint<TResponse> = {
