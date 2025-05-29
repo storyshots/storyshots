@@ -1,5 +1,8 @@
 import type { IPreviewServer } from '@storyshots/core/manager';
 
+/**
+ * https://storyshots.github.io/storyshots/modules/msw#createworkersupplier
+ */
 export function createWorkerSupplier(): IPreviewServer {
   return {
     handler: (req, res, next) => {

@@ -8,7 +8,17 @@ type InstallConfig = {
   clock?: FakeTimerInstallOpts;
 };
 
-export function install(config: InstallConfig) {
+/**
+ * https://storyshots.github.io/storyshots/modules/web-api#clock
+ */
+type PageClock = {
+  set(date: Date): void;
+};
+
+/**
+ * https://storyshots.github.io/storyshots/modules/web-api#install
+ */
+export function install(config: InstallConfig): PageClock {
   MockDate.set(config.date);
 
   const clock = Clock.install({
@@ -19,11 +29,14 @@ export function install(config: InstallConfig) {
 
   window.tick = (ms) => clock.tick(ms);
 
-  return { set: (date: Date) => MockDate.set(date) };
+  return { set: (date) => MockDate.set(date) };
 }
 
 declare global {
   interface Window {
+    /**
+     * https://storyshots.github.io/storyshots/modules/web-api#tick
+     */
     tick(ms: number): void;
   }
 }

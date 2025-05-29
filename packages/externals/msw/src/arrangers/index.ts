@@ -9,6 +9,9 @@ import { Endpoints, UnknownEndpoint } from '../types';
 import { body, params, query } from '../utils';
 import { MSWArrangers, UnknownMSWArrangers } from './types';
 
+/**
+ * https://storyshots.github.io/storyshots/modules/msw#createmswarrangers
+ */
 export function createMSWArrangers<TExternals>(
   arrangers: Arrangers<TExternals, Endpoints>,
 ) {

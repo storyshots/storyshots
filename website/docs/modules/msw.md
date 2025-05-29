@@ -28,7 +28,9 @@ export default {
 
 ## Endpoints
 
-Хранит мета информацию о переопределённых эндпоинтах:
+Хранит мета информацию о переопределённых эндпоинтах.
+
+Подключение:
 
 ```ts
 import { Endpoints } from '@storyshots/msw-externals'
@@ -47,6 +49,8 @@ export const { run, it, describe } = createPreviewApp<Externals>({
     createJournalExternals: (externals) => externals,
 });
 ```
+
+Далее эндпоинты регистрируются в `Endpoints` с помощью метода [`endpoint`](/modules/msw#endpoint).
 
 ## MSWReplacer
 
