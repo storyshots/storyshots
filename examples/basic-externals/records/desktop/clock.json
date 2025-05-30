@@ -1,5 +1,7 @@
 {
   "clock__shows_default_time": [],
   "clock__allows_to_select_now": [],
-  "clock__shows_message_after_a_while": []
+  "clock__shows_message_after_a_while": [],
+  "clock__shows_specified_time": [],
+  "clock__listens_to_natural_flow_of_time": []
 }

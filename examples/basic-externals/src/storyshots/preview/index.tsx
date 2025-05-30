@@ -1,4 +1,4 @@
-import '../externals/install';
+import '../externals/install-clock';
 
 import React from 'react';
 import { map } from '@storyshots/core';
