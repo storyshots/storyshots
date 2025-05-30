@@ -438,7 +438,6 @@ function withGlobal(_global) {
                 Object.defineProperty(this, "constructor", {
                     value: NativeDate,
                     enumerable: false,
-                    configurable: true,
                 });
             }
 
