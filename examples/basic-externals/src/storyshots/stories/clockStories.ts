@@ -1,5 +1,5 @@
 import { finder, only } from '@storyshots/core';
-import { withNowAs } from '../externals/install';
+import { clock } from '../externals/install-clock';
 import { describe, it } from '../preview/config';
 import { open } from './utils/actors';
 
@@ -10,11 +10,21 @@ export const clockStories = only(
       act: open('Clock'),
     }),
     it('shows specified time', {
-      arrange: withNowAs(new Date(2024, 0, 14, 12)),
+      arrange: (arrange) => {
+        clock.setSystemTime(new Date(2024, 0, 14, 12));
+
+        return arrange;
+      },
       act: open('Clock'),
     }),
     it('listens to natural flow of time', {
-      act: (actor) => actor.do(open('Clock')).exec(() => window.tick(100_000)),
+      act: (actor) =>
+        actor
+          .do(open('Clock'))
+          .waitFor(
+            finder.getByRole('heading', { name: '13.01.2024, 12:00:01' }),
+            'visible',
+          ),
     }),
     it('allows to select now', {
       act: (actor) =>
@@ -29,7 +39,7 @@ export const clockStories = only(
         actor
           .do(open('Clock'))
           .click(finder.getByText('Show current'))
-          .exec(() => window.tick(10_000)),
+          .exec(() => window.clock.tick(10_000)),
     }),
   ]),
 );

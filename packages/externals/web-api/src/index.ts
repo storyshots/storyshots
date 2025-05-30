@@ -18,7 +18,7 @@ type PageClock = InstalledClock;
 export function install(config: InstallConfig): PageClock {
   const clock = Clock.install(config);
 
-  window.tick = (ms) => clock.tick(ms);
+  window.clock = clock;
 
   return clock;
 }
@@ -28,6 +28,6 @@ declare global {
     /**
      * https://storyshots.github.io/storyshots/modules/web-api#tick
      */
-    tick(ms: number): void;
+    clock: PageClock;
   }
 }
