@@ -1,8 +1,15 @@
 import { Button, Form, notification, TimePicker, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const Clock: React.FC = () => {
   const [form] = Form.useForm();
+  const [date, setDate] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setDate(new Date()), 1_000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div
@@ -25,7 +32,7 @@ export const Clock: React.FC = () => {
         name="register"
         style={{ maxWidth: 600, margin: 'auto' }}
       >
-        <Typography.Title>{new Date().toLocaleString()}</Typography.Title>
+        <Typography.Title>{date.toLocaleString()}</Typography.Title>
         <Form.Item name="time" label="Arrival time">
           <TimePicker />
         </Form.Item>
