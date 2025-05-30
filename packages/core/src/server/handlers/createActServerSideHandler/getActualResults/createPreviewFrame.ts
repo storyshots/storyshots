@@ -9,6 +9,7 @@ export async function createPreviewFrame(
 ) {
   await page.goto(createStoryURL(story, config).href, {
     waitUntil: 'networkidle',
+    timeout: 0,
   });
 
   return toPreviewFrame(page);
