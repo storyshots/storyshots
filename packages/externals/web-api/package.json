@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@sinonjs/commons": "^3.0.1",
-    "mock-local-storage": "^1.1.24",
-    "mockdate": "^3.0.5"
+    "mock-local-storage": "^1.1.24"
   }
 }
