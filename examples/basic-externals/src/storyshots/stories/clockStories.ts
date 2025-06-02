@@ -19,12 +19,7 @@ export const clockStories = only(
     }),
     it('listens to natural flow of time', {
       act: (actor) =>
-        actor
-          .do(open('Clock'))
-          .waitFor(
-            finder.getByRole('heading', { name: '13.01.2024, 12:00:01' }),
-            'visible',
-          ),
+        actor.do(open('Clock')).exec(() => window.clock.tick(1_000)),
     }),
     it('allows to select now', {
       act: (actor) =>

@@ -4,5 +4,4 @@ import { install } from '@storyshots/web-api-externals';
 export const clock = install({
   now: new Date(2024, 0, 13, 12),
   shouldAdvanceTime: true,
-  toFake: ['setTimeout', 'clearTimeout', 'Date'],
 });
