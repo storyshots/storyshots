@@ -143,7 +143,7 @@ it('shows message to a user', {
     act: (actor) => actor
         .screenshot('Message')
         // Отправить таймеры в будущее на 5 секунд вперёд
-        .exec(() => window.tick(5_000))
+        .exec(() => window.clock.tick(5_000))
         .screenshot('Hidden'),
 });
 ```

@@ -195,7 +195,7 @@ actor
 actor
     .do(submit())
     // Будет выполнен сразу после submit
-    .exec(() => window.tick(5_000))
+    .exec(() => window.clock.tick(5_000))
     .screenshot('Hidden')
 ```
 

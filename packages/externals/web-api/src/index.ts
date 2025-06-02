@@ -11,8 +11,17 @@ type InstallConfig = {
  * https://storyshots.github.io/storyshots/modules/web-api#clock
  */
 type PageClock = {
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#tick
+   */
   tick(ms: number): void;
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#setsystemtime
+   */
   setSystemTime(date: Date): void;
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#unfreeze
+   */
   unfreeze(): void;
 };
 
@@ -39,7 +48,7 @@ export function install(config: InstallConfig): PageClock {
 declare global {
   interface Window {
     /**
-     * https://storyshots.github.io/storyshots/modules/web-api#tick
+     * https://storyshots.github.io/storyshots/modules/web-api#clock
      */
     clock: PageClock;
   }
