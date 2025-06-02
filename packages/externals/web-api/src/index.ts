@@ -1,42 +1,55 @@
-import Clock, { FakeTimerInstallOpts } from '@sinonjs/fake-timers';
+import Clock from '@sinonjs/fake-timers';
 import MockDate from 'mockdate';
 
 import 'mock-local-storage';
 
 type InstallConfig = {
-  date: Date;
-  clock?: FakeTimerInstallOpts;
+  now: Date;
 };
 
 /**
  * https://storyshots.github.io/storyshots/modules/web-api#clock
  */
 type PageClock = {
-  set(date: Date): void;
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#tick
+   */
+  tick(ms: number): void;
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#setsystemtime
+   */
+  setSystemTime(date: Date): void;
+  /**
+   * https://storyshots.github.io/storyshots/modules/web-api#unfreeze
+   */
+  unfreeze(): void;
 };
 
 /**
  * https://storyshots.github.io/storyshots/modules/web-api#install
  */
 export function install(config: InstallConfig): PageClock {
-  MockDate.set(config.date);
-
   const clock = Clock.install({
     shouldAdvanceTime: true,
-    toFake: ['setTimeout', 'clearTimeout'],
-    ...config.clock,
+    toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
   });
 
-  window.tick = (ms) => clock.tick(ms);
+  MockDate.set(config.now);
 
-  return { set: (date) => MockDate.set(date) };
+  window.clock = {
+    tick: (ms) => clock.tick(ms),
+    setSystemTime: (now) => MockDate.set(now),
+    unfreeze: () => setInterval(() => MockDate.set(Date.now() + 20), 20),
+  };
+
+  return window.clock;
 }
 
 declare global {
   interface Window {
     /**
-     * https://storyshots.github.io/storyshots/modules/web-api#tick
+     * https://storyshots.github.io/storyshots/modules/web-api#clock
      */
-    tick(ms: number): void;
+    clock: PageClock;
   }
 }
