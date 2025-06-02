@@ -12,6 +12,7 @@
 * Describe technique of taking long page pictures (need more data)
 * Impl settle function. Certain action may cause layout shifts, for example clicks on accordions. It will produce
   non-deterministic behaviour when not treated properly. For preview, settle function does nothing
+* Describe lazy stubs
 
 # Low priority
 

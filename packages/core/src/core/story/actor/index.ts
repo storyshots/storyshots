@@ -32,10 +32,14 @@ export function createActor(
         action: 'select',
         payload: { on: on.__toMeta(), values, options },
       }),
-    uploadFile: (chooser, ...paths) =>
+    uploadFile: (chooser, paths, options) =>
       withAction({
         action: 'uploadFile',
-        payload: { chooser: chooser.__toMeta(), paths },
+        payload: {
+          chooser: chooser.__toMeta(),
+          paths: Array.isArray(paths) ? paths : [paths],
+          options,
+        },
       }),
     scrollTo: (to, options) =>
       withAction({
@@ -59,16 +63,34 @@ export function createActor(
           maskColor: options?.maskColor,
         },
       }),
-    press: (input) =>
-      withAction({ action: 'keyboard', payload: { type: 'press', input } }),
-    down: (input) =>
-      withAction({ action: 'keyboard', payload: { type: 'down', input } }),
-    up: (input) =>
-      withAction({ action: 'keyboard', payload: { type: 'up', input } }),
-    drag: (draggable, to) =>
+    keyboard: {
+      press: (input, options) =>
+        withAction({
+          action: 'keyboard',
+          payload: { type: 'press', input, options },
+        }),
+      down: (input) =>
+        withAction({ action: 'keyboard', payload: { type: 'down', input } }),
+      up: (input) =>
+        withAction({ action: 'keyboard', payload: { type: 'up', input } }),
+    },
+    mouse: {
+      move: (x, y, options) =>
+        withAction({ action: 'mouseMove', payload: { x, y, options } }),
+      up: (options) =>
+        withAction({ action: 'mouseUpDown', payload: { type: 'up', options } }),
+      down: (options) =>
+        withAction({
+          action: 'mouseUpDown',
+          payload: { type: 'down', options },
+        }),
+      wheel: (dx, dy) =>
+        withAction({ action: 'mouseWheel', payload: { dx, dy } }),
+    },
+    drag: (draggable, to, options) =>
       withAction({
         action: 'drag',
-        payload: { draggable: draggable.__toMeta(), to: to.__toMeta() },
+        payload: { draggable: draggable.__toMeta(), to: to.__toMeta(), options },
       }),
     blur: (on, options) =>
       withAction({
@@ -82,11 +104,10 @@ export function createActor(
       }),
     exec: (fn) =>
       withAction({ action: 'exec', payload: { fn: fn.toString() } }),
-    waitFor: (on, state) =>
-      withAction({ action: 'waitFor', payload: { on: on.__toMeta(), state } }),
-    wheel: (dx, dy) => withAction({ action: 'wheel', payload: { dx, dy } }),
+    waitFor: (on, state, timeout) =>
+      withAction({ action: 'waitFor', payload: { on: on.__toMeta(), state, timeout } }),
     do: (transform) => transform(actor, config),
-    stop: () => createIdleActor(actor),
+    stop: () => withAction({ action: 'stop' }),
     __toMeta: () => assertScreenshotNameConditions(meta),
   };
 
@@ -95,12 +116,4 @@ export function createActor(
   }
 
   return actor;
-}
-
-function createIdleActor(from: Actor): Actor {
-  const idle = new Proxy(from, {
-    get: (_, prop) => (prop === '__toMeta' ? from.__toMeta : () => idle),
-  });
-
-  return idle;
 }

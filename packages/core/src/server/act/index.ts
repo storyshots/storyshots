@@ -1,4 +1,4 @@
-import { ActionMeta, ScreenshotAction } from '@core';
+import { ActionMeta, ScreenshotAction, StopAction } from '@core';
 import { assertIsNever } from '@lib';
 import { Frame } from 'playwright';
 import { doBlur } from './actions/doBlur';
@@ -11,6 +11,8 @@ import { doFill } from './actions/doFill';
 import { doHighlight } from './actions/doHighlight';
 import { doHover } from './actions/doHover';
 import { doKeyboard } from './actions/doKeyboard';
+import { doMouseMove } from './actions/doMouseMove';
+import { doMouseUpDown } from './actions/doMouseUpDown';
 import { doPressSequentially } from './actions/doPressSequentially';
 import { doScrollTo } from './actions/doScrollTo';
 import { doSelect } from './actions/doSelect';
@@ -56,11 +58,15 @@ export async function act(
       return doExec(preview, action);
     case 'waitFor':
       return doWaitFor(preview, action);
-    case 'wheel':
+    case 'mouseWheel':
       return doWheel(preview, action);
+    case 'mouseUpDown':
+      return doMouseUpDown(preview, action);
+    case 'mouseMove':
+      return doMouseMove(preview, action);
   }
 
   assertIsNever(action);
 }
 
-type UserAction = Exclude<ActionMeta, ScreenshotAction>;
+type UserAction = Exclude<ActionMeta, ScreenshotAction | StopAction>;

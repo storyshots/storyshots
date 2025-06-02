@@ -1,4 +1,5 @@
 import type { Locator } from 'playwright';
+import { FileChooser, Keyboard, Mouse } from 'playwright-core';
 import { Finder, FinderMeta } from '../finder/types';
 import { StoryEnvironment } from '../story-config';
 import { ScreenshotName } from './screenshot';
@@ -13,22 +14,22 @@ export type ActorTransformer = (
  */
 export type Actor = MetaActionsFactory & {
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#hover
+   * https://playwright.dev/docs/api/class-locator#locator-hover
    */
   hover(on: Finder, options?: HoverAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#click
+   * https://playwright.dev/docs/api/class-locator#locator-click
    */
   click(on: Finder, options?: ClickAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#dblclick
+   * https://playwright.dev/docs/api/class-locator#locator-dblclick
    */
   dblclick(on: Finder, options?: DblClickAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#fill
+   * https://playwright.dev/docs/api/class-locator#locator-fill
    */
   fill(
     on: Finder,
@@ -47,12 +48,12 @@ export type Actor = MetaActionsFactory & {
   screenshot(name: string, options?: UserScreenshotOptions): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#scrollto
+   * https://playwright.dev/docs/api/class-locator#locator-scroll-into-view-if-needed
    */
   scrollTo(to: Finder, options?: ScrollToAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#select
+   * https://playwright.dev/docs/api/class-locator#locator-select-option
    */
   select(
     on: Finder,
@@ -60,30 +61,57 @@ export type Actor = MetaActionsFactory & {
     options?: SelectAction['payload']['options'],
   ): Actor;
 
-  /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#press
-   */
-  press(input: string): Actor;
+  mouse: {
+    /**
+     * https://playwright.dev/docs/api/class-mouse#mouse-move
+     */
+    move(
+      x: number,
+      y: number,
+      options?: MouseMoveAction['payload']['options'],
+    ): Actor;
+    /**
+     * https://playwright.dev/docs/api/class-mouse#mouse-down
+     */
+    down(options?: MouseUpDownAction['payload']['options']): Actor;
+    /**
+     * https://playwright.dev/docs/api/class-mouse#mouse-up
+     */
+    up(options?: MouseUpDownAction['payload']['options']): Actor;
+    /**
+     * https://playwright.dev/docs/api/class-mouse#mouse-wheel
+     */
+    wheel(dx: number, dy: number): Actor;
+  };
+
+  keyboard: {
+    /**
+     * https://playwright.dev/docs/api/class-keyboard#keyboard-press
+     */
+    press(input: string, options?: KeyboardAction['payload']['options']): Actor;
+    /**
+     * https://playwright.dev/docs/api/class-keyboard#keyboard-down
+     */
+    down(input: string): Actor;
+    /**
+     * https://playwright.dev/docs/api/class-keyboard#keyboard-up
+     */
+    up(input: string): Actor;
+  };
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#down
-   */
-  down(input: string): Actor;
-
-  /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#up
-   */
-  up(input: string): Actor;
-
-  /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#clear
+   * https://playwright.dev/docs/api/class-locator#locator-clear
    */
   clear(on: Finder, options?: ClearAction['payload']['options']): Actor;
 
   /**
    * https://storyshots.github.io/storyshots/API/story-elements/actor#uploadfile
    */
-  uploadFile(chooser: Finder, ...paths: string[]): Actor;
+  uploadFile(
+    chooser: Finder,
+    paths: string | string[],
+    options?: UploadFileAction['payload']['options'],
+  ): Actor;
 
   /**
    * https://storyshots.github.io/storyshots/API/story-elements/actor#highlight
@@ -91,17 +119,21 @@ export type Actor = MetaActionsFactory & {
   highlight(on: Finder): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#drag
+   * https://playwright.dev/docs/api/class-locator#locator-drag-to
    */
-  drag(draggable: Finder, to: Finder): Actor;
+  drag(
+    draggable: Finder,
+    to: Finder,
+    options?: DragAction['payload']['options'],
+  ): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#blur
+   * https://playwright.dev/docs/api/class-locator#locator-blur
    */
   blur(on: Finder, options?: BlurAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#presssequentially
+   * https://playwright.dev/docs/api/class-locator#locator-press-sequentially
    */
   pressSequentially(
     on: Finder,
@@ -115,14 +147,13 @@ export type Actor = MetaActionsFactory & {
   exec(fn: () => unknown): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#waitfor
+   * https://playwright.dev/docs/api/class-locator#locator-wait-for
    */
-  waitFor(on: Finder, state: WaitForAction['payload']['state']): Actor;
-
-  /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#wheel
-   */
-  wheel(dx: number, dy: number): Actor;
+  waitFor(
+    on: Finder,
+    state: WaitForAction['payload']['state'],
+    timeout?: WaitForAction['payload']['timeout'],
+  ): Actor;
 
   /**
    * https://storyshots.github.io/storyshots/API/story-elements/actor#do
@@ -211,6 +242,7 @@ export type KeyboardAction = {
   payload: {
     type: 'press' | 'up' | 'down';
     input: string;
+    options?: Parameters<Keyboard['press' | 'up' | 'down']>[1];
   };
 };
 
@@ -251,6 +283,10 @@ export type UploadFileAction = {
   payload: {
     chooser: FinderMeta;
     paths: string[];
+    options?: {
+      chooser?: Parameters<FileChooser['setFiles']>[1];
+      upload?: ClickAction['payload']['options'];
+    };
   };
 };
 
@@ -280,15 +316,37 @@ export type WaitForAction = {
   payload: {
     on: FinderMeta;
     state: 'attached' | 'detached' | 'visible' | 'hidden';
+    timeout?: number;
   };
 };
 
-export type WheelAction = {
-  action: 'wheel';
+export type MouseMoveAction = {
+  action: 'mouseMove';
+  payload: {
+    x: number;
+    y: number;
+    options?: Parameters<Mouse['move']>[2];
+  };
+};
+
+export type MouseUpDownAction = {
+  action: 'mouseUpDown';
+  payload: {
+    type: 'up' | 'down';
+    options?: Parameters<Mouse['down' | 'up']>[0];
+  };
+};
+
+export type MouseWheelAction = {
+  action: 'mouseWheel';
   payload: {
     dx: number;
     dy: number;
   };
+};
+
+export type StopAction = {
+  action: 'stop';
 };
 
 export type ActionMeta =
@@ -309,4 +367,7 @@ export type ActionMeta =
   | PressSequentiallyAction
   | ExecAction
   | WaitForAction
-  | WheelAction;
+  | MouseWheelAction
+  | MouseMoveAction
+  | MouseUpDownAction
+  | StopAction;

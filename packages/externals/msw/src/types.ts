@@ -1,4 +1,4 @@
-import type { HttpResponseResolver } from 'msw';
+import { http, HttpResponseResolver } from 'msw';
 
 /**
  * https://storyshots.github.io/storyshots/modules/msw#endpoints
@@ -6,7 +6,7 @@ import type { HttpResponseResolver } from 'msw';
 export interface Endpoints {}
 
 export type Endpoint<TResponse> = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: Uppercase<keyof typeof http>;
   url: string;
   handle(args: EndpointArgs): PromiseLike<TResponse> | TResponse;
 };
