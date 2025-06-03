@@ -141,7 +141,7 @@ actor
 
 ```ts
 actor
-    .uploadFile(finder.get(uploadTrigger()), 'path/to/file_0.ext', 'path/to/file_1.ext')
+    .uploadFile(finder.get(uploadTrigger()), 'path/to/file_0.ext')
 ```
 
 :::note
@@ -158,7 +158,7 @@ function getPath(file: string) {
 }
 
 actor
-    .uploadFile(finder.get(uploadTrigger()), getPath('file_1.ext'), getPath('file_2.ext'))
+    .uploadFile(finder.get(uploadTrigger()), [getPath('file_1.ext'), getPath('file_2.ext')])
 ```
 
 :::
