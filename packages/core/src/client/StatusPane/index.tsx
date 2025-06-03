@@ -56,11 +56,7 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
       {errorsAreActive ? (
         <StatusEntries aria-label="Errors">
           {errors.map(({ story, error }, index) => (
-            <StatusEntry
-              key={index}
-              active$={isSelected(story.id)}
-              onClick={() => props.setStory(story.id)}
-            >
+            <StatusEntry key={index} active$={isSelected(story.id)}>
               <span
                 style={{ fontWeight: 'bold' }}
               >{`[${error.device.name}] ${story.title}`}</span>

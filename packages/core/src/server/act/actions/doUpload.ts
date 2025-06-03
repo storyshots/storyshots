@@ -9,6 +9,7 @@ export function doUploadFile(preview: Frame, upload: UploadFileAction) {
       chooser
         .setFiles(
           upload.payload.paths.map((it) => path.join(process.cwd(), it)),
+          upload.payload.options?.chooser,
         )
         .then(() => resolve())
         .catch((reason) => reject(reason));
@@ -18,7 +19,10 @@ export function doUploadFile(preview: Frame, upload: UploadFileAction) {
 
     void doClick(preview, {
       action: 'click',
-      payload: { on: upload.payload.chooser, options: {} },
+      payload: {
+        on: upload.payload.chooser,
+        options: upload.payload.options?.upload,
+      },
     }).catch((reason) => {
       preview.page().off('filechooser', setFiles);
 

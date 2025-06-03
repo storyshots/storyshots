@@ -18,9 +18,15 @@ export async function createActualScreenshots(
   for (const action of actions) {
     if (action.action === 'screenshot') {
       screenshots.push(await createCompareScreenshot(payload, preview, action));
-    } else {
-      await act(preview, action);
+
+      continue;
     }
+
+    if (action.action === 'stop') {
+      break;
+    }
+
+    await act(preview, action);
   }
 
   return screenshots;

@@ -37,17 +37,37 @@
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-select-option)
 
-## press
+## keyboard
+
+### press
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-press)
 
-## down
+### down
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-down)
 
-## up
+### up
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-up)
+
+## mouse
+
+### move
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-move)
+
+### down
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-down)
+
+### up
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-up)
+
+### wheel
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-wheel)
 
 ## clear
 
@@ -76,10 +96,6 @@
 ## waitFor
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-wait-for)
-
-## wheel
-
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-wheel)
 
 ## screenshot
 
@@ -125,7 +141,7 @@ actor
 
 ```ts
 actor
-    .uploadFile(finder.get(uploadTrigger()), 'path/to/file_0.ext', 'path/to/file_1.ext')
+    .uploadFile(finder.get(uploadTrigger()), 'path/to/file_0.ext')
 ```
 
 :::note
@@ -142,7 +158,7 @@ function getPath(file: string) {
 }
 
 actor
-    .uploadFile(finder.get(uploadTrigger()), getPath('file_1.ext'), getPath('file_2.ext'))
+    .uploadFile(finder.get(uploadTrigger()), [getPath('file_1.ext'), getPath('file_2.ext')])
 ```
 
 :::

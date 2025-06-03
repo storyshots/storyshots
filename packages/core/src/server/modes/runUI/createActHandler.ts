@@ -20,6 +20,10 @@ export function createActHandler(server: Server, page: Page): RequestHandler {
             continue;
           }
 
+          if (action.action === 'stop') {
+            break;
+          }
+
           await act(preview, action);
         }
       },

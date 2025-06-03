@@ -5,62 +5,62 @@ import type { Page } from 'playwright';
  */
 export type Finder = {
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbyrole
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-role
    */
   getByRole(role: ByRole['role'], options?: ByRoleOptions): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbytext
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-text
    */
   getByText(text: TextMatch, options?: ByText['options']): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbylabel
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-label
    */
   getByLabel(text: TextMatch, options?: ByLabel['options']): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbyplaceholder
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-placeholder
    */
   getByPlaceholder(text: TextMatch, options?: ByPlaceholder['options']): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbyalttext
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-alt-text
    */
   getByAltText(text: TextMatch, options?: ByAltText['options']): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#getbytitle
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-title
    */
   getByTitle(text: TextMatch, options?: ByTitle['options']): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#locator
+   * https://playwright.dev/docs/api/class-locator#locator-locator
    */
   locator(selector: string): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#filter
+   * https://playwright.dev/docs/api/class-locator#locator-filter
    */
   filter(options: WithFilterOptions): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#nth
+   * https://playwright.dev/docs/api/class-locator#locator-nth
    */
   nth(index: number): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#first
+   * https://playwright.dev/docs/api/class-locator#locator-first
    */
   first(): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#last
+   * https://playwright.dev/docs/api/class-locator#locator-last
    */
   last(): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#and
+   * https://playwright.dev/docs/api/class-locator#locator-and
    */
   and(selector: Finder): Finder;
 
