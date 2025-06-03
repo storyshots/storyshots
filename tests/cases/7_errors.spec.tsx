@@ -15,12 +15,13 @@ describe('errors', () => {
       .screenshot()
       .do((page) => page.getByLabel('Progress').click())
       .screenshot()
+      // It is important to see that nothing is happening on click
       .do((page) => page.getByText('[desktop]').click())
       .screenshot(),
   );
 
   test(
-    'shows several messages and opens all parent groups',
+    'shows several messages',
     desktop()
       .stories(
         render((error) => ({ describe }) => [
@@ -31,8 +32,6 @@ describe('errors', () => {
       .run('Group')
       .screenshot()
       .do((page) => page.getByLabel('Progress').click())
-      .screenshot()
-      .do((page) => page.getByText('[desktop]').first().click())
       .screenshot(),
   );
 });
