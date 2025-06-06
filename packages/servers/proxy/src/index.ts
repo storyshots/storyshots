@@ -11,7 +11,5 @@ export function createProxyServer(to: string): IPreviewServer {
       changeOrigin: true,
     }),
     cleanup: async () => {},
-    // Update events are not possible by definition
-    onUpdate: () => {},
   };
 }

@@ -15,11 +15,6 @@ export interface IPreviewServer {
   handler: RequestHandler;
 
   /**
-   * https://storyshots.github.io/storyshots/modules/scheme#onupdate
-   */
-  onUpdate(handle: (hash: string) => void): void;
-
-  /**
    * https://storyshots.github.io/storyshots/modules/scheme#cleanup
    */
   cleanup(): Promise<unknown>;

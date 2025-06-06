@@ -4,6 +4,7 @@ import { open } from './utils/actors';
 import { record, set } from './utils/arrangers';
 
 export const balanceStories = describe('Balance', [
+  it('shows menu', {}),
   it('shows current salary', {
     act: open('Balance'),
   }),

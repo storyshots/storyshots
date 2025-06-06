@@ -1,3 +1,6 @@
+WEBPACK should always update entire preview during build
+PROXY solutions should always update entire preview during build
+
 # High priority
 
 * Clipboard copy for action picker
@@ -13,9 +16,15 @@
 * Impl settle function. Certain action may cause layout shifts, for example clicks on accordions. It will produce
   non-deterministic behaviour when not treated properly. For preview, settle function does nothing
 * Describe lazy stubs
+* Solve problem with screenshot async content
+  * Implement auto waiting with threshold? Will increase potential fail time
+  * Improve stabilizer, add more attempts or increase intervals
+  * Describe docs for using waitFor, trials
+* Screenshot on fail. For example when element is not found on a page
 
 # Low priority
 
+* Impl antd tour guide
 * Add baseline read button
 * Support HMR
 * Implement antd actor extensions package
