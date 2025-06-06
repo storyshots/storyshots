@@ -40,10 +40,6 @@ const mergeTwoServeHandlers = (
 ): IPreviewServer => ({
   handler: (req, res, next) =>
     left.handler(req, res, () => right.handler(req, res, next)),
-  onUpdate: (handle) => {
-    left.onUpdate(handle);
-    right.onUpdate(handle);
-  },
   cleanup: async () => {
     await left.cleanup();
     await right.cleanup();

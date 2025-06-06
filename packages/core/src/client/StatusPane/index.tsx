@@ -97,14 +97,14 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
   function enrichErrors(stories: StoryTree) {
     const errors: ErrorSummary[] =
       selection.type === 'story' &&
-      selection.state.type === 'played' &&
-      selection.state.result.type === 'error'
+      selection.progress.type === 'played' &&
+      selection.progress.result.type === 'error'
         ? [
             ...summary.errors,
             {
               id: selection.story.id,
               device: props.device.preview,
-              message: selection.state.result.message,
+              message: selection.progress.result.message,
             },
           ]
         : summary.errors;

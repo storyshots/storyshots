@@ -1,8 +1,8 @@
 import { createJournal, Device, find, StoryID } from '@core';
 import { assertNotEmpty } from '@lib';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouteComponentProps, useSearchParams } from 'wouter';
-import { Preview, usePreviewSync } from './reusables/ConnectedPreview';
+import { Preview } from './reusables/Preview';
 
 type Props = RouteComponentProps<{
   story: string;
@@ -11,9 +11,8 @@ type Props = RouteComponentProps<{
 export const ForChromiumOnly: React.FC<Props> = (props) => {
   const [params] = useSearchParams();
 
-  const preview = usePreviewSync({
-    identity: 'CONSTANT_PREVIEW',
-    onPreviewLoaded: (stories) => {
+  useEffect(() => {
+    window.onPreviewReady = (stories) => {
       const story = find(props.params.story as StoryID, stories);
 
       assertNotEmpty(story);
@@ -31,10 +30,10 @@ export const ForChromiumOnly: React.FC<Props> = (props) => {
           testing: true,
         },
       };
-    },
-  });
+    };
+  }, []);
 
-  return <Preview {...preview} />;
+  return <Preview />;
 };
 
 // TODO: Duplication with useManagerConfig

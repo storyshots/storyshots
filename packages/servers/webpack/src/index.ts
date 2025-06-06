@@ -1,6 +1,7 @@
 import { IPreviewServer } from '@storyshots/core/manager';
 import { Configuration, webpack } from 'webpack';
-import dev from 'webpack-dev-middleware';
+import _dev from 'webpack-dev-middleware';
+import _hot from 'webpack-hot-middleware';
 
 /**
  * https://storyshots.github.io/storyshots/modules/webpack#createwebpackserver
@@ -8,15 +9,15 @@ import dev from 'webpack-dev-middleware';
 export function createWebpackServer(config: Configuration): IPreviewServer {
   const compiler = webpack(config);
 
-  const middleware = dev(compiler);
+  const dev = _dev(compiler);
+  const hot = _hot(compiler);
 
   return {
-    handler: middleware,
+    handler: (req, res, next) => dev(req, res, () => hot(req, res, next)),
     cleanup: () =>
-      new Promise<void>((resolve, reject) =>
-        middleware.close((error) => (error ? reject(error) : resolve())),
-      ),
-    onUpdate: (handler) =>
-      compiler.hooks.done.tap('PreviewUpdate', (stats) => handler(stats.hash)),
+      new Promise<void>((resolve, reject) => {
+        dev.close((error) => (error ? reject(error) : resolve()));
+        hot.close();
+      }),
   };
 }

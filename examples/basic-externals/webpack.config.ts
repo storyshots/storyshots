@@ -1,11 +1,13 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import 'webpack-dev-server';
-import webpack, { Configuration } from 'webpack';
+import webpack, { Configuration, HotModuleReplacementPlugin } from 'webpack';
 
-const config: Configuration = {
+const config = {
   mode: 'development',
   bail: false,
-  entry: './src/index.tsx',
+  entry: {
+    main: ['webpack-hot-middleware/client', './src/index.tsx'],
+  },
   devtool: 'cheap-module-source-map',
   stats: {
     errorDetails: true,
@@ -43,7 +45,8 @@ const config: Configuration = {
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: '"development"' },
     }),
+    new HotModuleReplacementPlugin(),
   ],
-};
+} satisfies Configuration;
 
 export default config;

@@ -4,7 +4,7 @@ import path from 'path';
 import config from '../../webpack.config';
 
 export function createPreviewServer(): IPreviewServer {
-  config.entry = path.join(__dirname, 'preview', 'index.tsx');
+  config.entry.main[1] = path.join(__dirname, 'preview', 'index.tsx');
 
   return createWebpackServer(config);
 }

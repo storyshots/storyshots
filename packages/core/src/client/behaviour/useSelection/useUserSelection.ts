@@ -3,6 +3,11 @@ import { isNil } from '@lib';
 import { useMemo } from 'react';
 import { useSearchParams } from 'wouter';
 
+/**
+ * Untrusted, e.g. unvalidated user selection.
+ *
+ * Might be invalid due to the fact that this data is persisted as url query.
+ */
 export function useUserSelection() {
   const [params, setParams] = useSearchParams();
 
@@ -12,7 +17,6 @@ export function useUserSelection() {
       setSelection({
         type: 'story',
         id,
-        selectedAt: Date.now(),
       }),
     setRecords: (id: StoryID, at: DeviceName) =>
       setSelection({ type: 'records', id, device: at }),
@@ -45,7 +49,7 @@ export type UserSelection =
   | {
       type: 'no-selection';
     }
-  | { type: 'story'; id: StoryID; selectedAt: number }
+  | { type: 'story'; id: StoryID }
   | {
       type: 'records';
       id: StoryID;

@@ -21,15 +21,15 @@ export function getStoryEntrySummary(
       return defaults;
     }
 
-    if (selection.state.type === 'not-played') {
+    if (selection.progress.type === 'not-played') {
       return defaults;
     }
 
-    if (selection.state.type === 'playing') {
+    if (selection.progress.type === 'playing') {
       return new Map([[device.preview, { type: 'running' }]]);
     }
 
-    if (selection.state.result.type === 'success') {
+    if (selection.progress.result.type === 'success') {
       return defaults;
     }
 
@@ -40,7 +40,7 @@ export function getStoryEntrySummary(
           type: 'done',
           details: {
             type: 'error',
-            message: selection.state.result.message,
+            message: selection.progress.result.message,
           },
         },
       ],
