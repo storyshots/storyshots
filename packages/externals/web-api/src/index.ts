@@ -31,6 +31,7 @@ type PageClock = {
 export function install(config: InstallConfig): PageClock {
   const clock = Clock.install({
     shouldAdvanceTime: true,
+    shouldClearNativeTimers: true,
     toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'],
   });
 

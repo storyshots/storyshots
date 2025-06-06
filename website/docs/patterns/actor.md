@@ -20,7 +20,7 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 ```tsx
 it('allows to delete product', {
-    act: (actor) => actor.click(finder.locator('div.user-card div.button').getByText('Удалить')),
+  act: (actor) => actor.click(finder.locator('div.user-card div.button').getByText('Удалить')),
 });
 ```
 
@@ -30,7 +30,7 @@ it('allows to delete product', {
 
 ```tsx
 it('allows to delete product', {
-    act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
+  act: (actor) => actor.click(finder.getByRole('button', {name: 'Удалить'})),
 });
 ```
 
@@ -43,6 +43,67 @@ it('allows to delete product', {
 
 Рекомендуется предпочитать селекторы, оперирующие видимыми пользователем атрибутами. В основном это отображаемый
 текст и роли.
+
+## data-testid селекторы
+
+Существуют методики, которые предполагают несколько иной подход к абстракции, а именно использование специальных
+тестовых индикаторов:
+
+```tsx
+<button data-testid="delete-user-button">Удалить</button>
+```
+
+```tsx
+it('allows to delete product', {
+  act: (actor) => actor.click(finder.getByTestId('delete-user-button')),
+});
+```
+
+### Достоинства
+
+К достоинствам данного подхода можно отнести тот факт, что истории ещё сильнее абстрагируются от конкретных деталей
+реализации интерфейса. И даже от части его *наблюдаемого поведения*.
+
+:::tip
+Проще всего это понять на примере:
+
+`getByRole('button', { name: 'Удалить' })` напрямую завязан на текст кнопки. Если последний изменится, то селектор
+нужно будет корректировать вручную. То же самое можно сказать и про роль.
+
+`data-testid` не чувствителен к подомному роду изменений и тест останется прежним. Тем самым, делая тест более
+устойчивым к изменениям тестируемого приложения.
+:::
+
+Также, за счёт своей управляемости, data-testid позволяет проще использовать техники TDD. Все идентификаторы и
+взаимодействия можно продумать и прописать заранее, до разработки самого интерфейса страницы:
+
+```typescript
+it('allows to delete multiple products', {
+  act: (actor) => actor
+    .click(finder.getByTestId('product-0-checkbox'))
+    .click(finder.getByTestId('product-1-checkbox'))
+    .click(finder.getByTestId('delete-selected-button'))
+    .click(finder.getByTestId('confirm-delete-button')),
+});
+```
+
+:::note
+Сложно предугадать семантику элементов на странице, до их непосредственного появления. С data-testid всё проще, т. к. их
+содержание и значение определяется самим разработчиком, а не системой.
+:::
+
+:::tip
+data-testid также может использоваться сторонними командами, например инженерами по авто-тестам.
+:::
+
+### Недостатки
+
+Можно отметить следующие недостатки:
+
+* Данная техника, хоть и делает тесты более устойчивыми, но при неосторожном использовании может снижать защиту от
+  регресса, т. к. уходит часть верификаций.
+* data-testid засоряет основной код приложения и требует дополнительного времени разработчика.
+* В среднем тесты с data-testid читать сложнее чем аналогичные сценарии с семантическими селекторами.
 
 ## Компонентный подход
 
@@ -62,21 +123,21 @@ it('allows to delete product', {
 
 ```tsx
 const stories = [
-    it('allows to delete user', {
-        /**
-         * В UserPage используется обычная кнопка удаления <button>Удалить</button>
-         */
-        act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
-        render: () => <UserPage />,
-    }),
-    it('allows to delete product', {
-        /**
-         * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
-         * по какой-то причине: <div className="button">Удалить</div>
-         */
-        act: (actor) => actor.click(finder.locator('div.button').getByText('Удалить')),
-        render: () => <ProductsPage />,
-    }),
+  it('allows to delete user', {
+    /**
+     * В UserPage используется обычная кнопка удаления <button>Удалить</button>
+     */
+    act: (actor) => actor.click(finder.getByRole('button', {name: 'Удалить'})),
+    render: () => <UserPage />,
+  }),
+  it('allows to delete product', {
+    /**
+     * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
+     * по какой-то причине: <div className="button">Удалить</div>
+     */
+    act: (actor) => actor.click(finder.locator('div.button').getByText('Удалить')),
+    render: () => <ProductsPage />,
+  }),
 ];
 ```
 
@@ -89,17 +150,17 @@ const stories = [
 /**
  * За счёт использования компонентного подхода, селекторы между тестами также могут быть унифицированы
  */
-const button = (name: string): FinderTransformer => (finder) => finder.getByRole('button', { name });
+const button = (name: string): FinderTransformer => (finder) => finder.getByRole('button', {name});
 
 const stories = [
-    it('allows to delete user', {
-        act: (actor) => actor.click(finder.get(button('Удалить'))),
-        render: () => <UserPage />,
-    }),
-    it('allows to delete product', {
-        act: (actor) => actor.click(finder.get(button('Удалить'))),
-        render: () => <ProductsPage />,
-    }),
+  it('allows to delete user', {
+    act: (actor) => actor.click(finder.get(button('Удалить'))),
+    render: () => <UserPage />,
+  }),
+  it('allows to delete product', {
+    act: (actor) => actor.click(finder.get(button('Удалить'))),
+    render: () => <ProductsPage />,
+  }),
 ];
 ```
 
@@ -128,9 +189,9 @@ declare const dismiss: ActorTransformer;
 
 ```ts
 it('allows to remove a user from list', {
-    act: (actor) => actor
-        .do(trash('Vasiliy'))
-        .screenshot('ConfirmationWindow')
-        .do(confirm())
+  act: (actor) => actor
+    .do(trash('Vasiliy'))
+    .screenshot('ConfirmationWindow')
+    .do(confirm())
 });
 ```

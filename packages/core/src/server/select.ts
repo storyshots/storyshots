@@ -61,5 +61,7 @@ function byLocator(element: Frame | Locator, finder: ByLocator): Locator {
       return element.getByAltText(finder.by.text, finder.by.options);
     case 'title':
       return element.getByTitle(finder.by.text, finder.by.options);
+    case 'test-id':
+      return element.getByTestId(finder.by.text);
   }
 }

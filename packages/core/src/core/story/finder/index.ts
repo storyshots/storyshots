@@ -1,5 +1,5 @@
 import { isNil } from '@lib';
-import { Finder, FinderMeta } from './types';
+import { Finder, FinderMeta, TextMatch } from './types';
 
 export const finder = createFinder();
 
@@ -57,6 +57,11 @@ function createFinder(result: FinderMeta['consequent'] = []) {
       createFinder([
         ...result,
         { type: 'locator', by: { type: 'selector', selector } },
+      ]),
+    getByTestId: (testId) =>
+      createFinder([
+        ...result,
+        { type: 'locator', by: { type: 'test-id', text: testId } },
       ]),
     get: (transformer) => transformer(finder),
     filter: (options) =>

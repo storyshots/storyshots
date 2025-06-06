@@ -28,6 +28,10 @@
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-title)
 
+## getByTestId
+
+Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-test-id)
+
 ## locator
 
 Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-locator)
