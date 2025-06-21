@@ -19,8 +19,11 @@ import { ManagerConfig } from '@storyshots/core/manager';
 import { createWebpackServer } from '@storyshots/webpack';
 
 export default {
-    preview: createWebpackServer({ /* webpack конфигурация */ }),
-    /* ... */
+  preview: createWebpackServer({
+    entry: '/path/to/preview.tsx',
+    /* webpack конфигурация */
+  }),
+  /* ... */
 } satisfies ManagerConfig;
 ```
 
@@ -28,6 +31,15 @@ export default {
 В качестве `entry` должен указываться файл с инициализацией `preview`.
 :::
 
-:::warning Важно
-`createWebpackServer` не поддерживает опции для `devServer` так как не использует его внутри.
-:::
+## live reload
+
+Для автоматического перезапуска историй при изменении кода, необходимо добавить `'@storyshots/webpack/client'`
+в `entry`:
+
+```typescript
+{
+  // client должен идти первым в списке entry
+  entry: ['@storyshots/webpack/client', '/path/to/preview.tsx']
+  /* webpack конфигурация */
+}
+```

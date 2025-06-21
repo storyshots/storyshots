@@ -1,5 +1,4 @@
 import express, { RequestHandler, Router } from 'express';
-import ws from 'express-ws';
 import { regexpJSONReviver } from '../../../reusables/regexpJSON';
 import { MANAGER_UNIQ_KEY } from '../../../reusables/runner/toManagerURL';
 import { createUIHandler } from '../../createUIHandler';
@@ -7,8 +6,8 @@ import { createApiHandlers } from '../../handlers';
 import { ManagerConfig } from '../../types';
 
 export async function createServer(config: ManagerConfig) {
-  const { app } = ws(express());
-  const router = () => Router();
+  const app = express();
+  const router = Router();
 
   const api = await createApiHandlers(router, config);
   const dynamic = createDynamicHandler();

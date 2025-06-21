@@ -1,16 +1,19 @@
 import { assertNotEmpty } from '@lib';
+import { createPWScripts } from './createHighlighter/createPWScripts';
 import { OnHighlightFinish } from './useHighlighting';
 
-export function onMouseOver(
+export function highlightOnHover(
   frame: Window,
-  cb: (element: Element) => void,
+  { injectedScript, utils }: Awaited<ReturnType<typeof createPWScripts>>,
 ): OnHighlightFinish {
   const listener = (event: MouseEvent) => {
     const element = frame.document.elementFromPoint(event.x, event.y);
 
     assertNotEmpty(element);
 
-    cb(element);
+    injectedScript.highlight(
+      injectedScript.parseSelector(utils.selector(element)),
+    );
   };
 
   frame.addEventListener('mouseover', listener);

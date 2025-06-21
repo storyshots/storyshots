@@ -18,8 +18,7 @@ type _ReadySelection =
   | {
       type: 'story';
       story: Story;
-      selectedAt: number;
-      state: PlayingState;
+      progress: Progress;
     }
   | {
       type: 'records';
@@ -33,7 +32,7 @@ type _ReadySelection =
       device: Device;
     };
 
-export type PlayingState =
+export type Progress =
   | { type: 'not-played' }
   | { type: 'playing' }
   | { type: 'played'; result: WithPossibleError<void> };

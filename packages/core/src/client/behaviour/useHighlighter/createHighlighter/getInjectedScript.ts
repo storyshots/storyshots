@@ -26,6 +26,12 @@ export interface InjectedScript {
   highlight(parsed: ParsedSelector): void;
 
   hideHighlight(): void;
+
+  _highlight?: null | {
+    _highlightOptions?: null | {
+      tooltipText?: null | string;
+    };
+  };
 }
 
 interface InjectedScriptConstructor {

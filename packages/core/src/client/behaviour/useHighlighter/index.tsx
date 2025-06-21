@@ -1,16 +1,20 @@
-import { createHighlighter } from './createHighlighter/createHighlighter';
-import { onMouseOver } from './onMouseOver';
+import { copyOnClick } from './copyOnClick';
+import { createPWScripts } from './createHighlighter/createPWScripts';
+import { highlightOnHover } from './highlightOnHover';
 import { useHighlighting } from './useHighlighting';
 
 export function useHighlighter() {
   return useHighlighting(async (frame) => {
-    const { highlight, hide } = await createHighlighter(frame);
-    const stop = onMouseOver(frame, highlight);
+    const scripts = await createPWScripts(frame);
+    const cleanHover = highlightOnHover(frame, scripts);
+    const cleanClick = copyOnClick(frame, scripts);
 
     return () => {
-      stop();
+      cleanHover();
 
-      hide();
+      cleanClick();
+
+      scripts.injectedScript.hideHighlight();
     };
   });
 }

@@ -21,7 +21,7 @@ export function createManagerConfig(
     },
     preview: createWebpackServer({
       mode: 'development',
-      entry: tf('index.tsx'),
+      entry: ['@storyshots/webpack/client', tf('index.tsx')],
       module: {
         rules: [
           {

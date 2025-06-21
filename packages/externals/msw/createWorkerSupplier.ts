@@ -15,6 +15,5 @@ export function createWorkerSupplier(): IPreviewServer {
       return next();
     },
     cleanup: async () => {},
-    onUpdate: () => {},
   };
 }

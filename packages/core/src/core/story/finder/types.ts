@@ -35,6 +35,11 @@ export type Finder = {
   getByTitle(text: TextMatch, options?: ByTitle['options']): Finder;
 
   /**
+   * https://playwright.dev/docs/api/class-locator#locator-get-by-test-id
+   */
+  getByTestId(testId: TextMatch): Finder;
+
+  /**
    * https://playwright.dev/docs/api/class-locator#locator-locator
    */
   locator(selector: string): Finder;
@@ -88,7 +93,8 @@ export type ByLocator = {
     | ByPlaceholder
     | ByAltText
     | ByTitle
-    | BySelector;
+    | BySelector
+    | ByTestId;
 };
 
 type ByRoleOptions = Parameters<Page['getByRole']>[1];
@@ -108,6 +114,8 @@ export type ByPlaceholder = { type: 'placeholder' } & ByTextLike;
 export type ByAltText = { type: 'alt-text' } & ByTextLike;
 
 export type ByTitle = { type: 'title' } & ByTextLike;
+
+export type ByTestId = { type: 'test-id' } & ByTextLike;
 
 type ByTextLike = {
   text: TextMatch;
