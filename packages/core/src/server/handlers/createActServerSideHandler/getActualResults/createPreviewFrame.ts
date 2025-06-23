@@ -11,5 +11,13 @@ export async function createPreviewFrame(
     timeout: 0,
   });
 
+  /**
+   * Availability of getJournalRecords signals that onPreview was called by preview module
+   * which means that app is loaded.
+   */
+  await page.waitForFunction(() => window.getJournalRecords, null, {
+    timeout: 0,
+  });
+
   return toPreviewFrame(page);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/react",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "React storyshots facade",
   "main": "./lib/index.mjs",
   "types": "./lib/index.d.mts",
@@ -14,7 +14,7 @@
     "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.12",
+    "@storyshots/core": "0.0.13",
     "react": "*",
     "react-dom": "*"
   },
