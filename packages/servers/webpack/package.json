@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/webpack",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Preview webpack middleware",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts && tsc -b tsconfig.client.json"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.12",
+    "@storyshots/core": "0.0.13",
     "html-webpack-plugin": "^5.5.3",
     "webpack": "^5.89.0",
     "webpack-dev-middleware": "^7.0.0"
