@@ -1,4 +1,4 @@
-import { Device, StoryID, StoryTree } from '@core';
+import { Device, Mode, StoryID, StoryTree } from '@core';
 import { DeviceToTestRunState } from '../types';
 
 export type RunConfig = {
@@ -6,5 +6,6 @@ export type RunConfig = {
   stories: StoryTree;
   abort: AbortSignal;
   size: number;
+  mode: Mode;
   onResult(id: StoryID, result: DeviceToTestRunState): void;
 };

@@ -2,10 +2,12 @@ import { assertNotEmpty } from '@lib';
 import { chromium } from 'playwright';
 import { driver } from '../../reusables/runner/driver';
 import { createManagerRootURL } from '../paths';
-import { ManagerConfig } from '../types';
+import { ManagerConfig, PublicManagerConfig } from '../types';
 import { createServer } from './reusables/createServer';
 
-export async function runInBackground(config: ManagerConfig) {
+export async function runInBackground(_config: PublicManagerConfig) {
+  const config: ManagerConfig = { ..._config, mode: 'background' };
+
   const server = await createServer(config);
 
   return {

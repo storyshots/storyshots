@@ -1,4 +1,4 @@
-import { Device } from '@core';
+import { Device, Mode } from '@core';
 import { RequestHandler } from 'express';
 import { Capture } from './modules/capture';
 import { ImageComparator } from './modules/compare';
@@ -49,6 +49,10 @@ export type ManagerConfig = {
    * https://storyshots.github.io/storyshots/API/manager/manager-config#compare
    */
   compare: ImageComparator;
+
+  mode: Mode;
 };
 
 type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
+
+export type PublicManagerConfig = Omit<ManagerConfig, 'mode'>;

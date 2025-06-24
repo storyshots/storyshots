@@ -3,16 +3,16 @@ import { runUI as _runUI } from './modes/runUI';
 import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
 import { RUNNER } from './modules/runner';
-import { IPreviewServer, ManagerConfig as FullManagerConfig } from './types';
+import { IPreviewServer, PublicManagerConfig } from './types';
 
 export type { IPreviewServer } from './types';
 
 /**
  * https://storyshots.github.io/storyshots/API/manager/manager-config
  */
-export type ManagerConfig = Omit<
-  Optional<FullManagerConfig, 'runner' | 'compare' | 'capture'>,
-  'createManagerCompiler'
+export type ManagerConfig = Optional<
+  PublicManagerConfig,
+  'runner' | 'compare' | 'capture'
 >;
 
 /**
@@ -46,7 +46,7 @@ const mergeTwoServeHandlers = (
   },
 });
 
-function fromOptimizedConfig(config: ManagerConfig): FullManagerConfig {
+function fromOptimizedConfig(config: ManagerConfig): PublicManagerConfig {
   return {
     compare: COMPARE.withLooksSame(),
     capture: CAPTURE.stabilized({
