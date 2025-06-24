@@ -1,5 +1,10 @@
-import { CAPTURE, COMPARE, RUNNER } from '@packages/core/src/server';
-import { ManagerConfig } from '@packages/core/src/server/types';
+import {
+  CAPTURE,
+  COMPARE,
+  ManagerConfig,
+  RUNNER,
+} from '@packages/core/src/server';
+
 import { createWebpackServer } from '@packages/servers/webpack/src';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
@@ -8,7 +13,7 @@ import { TempFolder } from './test/temp-folder';
 export function createManagerConfig(
   devices: ManagerConfig['devices'],
   tf: TempFolder,
-): ManagerConfig {
+) {
   return {
     devices,
     compare: COMPARE.withLooksSame(),

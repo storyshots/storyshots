@@ -16,7 +16,12 @@ function createUI(devices: ManagerConfig['devices']): UI {
     preview: () =>
       createPreview(
         defineManagerStep(async (page, tf) => {
-          const config = createManagerConfig(devices, tf);
+          // TODO: Remove fragile dependency
+          const config: ManagerConfig = {
+            ...createManagerConfig(devices, tf),
+            mode: 'ui',
+          };
+
           const { cleanup } = await createServer(config);
 
           return {
