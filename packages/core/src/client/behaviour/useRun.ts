@@ -20,6 +20,7 @@ export function useRun(manager: ManagerConfig) {
         stories,
         abort: abort.get(),
         size: manager.size,
+        mode: manager.mode,
         onResult: (id, result) =>
           setResults((results) => new Map(results.set(id, result))),
       }),
@@ -29,6 +30,7 @@ export function useRun(manager: ManagerConfig) {
         on: manager.devices,
         stories,
         size: manager.size,
+        mode: manager.mode,
         abort: abort.get(),
         onResult: (id, result) =>
           setResults((results) => new Map(results.set(id, result))),

@@ -7,6 +7,7 @@ export const createManagerRootURL = (config: ManagerConfig) => {
 
   url.searchParams.set('size', `${config.runner.size}`);
   url.searchParams.set('devices', `${JSON.stringify(config.devices)}`);
+  url.searchParams.set('mode', `${config.mode}`);
 
   return toManagerURL(url);
 };

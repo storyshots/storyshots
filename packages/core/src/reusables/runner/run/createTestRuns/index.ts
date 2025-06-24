@@ -5,5 +5,9 @@ import { retryable } from './retryable';
 import { sync } from './sync';
 
 export function createTestRuns(config: RunConfig) {
-  return cancellable(config, retryable(createTests(config)), sync(config));
+  return cancellable(
+    config,
+    retryable(createTests(config), config),
+    sync(config),
+  );
 }

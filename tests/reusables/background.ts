@@ -1,5 +1,5 @@
+import { ManagerConfig } from '@packages/core/src/server';
 import { runInBackground } from '@packages/core/src/server/modes/runInBackground';
-import { ManagerConfig } from '@packages/core/src/server/types';
 import { createManagerConfig } from './createManagerConfig';
 import { createPreview, Preview } from './preview';
 import { defineManagerStep } from './test/test-description';

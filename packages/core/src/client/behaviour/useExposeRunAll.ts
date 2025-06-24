@@ -18,6 +18,7 @@ export function useExposeRunAll(state: Selection, manager: ManagerConfig) {
       on: manager.devices,
       abort: new AbortController().signal,
       size: manager.size,
+      mode: manager.mode,
       onResult: (id, result) => ran.set(id, result),
     }).then(() => createSummary(ran));
   };
