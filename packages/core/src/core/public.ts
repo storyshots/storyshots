@@ -2,6 +2,7 @@ export {
   map,
   filter,
   only,
+  masked,
   finder,
   __bindStoryFactories,
   type StoryConfig,

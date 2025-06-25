@@ -1,7 +1,7 @@
 import { ScreenshotAction } from '@core';
 import { Frame } from 'playwright';
 import { ExpectedPayload } from '../types';
-import { captureBase } from './captureBase';
+import { doScreenshotAction } from './doScreenshotAction';
 
 export function capture(
   { config, story }: ExpectedPayload,
@@ -11,7 +11,7 @@ export function capture(
   return config.capture({
     story,
     page: preview.page(),
-    capture: () => captureBase(preview, action),
+    capture: () => doScreenshotAction(preview, action),
     manager: config,
   });
 }
