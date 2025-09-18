@@ -1,13 +1,13 @@
 import { isNil } from '@lib';
 import React from 'react';
-import { driver } from '../../reusables/runner/driver';
 import { UseBehaviourProps } from '../behaviour/types';
 import { ScreenshotSelection } from '../behaviour/useSelection/types';
 import { Spinner } from '../reusables/Spinner';
 import { Workspace } from '../Workspace';
 import { ActionAccept } from '../Workspace/Accept';
-import { DiffImgViewer } from './DiffImgViewer';
-import { ImgViewer } from './ImgViewer';
+import { FailedScreenshotsViewer } from './FailedScreenshotsViewer';
+import { Screenshots } from './Screenshots';
+import { Viewer } from './Viewer';
 
 type Props = {
   selection: ScreenshotSelection;
@@ -56,7 +56,13 @@ export const Screenshot: React.FC<Props> = ({
           />
         }
       >
-        <ImgViewer type="fresh" src={driver.createImgSrc(screenshot.actual)} />
+        <Viewer.Container>
+          <Viewer.Main>
+            <Screenshots
+              items={[{ path: screenshot.actual, color: '#1677ff' }]}
+            />
+          </Viewer.Main>
+        </Viewer.Container>
       </Workspace>
     );
   }
@@ -64,7 +70,13 @@ export const Screenshot: React.FC<Props> = ({
   if (screenshot.type === 'pass') {
     return (
       <Workspace title={title}>
-        <ImgViewer type="pass" src={driver.createImgSrc(screenshot.actual)} />
+        <Viewer.Container>
+          <Viewer.Main>
+            <Screenshots
+              items={[{ path: screenshot.actual, color: 'transparent' }]}
+            />
+          </Viewer.Main>
+        </Viewer.Container>
       </Workspace>
     );
   }
@@ -80,7 +92,7 @@ export const Screenshot: React.FC<Props> = ({
         />
       }
     >
-      <DiffImgViewer
+      <FailedScreenshotsViewer
         key={selection.device.name}
         device={selection.device}
         {...screenshot}

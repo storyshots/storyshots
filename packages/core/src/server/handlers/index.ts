@@ -11,7 +11,7 @@ export async function createApiHandlers(router: Router, config: ManagerConfig) {
 
   createAcceptScreenshotHandler(router, baseline);
   createAcceptRecordsHandler(router, baseline);
-  createImagePathHandler(router, baseline);
+  createImagePathHandler(router);
 
   const cleanup = await createActServerSideHandler(router, baseline, config);
 

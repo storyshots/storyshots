@@ -11,7 +11,8 @@
     "manager"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts"
+    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts",
+    "lint": "eslint ./src"
   },
   "dependencies": {
     "@storyshots/core": "0.0.13",

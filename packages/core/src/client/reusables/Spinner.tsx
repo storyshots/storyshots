@@ -1,15 +1,15 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Spin } from 'antd';
-import React from 'react';
 import styled from 'styled-components';
+import React from 'react';
 
-export const Spinner = () => {
+export function Spinner() {
   return (
     <Container>
-      <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+      <Spin indicator={<LoadingOutlined spin style={{ fontSize: 48 }} />} />
     </Container>
   );
-};
+}
 
 const Container = styled.div`
   width: 100%;

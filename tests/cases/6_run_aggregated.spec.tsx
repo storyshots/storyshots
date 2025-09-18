@@ -13,7 +13,7 @@ describe('run aggregated', () => {
       .screenshot()
       .open('FINAL', 'is second')
       .screenshot()
-      .open('Records', 'is second')
+      .open('Records', 'is first')
       .screenshot()
       .open('FINAL', 'is first')
       .screenshot(),

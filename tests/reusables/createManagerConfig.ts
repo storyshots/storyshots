@@ -16,7 +16,7 @@ export function createManagerConfig(
 ) {
   return {
     devices,
-    compare: COMPARE.withLooksSame(),
+    compare: COMPARE.withPlaywright(),
     capture: CAPTURE.instantly(),
     runner: RUNNER.pool({ agentsCount: 1 }),
     paths: {

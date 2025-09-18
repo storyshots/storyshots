@@ -1,4 +1,4 @@
-import { ManagerConfig, RUNNER } from '@storyshots/core/manager';
+import { ManagerConfig, RUNNER, COMPARE } from '@storyshots/core/manager';
 import path from 'path';
 import { createPreviewServer } from './createPreviewServer';
 
@@ -24,4 +24,5 @@ export default {
   },
   preview: createPreviewServer(),
   runner: RUNNER.pool({ agentsCount: 4 }),
+  compare: COMPARE.withLooksSame(),
 } satisfies ManagerConfig;

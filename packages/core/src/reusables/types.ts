@@ -4,6 +4,7 @@ import {
   Device,
   JournalRecord,
   ScreenshotName,
+  Story,
   StoryID,
 } from '@core';
 import {
@@ -17,8 +18,9 @@ export interface IWebDriver {
   play(actions: ActionMeta[]): Promise<WithPossibleError<void>>;
 
   test(
-    at: StoryID,
-    meta: DeviceAndActions,
+    story: Story,
+    device: Device,
+    actions: ActionMeta[],
   ): Promise<WithPossibleError<TestRunResult>>;
 
   acceptScreenshot(screenshot: AcceptableScreenshot): Promise<void>;
@@ -43,11 +45,6 @@ export type WithPossibleError<T> =
       type: 'success';
       data: T;
     };
-
-export type DeviceAndActions = {
-  actions: ActionMeta[];
-  device: Device;
-};
 
 export type Screenshot = {
   name: ScreenshotName;

@@ -12,7 +12,8 @@
     "createWorkerSupplier.js"
   ],
   "scripts": {
-    "build": "rimraf lib && ts-node build.ts && tsc -b tsconfig.worker.json"
+    "build": "rimraf lib && ts-node build.ts && tsc -b tsconfig.worker.json",
+    "lint": "eslint ./src createWorkerSupplier.ts"
   },
   "dependencies": {
     "react": "*",

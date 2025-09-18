@@ -7,7 +7,7 @@ export async function findExpectedScreenshots({
   baseline,
 }: BasePayload) {
   const screenshots: Screenshot[] = [];
-  for (const action of story.payload.actions) {
+  for (const action of story.actions) {
     if (action.action !== 'screenshot') {
       continue;
     }

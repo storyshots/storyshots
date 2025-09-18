@@ -1,44 +1,47 @@
 import { ScreenshotName } from '@core';
 import path from 'path';
 import { ScreenshotPath } from '../../../../reusables/types';
-import { Story } from '../../../reusables/types';
+import { StoryRunMeta } from '../../../reusables/types';
 import { ManagerConfig } from '../../../types';
 import { copy, exists, mkdir, mkfile, read, rmdir } from './utils';
 
 export async function createScreenshotsBaseline(env: ManagerConfig) {
-  const actualResultsDir = path.join(env.paths.temp, 'actual');
+  const { getActualDirFor, actualResultsDir } = await prepareStorage();
   const expectedResultsDir = env.paths.screenshots;
 
-  if (await exists(actualResultsDir)) {
-    await rmdir(actualResultsDir);
-  }
-
   return {
+    createDiff: async (
+      meta: StoryRunMeta,
+      name: ScreenshotName,
+      content: Uint8Array,
+    ) => {
+      const dir = await getActualDirFor(meta);
+      const at = path.join(dir, `${meta.story.id}_${name}_diff.png`);
+
+      await mkfile(at, content);
+
+      return at as ScreenshotPath;
+    },
     createActualScreenshot: async (
-      story: Story,
+      story: StoryRunMeta,
       name: ScreenshotName,
       content: Uint8Array,
     ): Promise<ScreenshotPath> => {
-      const dir = path.join(actualResultsDir, createConcreteConfigPath(story));
+      const dir = await getActualDirFor(story);
       const at = path.join(dir, constructScreenshotFileName(story, name));
-
-      if (!(await exists(dir))) {
-        await mkdir(dir);
-      }
 
       await mkfile(at, content);
 
       return at as ScreenshotPath;
     },
     getExpectedScreenshot: async (
-      story: Story,
+      story: StoryRunMeta,
       name: ScreenshotName,
     ): Promise<ScreenshotPath | undefined> => {
-      const image = constructScreenshotFileName(story, name);
       const file = path.join(
         expectedResultsDir,
-        createConcreteConfigPath(story),
-        image,
+        story.device.name,
+        constructScreenshotFileName(story, name),
       );
 
       return (await exists(file)) ? (file as ScreenshotPath) : undefined;
@@ -55,15 +58,40 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       return copy(temp, baseline);
     },
   };
-}
 
-function createConcreteConfigPath(story: Story) {
-  return story.payload.device.name;
+  async function prepareStorage() {
+    const actualResultsDir = path.join(env.paths.temp, 'actual');
+
+    if (await exists(actualResultsDir)) {
+      await rmdir(actualResultsDir);
+    }
+
+    return {
+      /**
+       * Points to temporal screenshots storage
+       */
+      actualResultsDir,
+      /**
+       * Returns reference to the story screenshots storage (which is being cleaned upon initialization)
+       *
+       * @example getActualDirFor(story) // -> ref to `/temp/actual/desktop` folder
+       */
+      getActualDirFor: async (story: StoryRunMeta) => {
+        const dir = path.join(actualResultsDir, story.device.name);
+
+        if (!(await exists(dir))) {
+          await mkdir(dir);
+        }
+
+        return dir;
+      },
+    };
+  }
 }
 
 function constructScreenshotFileName(
-  story: Story,
+  { story: { id } }: StoryRunMeta,
   name: ScreenshotName,
 ): string {
-  return `${story.id}_${name}.png`;
+  return `${id}_${name}.png`;
 }

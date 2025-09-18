@@ -18,7 +18,7 @@ export const RunCompleteAction: React.FC<Props> = ({
     action={(e) => {
       e.stopPropagation();
 
-      runComplete(stories);
+      void runComplete(stories);
     }}
   />
 );

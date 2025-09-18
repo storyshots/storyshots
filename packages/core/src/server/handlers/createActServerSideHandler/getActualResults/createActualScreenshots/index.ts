@@ -9,9 +9,7 @@ export async function createActualScreenshots(
   preview: Frame,
 ) {
   const {
-    story: {
-      payload: { actions },
-    },
+    story: { actions },
   } = payload;
 
   const screenshots: ScreenshotComparisonResult[] = [];

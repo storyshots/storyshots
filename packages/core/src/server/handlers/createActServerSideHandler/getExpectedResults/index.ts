@@ -4,8 +4,8 @@ import { findExpectedScreenshots } from './findExpectedScreenshots';
 export async function getExpectedResults(payload: BasePayload) {
   const {
     story: {
-      id,
-      payload: { device },
+      story: { id },
+      device,
     },
     baseline,
   } = payload;

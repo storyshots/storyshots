@@ -7,6 +7,8 @@ export function createAcceptScreenshotHandler(
   baseline: Baseline,
 ) {
   router.post('/api/screenshot/accept', async (request, response) => {
+    // TODO: Реализовать типизированный парсинг
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const screenshot: AcceptableScreenshot = request.body;
 
     await baseline.acceptScreenshot(screenshot.actual);

@@ -4,6 +4,7 @@ import { toManagerURL } from './toManagerURL';
 
 export const driver: IWebDriver = {
   play: async (action) =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     fetch(createURL('api/client/act'), {
       method: 'POST',
       body: createRegexpJSON(action),
@@ -11,10 +12,10 @@ export const driver: IWebDriver = {
         'Content-Type': 'application/json',
       },
     }).then((response) => response.json()),
-  test: (at, actions) =>
-    fetch(createURL(`api/server/act/${at}`), {
+  test: (story, device, actions) =>
+    fetch(createURL(`api/server/act`), {
       method: 'POST',
-      body: createRegexpJSON(actions),
+      body: createRegexpJSON({ story, device, actions }),
       headers: {
         'Content-Type': 'application/json',
       },

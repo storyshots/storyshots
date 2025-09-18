@@ -24,7 +24,7 @@ export const AcceptAction: React.FC<Props> = ({
       action={async (e) => {
         e.stopPropagation();
 
-        accept(changes);
+        void accept(changes);
       }}
     />
   );

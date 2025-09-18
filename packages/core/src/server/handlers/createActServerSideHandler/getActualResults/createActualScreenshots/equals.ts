@@ -6,11 +6,9 @@ export async function equals(
   screenshot: Buffer,
   other: Screenshot,
 ) {
-  const { equal } = await payload.config.compare(
+  return payload.config.compare(
     screenshot,
     await payload.baseline.readScreenshot(other.path),
     payload.story,
   );
-
-  return equal;
 }

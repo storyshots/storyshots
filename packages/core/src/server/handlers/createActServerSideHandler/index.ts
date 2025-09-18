@@ -11,7 +11,7 @@ export async function createActServerSideHandler(
 ) {
   const runner = await config.runner.create();
 
-  router.post('/api/server/act/:id', async (request, response) => {
+  router.post('/api/server/act', async (request, response) => {
     const story = parseStory(request);
 
     const result = await runner.schedule(story, (page) =>

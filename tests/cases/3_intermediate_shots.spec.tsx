@@ -28,6 +28,8 @@ describe('intermediate shots', () => {
       .run('is a story')
       .open('EmailFilled')
       .do((page) => page.getByText('2-up').click())
+      .screenshot()
+      .do((page) => page.getByText('Diff', { exact: true }).click())
       .screenshot(),
   );
 });
