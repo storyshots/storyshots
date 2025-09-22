@@ -1,5 +1,5 @@
 import { Browser, chromium } from 'playwright';
-import { Story } from '../../../reusables/types';
+import { StoryRunMeta } from '../../../reusables/types';
 
 import { Worker } from './types';
 
@@ -21,7 +21,7 @@ export async function createIsolatedContextWorker(): Promise<Worker> {
 }
 
 async function createContextByDevice(
-  { payload: { device } }: Story,
+  { device }: StoryRunMeta,
   browser: Browser,
 ) {
   return browser.newContext({

@@ -9,15 +9,24 @@ export function Layout(props: React.PropsWithChildren) {
   );
 }
 
-Layout.Top = (props: React.PropsWithChildren) => (
-  <AntdLayout hasSider style={{ flex: 1 }}>
-    {props.children}
-  </AntdLayout>
-);
+Layout.Top = Top;
+Layout.Sider = Sider;
+Layout.Bottom = Bottom;
+Layout.Main = Main;
 
-Layout.Bottom = (props: React.PropsWithChildren) => props.children;
+function Top(props: React.PropsWithChildren) {
+  return (
+    <AntdLayout hasSider style={{ flex: 1 }}>
+      {props.children}
+    </AntdLayout>
+  );
+}
 
-Layout.Sider = (props: React.PropsWithChildren) => {
+function Bottom(props: React.PropsWithChildren) {
+  return props.children;
+}
+
+function Sider(props: React.PropsWithChildren) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -35,15 +44,17 @@ Layout.Sider = (props: React.PropsWithChildren) => {
       {props.children}
     </AntdLayout.Sider>
   );
-};
+}
 
-Layout.Main = (props: React.PropsWithChildren) => (
-  <main
-    style={{
-      width: '100%',
-      backgroundColor: 'white',
-    }}
-  >
-    {props.children}
-  </main>
-);
+function Main(props: React.PropsWithChildren) {
+  return (
+    <main
+      style={{
+        width: '100%',
+        backgroundColor: 'white',
+      }}
+    >
+      {props.children}
+    </main>
+  );
+}

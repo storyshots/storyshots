@@ -11,7 +11,8 @@
     "client.js"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts && tsc -b tsconfig.client.json"
+    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts && tsc -b tsconfig.client.json",
+    "lint": "eslint ./src client.ts"
   },
   "dependencies": {
     "@storyshots/core": "0.0.13",

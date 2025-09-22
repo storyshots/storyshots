@@ -1,13 +1,13 @@
 import { wait } from '@lib';
 import { Page } from 'playwright';
-import { Story } from '../reusables/types';
+import { StoryRunMeta } from '../reusables/types';
 import { ManagerConfig } from '../types';
 
 export type Capture = (config: CaptureConfig) => Promise<Buffer>;
 
 type CaptureConfig = {
   capture: () => Promise<Buffer>;
-  story: Story;
+  story: StoryRunMeta;
   manager: ManagerConfig;
   page: Page;
 };

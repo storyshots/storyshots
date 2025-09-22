@@ -55,6 +55,8 @@ describe('writing a story', () => {
       .open('FINAL')
       .screenshot()
       .do((page) => page.getByText('2-up').click())
+      .screenshot()
+      .do((page) => page.getByText('Diff', { exact: true }).click())
       .screenshot(),
   );
 

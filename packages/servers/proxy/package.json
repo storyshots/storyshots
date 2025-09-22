@@ -10,7 +10,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts"
+    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts",
+    "lint": "eslint ./src"
   },
   "dependencies": {
     "http-proxy-middleware": "^3.0.0",

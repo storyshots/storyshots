@@ -34,6 +34,8 @@ export type ScreenshotComparisonResult =
       actual: ScreenshotPath;
       expected: ScreenshotPath;
       name: ScreenshotName;
+      diff?: ScreenshotPath;
+      explanation?: string;
     }
   | { type: 'pass'; actual: ScreenshotPath; name: ScreenshotName };
 

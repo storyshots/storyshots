@@ -1,5 +1,5 @@
 export function createRegexpJSON(object: unknown) {
-  return JSON.stringify(object, (_, value) =>
+  return JSON.stringify(object, (_, value: unknown) =>
     value instanceof RegExp
       ? ({
           type: 'regexp',

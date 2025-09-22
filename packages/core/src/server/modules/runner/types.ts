@@ -1,7 +1,7 @@
 import { Page } from 'playwright';
 import { TestRunResult } from '../../../reusables/runner/types';
 import { WithPossibleError } from '../../../reusables/types';
-import { Story } from '../../reusables/types';
+import { StoryRunMeta } from '../../reusables/types';
 
 export type Runner = {
   size: number;
@@ -9,7 +9,7 @@ export type Runner = {
 };
 
 type RunnerInstance = {
-  schedule(story: Story, task: Task): Promise<TaskResult>;
+  schedule(story: StoryRunMeta, task: Task): Promise<TaskResult>;
   close(): Promise<unknown>;
 };
 

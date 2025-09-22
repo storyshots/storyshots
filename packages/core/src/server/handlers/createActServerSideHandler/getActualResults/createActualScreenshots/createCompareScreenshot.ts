@@ -22,9 +22,11 @@ export async function createCompareScreenshot(
     return createFreshResult(payload, action, actual);
   }
 
-  if (await equals(payload, actual, expected)) {
+  const compared = await equals(payload, actual, expected);
+
+  if (compared.equal) {
     return createPassResult(payload, action, actual);
   }
 
-  return createFailResult(payload, action, actual, expected);
+  return createFailResult(payload, action, actual, expected, compared);
 }

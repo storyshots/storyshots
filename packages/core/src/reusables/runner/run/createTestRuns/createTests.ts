@@ -24,10 +24,7 @@ export function createTests(config: RunConfig): Test[] {
       story,
       device,
       run: () =>
-        driver.test(story.id, {
-          device: { ...device, ...story.resize(device) },
-          actions,
-        }),
+        driver.test(story, { ...device, ...story.resize(device) }, actions),
     }));
 }
 

@@ -10,7 +10,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "removeComments": false,
-    "jsx": "preserve"
+    "jsx": "react"
   },
   "ts-node": {
     "compilerOptions": {

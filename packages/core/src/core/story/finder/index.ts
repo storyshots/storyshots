@@ -1,5 +1,5 @@
 import { isNil } from '@lib';
-import { Finder, FinderMeta, TextMatch } from './types';
+import { Finder, FinderMeta } from './types';
 
 export const finder = createFinder();
 

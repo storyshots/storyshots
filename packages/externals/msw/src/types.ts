@@ -3,6 +3,7 @@ import { http, HttpResponseResolver } from 'msw';
 /**
  * https://storyshots.github.io/storyshots/modules/msw#endpoints
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface Endpoints {}
 
 export type Endpoint<TResponse> = {

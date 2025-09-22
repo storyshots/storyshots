@@ -1,5 +1,5 @@
 import { toManagerURL } from '../reusables/runner/toManagerURL';
-import { Story } from './reusables/types';
+import { StoryRunMeta } from './reusables/types';
 import { ManagerConfig } from './types';
 
 export const createManagerRootURL = (config: ManagerConfig) => {
@@ -12,12 +12,12 @@ export const createManagerRootURL = (config: ManagerConfig) => {
   return toManagerURL(url);
 };
 
-export const createStoryURL = (story: Story, config: ManagerConfig) => {
+export const createStoryURL = (meta: StoryRunMeta, config: ManagerConfig) => {
   const url = createManagerRootURL(config);
 
   // TODO: Must be type related with config parsing functions
-  url.searchParams.set('device', JSON.stringify(story.payload.device));
-  url.pathname = `/chromium/${story.id}`;
+  url.searchParams.set('device', JSON.stringify(meta.device));
+  url.pathname = `/chromium/${meta.story.id}`;
 
   return url;
 };

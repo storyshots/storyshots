@@ -40,7 +40,8 @@ export async function createRecordsBaseline(config: ManagerConfig) {
       return {};
     }
 
-    return JSON.parse((await read(fullPath)).toString());
+    // TODO: Реализовать типизированный парсинг
+    return JSON.parse((await read(fullPath)).toString()) as StoryIDToRecords;
   }
 
   async function updateRecordsMap(

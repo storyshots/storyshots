@@ -1,9 +1,9 @@
 import { isNil } from '@lib';
 import { map, StoryTree } from '@storyshots/core';
-import React from 'react';
 import { ExternalsFactory } from '../types';
 import { Placeholder } from './Placeholder';
 import { View } from './View';
+import React from 'react';
 
 export const createStoryView = (
   stories: StoryTree,

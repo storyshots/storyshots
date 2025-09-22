@@ -15,7 +15,7 @@ export const RunAction: React.FC<Props> = ({ run, stories }) => (
     action={(e) => {
       e.stopPropagation();
 
-      run(stories);
+      void run(stories);
     }}
   />
 );

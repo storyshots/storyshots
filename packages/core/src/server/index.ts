@@ -48,7 +48,7 @@ const mergeTwoServeHandlers = (
 
 function fromOptimizedConfig(config: ManagerConfig): PublicManagerConfig {
   return {
-    compare: COMPARE.withLooksSame(),
+    compare: COMPARE.withPlaywright(),
     capture: CAPTURE.stabilized({
       attempts: 5,
       interval: (attempt) => 100 * Math.pow(2, attempt),

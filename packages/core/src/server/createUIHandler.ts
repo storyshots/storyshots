@@ -15,7 +15,7 @@ function createPrebuiltManager(): RequestHandler {
 
     request.url = file ? request.url : '/index.html';
 
-    return onFile(request, response, next);
+    return onFile(request, response, next) as unknown;
   };
 }
 

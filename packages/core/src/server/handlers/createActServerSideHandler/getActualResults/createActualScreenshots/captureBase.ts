@@ -9,6 +9,7 @@ export async function captureBase(preview: Frame, action: ScreenshotAction) {
     type: 'png',
     caret: 'hide',
     animations: 'disabled',
+    scale: 'css',
     ...toMaskOptions(preview, action),
   });
 }

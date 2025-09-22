@@ -36,7 +36,7 @@ export interface StoryPayload<TExternals> {
   act(actor: Actor, config: StoryEnvironment): MetaActionsFactory;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-empty-object-type
 export interface StoryAttributes<TExternals> {}
 
 export interface Story<TExternals = unknown>

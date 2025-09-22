@@ -1,9 +1,9 @@
 import { Device, Mode } from '@core';
 import { RequestHandler } from 'express';
 import { Capture } from './modules/capture';
-import { ImageComparator } from './modules/compare';
 
 import { Runner } from './modules/runner/types';
+import {ImageComparator} from "./modules/compare/types";
 
 /**
  * https://storyshots.github.io/storyshots/modules/scheme#ipreviewserver
