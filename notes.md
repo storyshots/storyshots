@@ -1,6 +1,3 @@
-WEBPACK should always update entire preview during build
-PROXY solutions should always update entire preview during build
-
 # High priority
 
 * Clipboard copy for action picker
@@ -21,6 +18,8 @@ PROXY solutions should always update entire preview during build
   * Improve stabilizer, add more attempts or increase intervals
   * Describe docs for using waitFor, trials
 * Screenshot on fail. For example when element is not found on a page
+* Add progress logging inside CI job
+* Add masking docs
 
 # Low priority
 
