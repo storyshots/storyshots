@@ -4,4 +4,5 @@ on GitHub tty is undefined (e.g. false)
 
 GitHub just ignores \u001B[1A\u001B[2K or other special ascii chars
 
-List does not update tests during CI. And prints final result only
+List does not update tests during CI. And prints final result only.
+General strategy is to print immutable strings without displaying overall progression.
