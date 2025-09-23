@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "playwright test --ui",
+    "start": "playwright test",
+    "debug": "node --inspect-brk C:\\Users\\khaimov\\WebstormProjects\\storyshots\\node_modules\\@playwright\\test\\cli.js test --reporter=line",
     "compile": "tsc --noEmit"
   },
   "keywords": [],
