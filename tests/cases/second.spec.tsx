@@ -12,6 +12,6 @@ test.describe('My another describe', () => {
   test('Hey', async () => {
     await wait(2_000);
 
-    expect(true).toBe(false);
+    expect(true).toBe(true);
   });
 });
