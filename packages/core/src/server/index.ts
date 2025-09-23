@@ -49,30 +49,8 @@ export const runInBackground = async () => {
 
   // npx ts-node C:\Users\khaimov\WebstormProjects\storyshots\tests\check.ts
   async function main() {
-    const { default: LineReporter } = require(
-      path.join(
-        path.dirname(require.resolve('playwright')),
-        '/lib/reporters/line.js',
-      ),
-    );
-
-    const reporter: Reporter = new LineReporter();
-
-    reporter.formatTestTitle = () => 'My title';
-
-    reporter.onConfigure({
-      metadata: {
-        actualWorkers: 4,
-      },
-    });
-
-    reporter.onBegin({
-      allTests: () => ({ length: 10 }),
-    });
-
-    reporter.onTestBegin({}, { retry: 0 });
-
-    setTimeout(() => reporter.onTestBegin({}, { retry: 0 }), 2_000);
+    process.stdout.write(`\u001B[1A\u001B[2KHello\n`);
+    setTimeout(() => process.stdout.write(`\u001B[1A\u001B[2KWorld\n`), 2_000);
   }
 };
 
