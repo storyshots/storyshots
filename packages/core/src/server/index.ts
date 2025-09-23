@@ -4,6 +4,7 @@ import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
 import { RUNNER } from './modules/runner';
 import { IPreviewServer, PublicManagerConfig } from './types';
+import * as process from 'node:process';
 
 export type { IPreviewServer } from './types';
 
@@ -25,6 +26,8 @@ export const runUI = (config: ManagerConfig) =>
  * https://storyshots.github.io/storyshots/API/manager/runInBackground
  */
 export const runInBackground = async () => {
+  console.log({ tty: process.stdout.isTTY });
+
   void main();
 
   interface Reporter {
