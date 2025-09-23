@@ -12,6 +12,6 @@ test.describe('My describe', () => {
   test('World', async () => {
     await wait(2_000);
 
-    expect(true).toBe(true);
+    expect(true).toBe(false);
   });
 });
