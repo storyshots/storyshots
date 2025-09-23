@@ -43,4 +43,6 @@ async function main() {
   });
 
   reporter.onTestBegin({}, { retry: 0 });
+
+  setTimeout(() => reporter.onTestBegin({}, { retry: 0 }), 2_000);
 }
