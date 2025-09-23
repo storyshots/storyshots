@@ -9,9 +9,17 @@ interface Reporter {
     };
   }): void;
 
+  // Даже на retry?
   onBegin(suite: { allTests(): { length: number } }): void;
+
+  onTestBegin(test: Record<string, unknown>, result: { retry: number }): void;
+
+  formatTestTitle(): string;
+
+  onEnd(result: {}): void;
 }
 
+// npx ts-node C:\Users\khaimov\WebstormProjects\storyshots\tests\check.ts
 async function main() {
   const { default: LineReporter } = require(
     path.join(
@@ -22,6 +30,8 @@ async function main() {
 
   const reporter: Reporter = new LineReporter();
 
+  reporter.formatTestTitle = () => 'My title';
+
   reporter.onConfigure({
     metadata: {
       actualWorkers: 4,
@@ -31,4 +41,6 @@ async function main() {
   reporter.onBegin({
     allTests: () => ({ length: 10 }),
   });
+
+  reporter.onTestBegin({}, { retry: 0 });
 }
