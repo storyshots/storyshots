@@ -35,7 +35,7 @@ async function main() {
 
   const config = await parse(path.join(process.cwd(), argv._[0] as string));
 
-  return argv.ui ? runUI(config) : runInBackground(config);
+  return argv.ui ? runUI(config) : runInBackground();
 }
 
 async function parse(path: string): Promise<ManagerConfig> {

@@ -1,4 +1,4 @@
-import { runInBackground as _runInBackground } from './modes/runInBackground';
+import path from 'path';
 import { runUI as _runUI } from './modes/runUI';
 import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
@@ -24,11 +24,53 @@ export const runUI = (config: ManagerConfig) =>
 /**
  * https://storyshots.github.io/storyshots/API/manager/runInBackground
  */
-export const runInBackground = async (config: ManagerConfig) => {
-  const { run, cleanup } = await _runInBackground(fromOptimizedConfig(config));
+export const runInBackground = async () => {
+  void main();
 
-  await run();
-  await cleanup();
+  interface Reporter {
+    onConfigure(config: {
+      metadata: {
+        actualWorkers: number;
+      };
+    }): void;
+
+    // Даже на retry?
+    onBegin(suite: { allTests(): { length: number } }): void;
+
+    onTestBegin(test: Record<string, unknown>, result: { retry: number }): void;
+
+    formatTestTitle(): string;
+
+    onEnd(result: {}): void;
+  }
+
+  // npx ts-node C:\Users\khaimov\WebstormProjects\storyshots\tests\check.ts
+  async function main() {
+    const { default: LineReporter } = require(
+      path.join(
+        path.dirname(require.resolve('playwright')),
+        '/lib/reporters/line.js',
+      ),
+    );
+
+    const reporter: Reporter = new LineReporter();
+
+    reporter.formatTestTitle = () => 'My title';
+
+    reporter.onConfigure({
+      metadata: {
+        actualWorkers: 4,
+      },
+    });
+
+    reporter.onBegin({
+      allTests: () => ({ length: 10 }),
+    });
+
+    reporter.onTestBegin({}, { retry: 0 });
+
+    setTimeout(() => reporter.onTestBegin({}, { retry: 0 }), 2_000);
+  }
 };
 
 export const mergeServe = (...handlers: IPreviewServer[]): IPreviewServer =>
