@@ -16,9 +16,9 @@ export const __bindStoryFactories = <TExternals>() => {
         id: createStoryID(title),
         type: 'story',
         title,
+        parents: [],
         retries: () => 0,
         act: (actor) => actor,
-        resize: (device) => device,
         arrange: (externals) => externals,
         ...config,
       } satisfies Story<TExternals>;
@@ -38,7 +38,11 @@ export const __bindStoryFactories = <TExternals>() => {
         title,
         children: mapAll(
           children,
-          (story) => ({ ...story, id: createStoryID(story.id, groupID) }),
+          (story) => ({
+            ...story,
+            id: createStoryID(story.id, groupID),
+            parents: [title, ...story.parents],
+          }),
           (group) => ({ ...group, id: createGroupID(group.id, groupID) }),
         ),
       } satisfies Group<TExternals>;

@@ -1,9 +1,10 @@
 import { Page } from 'playwright';
-import { StoryRunMeta } from '../../../reusables/types';
 import { Task, TaskResult } from '../types';
 
+import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
+
 export type Worker = {
-  allocate(story: StoryRunMeta): Promise<AllocatedResource>;
+  allocate(story: RunnableStoryMeta): Promise<AllocatedResource>;
   destroy(): Promise<void>;
 };
 
@@ -22,7 +23,7 @@ export type BusyWorker = {
 };
 
 export type Job = {
-  story: StoryRunMeta;
+  story: RunnableStoryMeta;
   task: Task;
   onDone(result: TaskResult): void;
 };

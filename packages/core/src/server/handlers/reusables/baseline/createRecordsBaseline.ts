@@ -1,9 +1,10 @@
 import { Device, JournalRecord, parseStoryID, StoryID } from '@core';
 import path from 'path';
-import { AcceptableRecords } from '../../../../reusables/runner/types';
 
 import { ManagerConfig } from '../../../types';
 import { exists, mkdir, mkfile, read } from './utils';
+
+import { ChangedRecords } from '../../../../reusables/runner/StoryRunResult';
 
 export async function createRecordsBaseline(config: ManagerConfig) {
   return {
@@ -18,7 +19,7 @@ export async function createRecordsBaseline(config: ManagerConfig) {
     acceptRecords: async (
       id: StoryID,
       device: Device,
-      records: AcceptableRecords,
+      records: ChangedRecords,
     ) => {
       const baseline = await getRecordsMap(id, device);
 

@@ -1,97 +1,72 @@
-import { Device, StoryID } from '@core';
-import { assert, assertNotEmpty } from '@lib';
 import { useState } from 'react';
-import { driver } from '../../reusables/runner/driver';
-import {
-  AcceptableRecords,
-  AcceptableScreenshot,
-} from '../../reusables/runner/types';
-import { ChangeSummary } from '../../reusables/summary/types';
-import { useRun } from './useRun';
+import { driver } from '../../reusables/driver';
+import { useRun } from './useRun/useRun';
+import { Device, StoryID } from '@core';
+import { assertIsNever, assertNotEmpty } from '@lib';
+import { UIStoryRunState } from './useRun/types';
+
+import { Changes } from '../../reusables/runner/StoryRunResult';
 
 export function useAcceptBaseline(run: ReturnType<typeof useRun>) {
   const [accepting, setAccepting] = useState(false);
 
-  const result = {
+  return {
     accepting,
 
-    accept: async (changes: ChangeSummary[]) => {
+    accept: async (changes: StoryBoundChange[]) => {
       setAccepting(true);
 
       for (const change of changes) {
-        if (change.records) {
-          await result.acceptRecords(change.id, change.device, change.records);
+        const { id, device, changes } = change;
+
+        if (changes.records) {
+          await driver.acceptRecords({ id, device, records: changes.records });
         }
 
-        for (const screenshot of change.screenshots) {
-          await result.acceptScreenshot(change.id, change.device, screenshot);
+        for (const screenshot of changes.screenshots) {
+          await driver.acceptScreenshot(screenshot);
         }
       }
 
-      setAccepting(false);
-    },
-
-    acceptRecords: async (
-      id: StoryID,
-      device: Device,
-      records: AcceptableRecords,
-    ) => {
-      await driver.acceptRecords({ id, device, records });
-
-      const results = run.results.get(id);
-
-      assertNotEmpty(results);
-
-      const state = results.get(device);
-
-      assertNotEmpty(state);
-      assert(state.type === 'done');
-      assert(state.details.type === 'success');
-
-      mutate(state.details.data.records, {
-        type: 'pass',
-        actual: records.actual,
-      });
-
-      run.setResults(new Map(run.results));
-    },
-
-    acceptScreenshot: async (
-      id: StoryID,
-      device: Device,
-      screenshot: AcceptableScreenshot,
-    ) => {
-      await driver.acceptScreenshot(screenshot);
-
-      const results = run.results.get(id);
-
-      assertNotEmpty(results);
-
-      const state = results.get(device);
-
-      assertNotEmpty(state);
-      assert(state.type === 'done');
-      assert(state.details.type === 'success');
-
-      const found = state.details.data.screenshots.find(
-        (it) => it.name === screenshot.name,
+      // TODO: Find a way to update by fetching from server
+      changes.forEach((change) =>
+        run.results.set(change.id, change.device, (state) =>
+          toPassState(change, state),
+        ),
       );
 
-      assertNotEmpty(found);
-
-      mutate(found, {
-        type: 'pass',
-        name: found.name,
-        actual: screenshot.actual,
-      });
-
-      run.setResults(new Map(run.results));
+      setAccepting(false);
     },
   };
-
-  return result;
 }
 
-function mutate<T extends Record<string, unknown>>(target: T, source: T): void {
-  Object.assign(target, source);
-}
+const toPassState = (
+  change: StoryBoundChange,
+  state: UIStoryRunState,
+): UIStoryRunState =>
+  UIStoryRunState.when(state, {
+    onDone: (details) => {
+      if (change.changes.records) {
+        details.records.type = 'pass';
+      }
+
+      change.changes.screenshots.forEach((screenshot) => {
+        const found = details.screenshots.find(
+          (it) => it.name === screenshot.name,
+        );
+
+        assertNotEmpty(found);
+
+        found.type = 'pass';
+      });
+
+      return state;
+    },
+    otherwise: assertIsNever,
+  });
+
+export type StoryBoundChange = {
+  id: StoryID;
+  device: Device;
+  changes: Changes;
+};

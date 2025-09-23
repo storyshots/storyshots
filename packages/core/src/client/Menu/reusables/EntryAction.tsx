@@ -1,7 +1,7 @@
-import { Button } from 'antd';
+import { Button, ButtonProps } from 'antd';
 import React from 'react';
 
-type Props = {
+type Props = ButtonProps & {
   label: string;
   icon: React.ReactNode;
   action?: React.MouseEventHandler<HTMLElement>;
@@ -13,6 +13,7 @@ export const EntryAction: React.FC<Props> = ({
   action,
   icon,
   disabled,
+  ...rest
 }) => (
   <Button
     size="small"
@@ -22,5 +23,6 @@ export const EntryAction: React.FC<Props> = ({
     title={label}
     aria-label={label}
     disabled={disabled}
+    {...rest}
   />
 );

@@ -16,7 +16,7 @@ describe('devices preview run', () => {
   test(
     'allows set default device for run',
     setup()
-      .do(selectMobileDevice())
+      .do(selectRunOnMobileDevice())
       .run('is a story')
       .open('FINAL')
       .screenshot(),
@@ -24,16 +24,12 @@ describe('devices preview run', () => {
 
   test(
     'allows set default device for preview',
-    setup()
-      .do(selectMobileDevice())
-      .do((page) => page.getByText('Apply to preview').click())
-      .open('is a story')
-      .screenshot(),
+    setup().do(selectPreviewOnMobileDevice()).open('is a story').screenshot(),
   );
 
   test(
     'does not set default device for preview when not emulating',
-    setup().do(selectMobileDevice()).open('is a story').screenshot(),
+    setup().do(selectRunOnMobileDevice()).open('is a story').screenshot(),
   );
 });
 
@@ -43,11 +39,21 @@ function setup() {
     .actor();
 }
 
-function selectMobileDevice(): ActionStep {
+function selectRunOnMobileDevice(): ActionStep {
   return async (page) => {
     await page.getByLabel('Toggle config pane').click();
 
-    await page.getByText('desktop').click();
+    await page.getByLabel('Devices to run').click();
+
+    await page.getByTitle('mobile').click();
+  };
+}
+
+function selectPreviewOnMobileDevice(): ActionStep {
+  return async (page) => {
+    await page.getByLabel('Toggle config pane').click();
+
+    await page.getByLabel('Device to emulate').click();
 
     await page.getByTitle('mobile').click();
   };

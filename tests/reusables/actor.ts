@@ -41,10 +41,17 @@ export function createActor<TExternals>(description: TestDescription) {
         .do((page) =>
           page
             .getByLabel('Status')
-            .getByRole('button', { name: 'Run complete' })
+            .getByRole('button', { name: 'Run' })
             .waitFor({ state: 'visible' }),
         ),
-    screenshot: () => actor.do((page) => expect(page).toHaveScreenshot()),
+    screenshot: () =>
+      actor.do(async (page) => {
+        for (const duration of await page.getByLabel('Run duration').all()) {
+          await duration.evaluate((element) => (element.innerHTML = '1s'));
+        }
+
+        await expect(page).toHaveScreenshot();
+      }),
     do: (action) => createActor(withActionStep(description, action)),
     preview: () => createPreview(actor) as never,
     ...description,

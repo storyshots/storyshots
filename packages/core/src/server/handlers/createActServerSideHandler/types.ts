@@ -1,9 +1,10 @@
-import { StoryRunMeta } from '../../reusables/types';
 import { ManagerConfig } from '../../types';
 import { Baseline } from '../reusables/baseline';
 
+import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
+
 export type BasePayload = {
-  story: StoryRunMeta;
+  story: RunnableStoryMeta;
   baseline: Baseline;
   config: ManagerConfig;
 };

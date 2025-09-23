@@ -6,7 +6,7 @@ import {
 } from 'react-compare-slider';
 import React from 'react';
 import { ACTUAL_BORDER_COLOR, EXPECTED_BORDER_COLOR } from './constants';
-import { driver } from '../../reusables/runner/driver';
+import { driver } from '../../reusables/driver';
 
 type Props = {
   expected: ScreenshotPath;

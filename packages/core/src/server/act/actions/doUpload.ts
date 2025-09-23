@@ -1,32 +1,23 @@
 import { UploadFileAction } from '@core';
 import path from 'path';
-import { FileChooser, Frame } from 'playwright';
+import { Frame } from 'playwright';
 import { doClick } from './doClick';
 
-export function doUploadFile(preview: Frame, upload: UploadFileAction) {
-  return new Promise<void>((resolve, reject) => {
-    function setFiles(chooser: FileChooser) {
-      chooser
-        .setFiles(
-          upload.payload.paths.map((it) => path.join(process.cwd(), it)),
-          upload.payload.options?.chooser,
-        )
-        .then(() => resolve())
-        .catch((reason) => reject(reason));
-    }
+export async function doUploadFile(preview: Frame, upload: UploadFileAction) {
+  const waitingForChooser = preview.page().waitForEvent('filechooser');
 
-    preview.page().once('filechooser', setFiles);
-
-    void doClick(preview, {
-      action: 'click',
-      payload: {
-        on: upload.payload.chooser,
-        options: upload.payload.options?.upload,
-      },
-    }).catch((reason) => {
-      preview.page().off('filechooser', setFiles);
-
-      reject(reason);
-    });
+  await doClick(preview, {
+    action: 'click',
+    payload: {
+      on: upload.payload.chooser,
+      options: upload.payload.options?.upload,
+    },
   });
+
+  const chooser = await waitingForChooser;
+
+  await chooser.setFiles(
+    upload.payload.paths.map((it) => path.join(process.cwd(), it)),
+    upload.payload.options?.chooser,
+  );
 }

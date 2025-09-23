@@ -1,10 +1,5 @@
 import { Actor, MetaActionsFactory } from '../actor/types';
-import {
-  Device,
-  DeviceDimensions,
-  StoryConfig,
-  StoryEnvironment,
-} from '../story-config';
+import { Device, StoryConfig, StoryEnvironment } from '../story-config';
 import { GroupID, StoryID } from '../story-id';
 import { StoryTree } from '../types';
 
@@ -12,14 +7,11 @@ interface StoryMeta {
   id: StoryID;
   type: 'story';
   title: string;
+  // Parent titles, used for pretty printing
+  parents: string[];
 }
 
 export interface StoryPayload<TExternals> {
-  /**
-   * https://storyshots.github.io/storyshots/API/factories/it#resize
-   */
-  resize(device: Device): DeviceDimensions;
-
   /**
    * https://storyshots.github.io/storyshots/API/factories/it#retries
    */

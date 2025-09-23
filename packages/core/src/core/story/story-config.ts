@@ -20,9 +20,9 @@ export type StoryEnvironment = {
    */
   device: Device;
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/story-config#testing
+   * https://storyshots.github.io/storyshots/API/story-elements/story-config#previewing
    */
-  testing: boolean;
+  previewing: boolean;
 };
 
 export type DeviceName = Brand<string, 'DeviceName'>;
@@ -30,9 +30,9 @@ export type DeviceName = Brand<string, 'DeviceName'>;
 /**
  * https://storyshots.github.io/storyshots/API/story-elements/device
  */
-export type Device = DeviceDimensions & {
+export type Device = {
   name: DeviceName;
   userAgent?: string;
+  width: number;
+  height: number;
 };
-
-export type DeviceDimensions = { width: number; height: number };

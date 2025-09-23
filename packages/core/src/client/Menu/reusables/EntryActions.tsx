@@ -9,6 +9,7 @@ type Props = React.PropsWithChildren<{
   className?: string;
 }>;
 
+// TODO: Simplify. Rewrite whole solution using pure css
 const _EntryActions: React.FC<Props> = (props) => {
   if (props.status === 'running') {
     return (

@@ -3,6 +3,7 @@ export {
   filter,
   only,
   masked,
+  resized,
   finder,
   __bindStoryFactories,
   type StoryConfig,
@@ -11,4 +12,5 @@ export {
   type ActorTransformer,
   type FinderTransformer,
   type StoryAttributes,
+  type RunnableStoryMeta,
 } from './index';

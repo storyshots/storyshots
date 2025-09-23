@@ -1,7 +1,6 @@
 import { ScreenshotAction } from '@core';
 import { isNil } from '@lib';
 import { Frame } from 'playwright';
-import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { ExpectedPayload } from '../types';
 import { capture } from './capture';
 import { createFailResult } from './createFailResult';
@@ -9,6 +8,8 @@ import { createFreshResult } from './createFreshResult';
 import { createPassResult } from './createPassResult';
 import { equals } from './equals';
 import { findExpected } from './findExpected';
+
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/StoryRunResult';
 
 export async function createCompareScreenshot(
   payload: ExpectedPayload,

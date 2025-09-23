@@ -1,5 +1,5 @@
-import { Device, ScreenshotName, Story, StoryTree } from '@core';
-import { WithPossibleError } from '../../../reusables/types';
+import { Device, ScreenshotName, Story, StoryID, StoryTree } from '@core';
+import { WithPossibleError } from '../../../reusables/error';
 
 export type Selection =
   | {
@@ -35,14 +35,7 @@ type _ReadySelection =
 export type Progress =
   | { type: 'not-played' }
   | { type: 'playing' }
-  | { type: 'played'; result: WithPossibleError<void> };
-
-export type StorySelection = Extract<
-  Selection,
-  {
-    type: 'story';
-  }
->;
+  | { type: 'played'; details: WithPossibleError<void> };
 
 export type RecordsSelection = Extract<
   Selection,

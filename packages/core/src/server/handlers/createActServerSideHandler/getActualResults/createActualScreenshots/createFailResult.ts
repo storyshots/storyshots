@@ -1,9 +1,10 @@
 import { ScreenshotAction } from '@core';
-import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { Screenshot } from '../../../../../reusables/types';
 import { ExpectedPayload } from '../types';
 import { createActualScreenshotPath } from './createActualScreenshotPath';
 import { NotEqualComparison } from '../../../../modules/compare/types';
+
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/StoryRunResult';
 
 export async function createFailResult(
   payload: ExpectedPayload,

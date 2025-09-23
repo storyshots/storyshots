@@ -1,10 +1,11 @@
-import { StoryRunMeta } from '../../../reusables/types';
 import { Task, TaskResult } from '../types';
 import { Job } from './types';
 
+import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
+
 export const jobs = {
   create: (): Job[] => [],
-  schedule: (jobs: Job[], story: StoryRunMeta, task: Task, onScheduled: () => void) =>
+  schedule: (jobs: Job[], story: RunnableStoryMeta, task: Task, onScheduled: () => void) =>
     new Promise<TaskResult>((onDone) => {
       jobs.push({ story, task, onDone });
 

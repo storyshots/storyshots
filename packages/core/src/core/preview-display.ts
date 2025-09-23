@@ -9,6 +9,9 @@ export type ActiveStory =
 
 declare global {
   interface Window {
+    /**
+     * Preview gives all defined stories and expects active story to be returned
+     */
     onPreviewReady(stories: StoryTree): ActiveStory;
   }
 }

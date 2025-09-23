@@ -9,94 +9,105 @@ import { FailedScreenshotsViewer } from './FailedScreenshotsViewer';
 import { Screenshots } from './Screenshots';
 import { Viewer } from './Viewer';
 
+
+import { UIStoryRunState } from '../behaviour/useRun/types';
+
 type Props = {
   selection: ScreenshotSelection;
-} & Pick<UseBehaviourProps, 'acceptScreenshot' | 'results'>;
+} & Pick<UseBehaviourProps, 'accept' | 'results'>;
 
 export const Screenshot: React.FC<Props> = ({
   selection,
   results,
-  acceptScreenshot,
+  accept,
 }): React.ReactElement => {
-  const result = results.get(selection.story.id)?.get(selection.device);
+  const result = results.device(selection.story.id, selection.device);
 
-  if (isNil(result)) {
-    return <span>Screenshots are not generated yet, for a given device</span>;
-  }
+  return UIStoryRunState.when(result, {
+    onNoResults: () => (
+      <span>Screenshots are not generated yet, for a given device</span>
+    ),
+    onRunning: () => <Spinner />,
+    onScheduled: () => <Spinner />,
+    onError: (error) => (
+      <div dangerouslySetInnerHTML={{ __html: error.message }} />
+    ),
+    onDone: ({ screenshots }) => {
+      const screenshot = screenshots.find((it) => it.name === selection.name);
 
-  if (result.type === 'running' || result.type === 'scheduled') {
-    return <Spinner />;
-  }
-
-  if (result.details.type === 'error') {
-    return (
-      <span>Error has been caught during last run. Check the errors pane.</span>
-    );
-  }
-
-  const screenshot = result.details.data.screenshots.find(
-    (it) => it.name === selection.name,
-  );
-
-  if (isNil(screenshot)) {
-    return <span>Given screenshot is missing</span>;
-  }
-
-  const title = `[${selection.device.name}] ${selection.story.title} ${screenshot.name}`;
-
-  if (screenshot.type === 'fresh') {
-    return (
-      <Workspace
-        title={title}
-        actions={
-          <ActionAccept
-            onAction={() =>
-              acceptScreenshot(selection.story.id, selection.device, screenshot)
-            }
-          />
-        }
-      >
-        <Viewer.Container>
-          <Viewer.Main>
-            <Screenshots
-              items={[{ path: screenshot.actual, color: '#1677ff' }]}
-            />
-          </Viewer.Main>
-        </Viewer.Container>
-      </Workspace>
-    );
-  }
-
-  if (screenshot.type === 'pass') {
-    return (
-      <Workspace title={title}>
-        <Viewer.Container>
-          <Viewer.Main>
-            <Screenshots
-              items={[{ path: screenshot.actual, color: 'transparent' }]}
-            />
-          </Viewer.Main>
-        </Viewer.Container>
-      </Workspace>
-    );
-  }
-
-  return (
-    <Workspace
-      title={title}
-      actions={
-        <ActionAccept
-          onAction={() =>
-            acceptScreenshot(selection.story.id, selection.device, screenshot)
-          }
-        />
+      if (isNil(screenshot)) {
+        return <span>Given screenshot is missing</span>;
       }
-    >
-      <FailedScreenshotsViewer
-        key={selection.device.name}
-        device={selection.device}
-        {...screenshot}
-      />
-    </Workspace>
-  );
+
+      const title = `[${selection.device.name}] ${selection.story.title} ${screenshot.name}`;
+
+      if (screenshot.type === 'fresh') {
+        return (
+          <Workspace
+            title={title}
+            actions={
+              <ActionAccept
+                onAction={() =>
+                  accept([
+                    {
+                      id: selection.story.id,
+                      device: selection.device,
+                      changes: { screenshots: [screenshot] },
+                    },
+                  ])
+                }
+              />
+            }
+          >
+            <Viewer.Container>
+              <Viewer.Main>
+                <Screenshots
+                  items={[{ path: screenshot.actual, color: '#1677ff' }]}
+                />
+              </Viewer.Main>
+            </Viewer.Container>
+          </Workspace>
+        );
+      }
+
+      if (screenshot.type === 'pass') {
+        return (
+          <Workspace title={title}>
+            <Viewer.Container>
+              <Viewer.Main>
+                <Screenshots
+                  items={[{ path: screenshot.actual, color: 'transparent' }]}
+                />
+              </Viewer.Main>
+            </Viewer.Container>
+          </Workspace>
+        );
+      }
+
+      return (
+        <Workspace
+          title={title}
+          actions={
+            <ActionAccept
+              onAction={() =>
+                accept([
+                  {
+                    id: selection.story.id,
+                    device: selection.device,
+                    changes: { screenshots: [screenshot] },
+                  },
+                ])
+              }
+            />
+          }
+        >
+          <FailedScreenshotsViewer
+            key={selection.device.name}
+            device={selection.device}
+            {...screenshot}
+          />
+        </Workspace>
+      );
+    },
+  });
 };

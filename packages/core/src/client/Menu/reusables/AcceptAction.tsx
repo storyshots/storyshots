@@ -1,11 +1,12 @@
 import { CheckOutlined } from '@ant-design/icons';
 import React from 'react';
-import { Summary } from '../../../reusables/summary/types';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { EntryAction } from './EntryAction';
+import { StoryBoundChange } from '../../behaviour/useAcceptBaseline';
 
-type Props = Pick<UseBehaviourProps, 'accept' | 'accepting'> &
-  Pick<Summary, 'changes'>;
+type Props = Pick<UseBehaviourProps, 'accept' | 'accepting'> & {
+  changes: StoryBoundChange[];
+};
 
 export const AcceptAction: React.FC<Props> = ({
   accept,

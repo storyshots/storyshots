@@ -13,6 +13,10 @@ export function createStoryID(value: string, parent?: GroupID) {
   return join(parent, value) as StoryID;
 }
 
+export function isStoryChildOfGroup(group: GroupID, story: StoryID) {
+  return parseStoryID(story).includes(group);
+}
+
 export function parseStoryID(id: StoryID): GroupID[] {
   return id
     .split('__')
