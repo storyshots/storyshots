@@ -1,1 +1,5 @@
 /node_modules/playwright/lib/reporters/base.js generateSummaryMessage
+
+on GitHub tty is undefined (e.g. false)
+
+GitHub just ignores \u001B[1A\u001B[2K or other special ascii chars

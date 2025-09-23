@@ -10,7 +10,7 @@ test.describe('My another describe', () => {
   });
 
   test('Hey', async () => {
-    await wait(2_000);
+    await wait(5_000);
 
     expect(true).toBe(true);
   });

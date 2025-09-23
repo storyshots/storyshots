@@ -37,12 +37,8 @@ jobs:
         run: npm install
 
       - name: Run basic-externals tests
-        run: npm run ci
-        working-directory: ./examples/basic-externals
-
-      - name: Run msw-externals tests
-        run: npm run ci
-        working-directory: ./examples/msw-externals
+        run: npm start
+        working-directory: ./tests
 
       - name: Commit changes
         run: |

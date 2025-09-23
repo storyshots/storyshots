@@ -3,17 +3,15 @@ import { expect, test } from '@playwright/test';
 import { wait } from '@lib';
 
 test.describe('My describe', () => {
-  test.describe.configure({ retries: 3 });
-
   test('Hello', async () => {
-    await wait(2_000);
+    await wait(5_000);
 
     expect(true).toBe(true);
   });
 
   test('World', async () => {
-    await wait(2_000);
+    await wait(1_000);
 
-    expect(true).toBe(Math.random() > 0.5);
+    expect(true).toBe(true);
   });
 });
