@@ -1,9 +1,9 @@
 import { ScreenshotName } from '@core';
 import path from 'path';
 import { ScreenshotPath } from '../../../../reusables/types';
-import { StoryRunMeta } from '../../../reusables/types';
 import { ManagerConfig } from '../../../types';
 import { copy, exists, mkdir, mkfile, read, rmdir } from './utils';
+import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
 
 export async function createScreenshotsBaseline(env: ManagerConfig) {
   const { getActualDirFor, actualResultsDir } = await prepareStorage();
@@ -11,7 +11,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
 
   return {
     createDiff: async (
-      meta: StoryRunMeta,
+      meta: RunnableStoryMeta,
       name: ScreenshotName,
       content: Uint8Array,
     ) => {
@@ -23,7 +23,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       return at as ScreenshotPath;
     },
     createActualScreenshot: async (
-      story: StoryRunMeta,
+      story: RunnableStoryMeta,
       name: ScreenshotName,
       content: Uint8Array,
     ): Promise<ScreenshotPath> => {
@@ -35,7 +35,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
       return at as ScreenshotPath;
     },
     getExpectedScreenshot: async (
-      story: StoryRunMeta,
+      story: RunnableStoryMeta,
       name: ScreenshotName,
     ): Promise<ScreenshotPath | undefined> => {
       const file = path.join(
@@ -76,7 +76,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
        *
        * @example getActualDirFor(story) // -> ref to `/temp/actual/desktop` folder
        */
-      getActualDirFor: async (story: StoryRunMeta) => {
+      getActualDirFor: async (story: RunnableStoryMeta) => {
         const dir = path.join(actualResultsDir, story.device.name);
 
         if (!(await exists(dir))) {
@@ -90,7 +90,7 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
 }
 
 function constructScreenshotFileName(
-  { story: { id } }: StoryRunMeta,
+  { story: { id } }: RunnableStoryMeta,
   name: ScreenshotName,
 ): string {
   return `${id}_${name}.png`;

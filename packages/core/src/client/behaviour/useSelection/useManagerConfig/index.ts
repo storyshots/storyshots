@@ -1,24 +1,16 @@
-import { useDevice } from './useDevice';
+import { useRunnableDevices } from './useRunnableDevices';
 import { useDevices } from './useDevices';
-import { useEmulated } from './useEmulated';
-import { useMode } from './useMode';
+import { usePreviewDevice } from './usePreviewDevice';
 import { usePoolSize } from './usePoolSize';
 
 export function useManagerConfig() {
-  const mode = useMode();
   const devices = useDevices();
-  const size = usePoolSize();
-  const { emulated, setEmulated } = useEmulated();
-  const { device, setDevice } = useDevice(devices, emulated);
 
   return {
-    mode,
-    device,
-    size,
     devices,
-    emulated,
-    setDevice,
-    setEmulated,
+    size: usePoolSize(),
+    runnables: useRunnableDevices(devices),
+    preview: usePreviewDevice(devices),
   };
 }
 

@@ -3,27 +3,20 @@ import {
   Brand,
   Device,
   JournalRecord,
+  RunnableStoryMeta,
   ScreenshotName,
-  Story,
   StoryID,
+  WithPossibleInitializationError,
 } from '@core';
-import {
-  AcceptableRecords,
-  AcceptableScreenshot,
-  TestRunResult,
-} from './runner/types';
-import { Summary } from './summary/types';
+import { WithPossibleError } from './error';
+import { ChangedRecords, ChangedScreenshot, StoryRunResult } from './runner/StoryRunResult';
 
 export interface IWebDriver {
   play(actions: ActionMeta[]): Promise<WithPossibleError<void>>;
 
-  test(
-    story: Story,
-    device: Device,
-    actions: ActionMeta[],
-  ): Promise<WithPossibleError<TestRunResult>>;
+  test(story: RunnableStoryMeta): Promise<WithPossibleError<StoryRunResult>>;
 
-  acceptScreenshot(screenshot: AcceptableScreenshot): Promise<void>;
+  acceptScreenshot(screenshot: ChangedScreenshot): Promise<void>;
 
   acceptRecords(record: DeviceAndAcceptableRecords): Promise<void>;
 
@@ -33,18 +26,8 @@ export interface IWebDriver {
 export type DeviceAndAcceptableRecords = {
   id: StoryID;
   device: Device;
-  records: AcceptableRecords;
+  records: ChangedRecords;
 };
-
-export type WithPossibleError<T> =
-  | {
-      type: 'error';
-      message: string;
-    }
-  | {
-      type: 'success';
-      data: T;
-    };
 
 export type Screenshot = {
   name: ScreenshotName;
@@ -58,6 +41,6 @@ declare global {
   interface Window {
     getJournalRecords(): JournalRecord[];
 
-    runAll(): undefined | Promise<Summary>;
+    getAllStories(): undefined | WithPossibleInitializationError<RunnableStoryMeta[]>;
   }
 }

@@ -1,13 +1,22 @@
 import { StopOutlined } from '@ant-design/icons';
 import React from 'react';
-import { Summary } from '../../../reusables/summary/types';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { EntryAction } from '../reusables/EntryAction';
 
-type Props = Pick<UseBehaviourProps, 'stopAll'> & { summary: Summary };
+import { UIStoryRunState } from '../../behaviour/useRun/types';
 
-export const StopAction: React.FC<Props> = ({ stopAll, summary }) => {
-  if (summary.scheduled === 0) {
+type Props = Pick<UseBehaviourProps, 'stop' | 'results'>;
+
+export const StopAction: React.FC<Props> = ({ stop, results }) => {
+  const scheduled = results.all().some((result) =>
+    UIStoryRunState.when(result.state, {
+      onScheduled: () => true,
+      onRunning: () => true,
+      otherwise: () => false,
+    }),
+  );
+
+  if (!scheduled) {
     return;
   }
 
@@ -18,7 +27,7 @@ export const StopAction: React.FC<Props> = ({ stopAll, summary }) => {
       action={(e) => {
         e.stopPropagation();
 
-        stopAll();
+        stop();
       }}
     />
   );

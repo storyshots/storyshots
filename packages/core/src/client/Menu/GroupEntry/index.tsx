@@ -6,12 +6,11 @@ import { MenuHavingStories } from '../MenuHavingStories';
 import { AcceptAction } from '../reusables/AcceptAction';
 import { EntryActions } from '../reusables/EntryActions';
 import { EntryHeader } from '../reusables/EntryHeader';
-import { getStatusFromSummary } from '../reusables/getStatusFromSummary';
+import { toStatusByResults } from '../reusables/toStatusByResults';
 import { HighlightableEntry } from '../reusables/HighlightableEntry';
 import { RunAction } from '../reusables/RunAction';
-import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { Props } from '../types';
-import { getGroupEntrySummary } from './getGroupEntrySummary';
+import { toStoryBoundChanges } from '../StoryEntry/toStoryBoundChanges';
 
 export const GroupEntry: React.FC<
   Props & {
@@ -25,8 +24,8 @@ export const GroupEntry: React.FC<
     return;
   }
 
-  const summary = getGroupEntrySummary(group, props);
-  const status = getStatusFromSummary(summary);
+  const results = props.results.group(group.id);
+  const status = toStatusByResults(results.map(({ state }) => state));
 
   return (
     <li aria-label={group.title}>
@@ -46,13 +45,11 @@ export const GroupEntry: React.FC<
           <AcceptAction
             accept={props.accept}
             accepting={props.accepting}
-            changes={summary.changes}
+            changes={results.flatMap((story) =>
+              toStoryBoundChanges(story.id, [story]),
+            )}
           />
           <RunAction stories={group.children} run={others.run} />
-          <RunCompleteAction
-            stories={group.children}
-            runComplete={others.runComplete}
-          />
         </EntryActions>
       </EntryHeader>
       {expanded && (

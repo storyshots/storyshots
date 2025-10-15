@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { GroupEntry } from './GroupEntry';
 import { StoryEntry } from './StoryEntry/StoryEntry';
 import { Props } from './types';
@@ -7,7 +7,7 @@ import { Props } from './types';
 export const MenuHavingStories: React.FC<Props> = (props) => {
   if (Array.isArray(props.stories)) {
     return (
-      <Entries>
+      <Entries $level={props.level}>
         {props.stories.map((it, index) => (
           <MenuHavingStories key={index} {...props} stories={it} />
         ))}
@@ -25,10 +25,16 @@ export const MenuHavingStories: React.FC<Props> = (props) => {
   }
 };
 
-const Entries = styled.ul`
+const Entries = styled.ul<{ $level: number }>`
   margin: 0;
   padding: 0;
   list-style-type: none;
-  overflow-y: auto;
-  overflow-x: hidden;
+
+  ${(props) =>
+    props.$level === 0 &&
+    css`
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    `}
 `;

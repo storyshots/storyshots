@@ -3,7 +3,8 @@ import { runUI as _runUI } from './modes/runUI';
 import { CAPTURE } from './modules/capture';
 import { COMPARE } from './modules/compare';
 import { RUNNER } from './modules/runner';
-import { IPreviewServer, PublicManagerConfig } from './types';
+import { IPreviewServer, ManagerConfig as PrivateManagerConfig } from './types';
+import * as process from 'node:process';
 
 export type { IPreviewServer } from './types';
 
@@ -11,7 +12,7 @@ export type { IPreviewServer } from './types';
  * https://storyshots.github.io/storyshots/API/manager/manager-config
  */
 export type ManagerConfig = Optional<
-  PublicManagerConfig,
+  PrivateManagerConfig,
   'runner' | 'compare' | 'capture'
 >;
 
@@ -27,8 +28,11 @@ export const runUI = (config: ManagerConfig) =>
 export const runInBackground = async (config: ManagerConfig) => {
   const { run, cleanup } = await _runInBackground(fromOptimizedConfig(config));
 
-  await run();
+  const result = await run();
+
   await cleanup();
+
+  process.exit(result === 'fail' ? 1 : 0);
 };
 
 export const mergeServe = (...handlers: IPreviewServer[]): IPreviewServer =>
@@ -46,7 +50,7 @@ const mergeTwoServeHandlers = (
   },
 });
 
-function fromOptimizedConfig(config: ManagerConfig): PublicManagerConfig {
+function fromOptimizedConfig(config: ManagerConfig): PrivateManagerConfig {
   return {
     compare: COMPARE.withPlaywright(),
     capture: CAPTURE.stabilized({

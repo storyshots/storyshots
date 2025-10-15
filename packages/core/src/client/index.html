@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Storyshots UI</title>
+  <meta charset="UTF-8">
+  <title>Storyshots UI</title>
 </head>
 <body>
-<script src="/index.js?manager=SECRET"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const source = `/index.js?manager=${params.get('manager')}`;
+
+  const script = document.createElement('script');
+
+  script.src = source;
+
+  document.body.appendChild(script);
+</script>
 </body>
 </html>

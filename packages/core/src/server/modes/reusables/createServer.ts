@@ -1,20 +1,21 @@
 import express, { RequestHandler, Router } from 'express';
 import { regexpJSONReviver } from '../../../reusables/regexpJSON';
-import { MANAGER_UNIQ_KEY } from '../../../reusables/runner/toManagerURL';
+import { MANAGER_UNIQ_KEY } from '../../../reusables/toManagerURL';
 import { createUIHandler } from '../../createUIHandler';
 import { createApiHandlers } from '../../handlers';
 import { ManagerConfig } from '../../types';
+import { createROTypedQSProxy } from '../../../reusables/createTypedQSProxy';
 
 export async function createServer(config: ManagerConfig) {
   const app = express();
   const router = Router();
 
   const api = await createApiHandlers(router, config);
-  const dynamic = createDynamicHandler();
+  const dynamic = createLazySetHandler();
 
   app.use(express.json({ reviver: regexpJSONReviver }));
 
-  app.use(createPreviewHandler(config));
+  app.use(createManagerPreviewSwitch(config));
   app.use(api.router);
   app.use(dynamic.handler);
   app.use(createUIHandler());
@@ -37,12 +38,13 @@ export async function createServer(config: ManagerConfig) {
 
 export type Server = Awaited<ReturnType<typeof createServer>>;
 
-function createPreviewHandler(config: ManagerConfig): RequestHandler {
+function createManagerPreviewSwitch(config: ManagerConfig): RequestHandler {
   return (request, response, next) => {
-    if (
-      'manager' in request.query &&
-      request.query.manager === MANAGER_UNIQ_KEY
-    ) {
+    const qs = createROTypedQSProxy({
+      get: (key) => request.query[key] as string,
+    });
+
+    if (qs.get('manager') === MANAGER_UNIQ_KEY) {
       return next();
     }
 
@@ -52,7 +54,8 @@ function createPreviewHandler(config: ManagerConfig): RequestHandler {
   };
 }
 
-function createDynamicHandler() {
+// Allows to define handler position first and handler function later
+function createLazySetHandler() {
   let handle: RequestHandler = (_, __, next) => next();
 
   const handler: RequestHandler = (rq, rs, nt) => handle(rq, rs, nt);

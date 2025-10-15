@@ -1,8 +1,8 @@
 import { useAcceptBaseline } from './useAcceptBaseline';
-import { useExposeRunAll } from './useExposeRunAll';
+import { useExposeAllStories } from './useExposeAllStories';
 import { useGroupExpand } from './useGroupExpand';
 import { useHighlighter } from './useHighlighter';
-import { useRun } from './useRun';
+import { useRun } from './useRun/useRun';
 import { usePreviewSyncSelection } from './useSelection';
 import { useManagerConfig } from './useSelection/useManagerConfig';
 import { useStatusPane } from './useStatusPane';
@@ -16,7 +16,7 @@ export function useBehaviour() {
   const pane = useStatusPane();
   const highlight = useHighlighter();
 
-  useExposeRunAll(sync.selection, manager);
+  useExposeAllStories(sync.selection, manager);
 
   return {
     ...manager,

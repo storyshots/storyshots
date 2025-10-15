@@ -9,5 +9,6 @@ void build({
   platform: 'node',
   target: 'node18',
   format: ['cjs'],
+  external: ['esbuild'],
   dts: true,
 });

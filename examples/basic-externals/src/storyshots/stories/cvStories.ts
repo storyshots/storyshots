@@ -1,10 +1,9 @@
-import { finder } from '@storyshots/core';
+import { finder, resized } from '@storyshots/core';
 import { describe, it } from '../preview/config';
 import { open } from './utils/actors';
-import { resized } from '../preview/resized';
 
 export const cvStories = resized(
-  { mobile: 1200 },
+  ({ device }) => (device.name === 'mobile' ? { height: 1200 } : undefined),
   describe('CV', [
     it('renders all fields as empty by default', {
       act: open('CV'),

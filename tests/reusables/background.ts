@@ -14,9 +14,20 @@ function createBackground(devices: ManagerConfig['devices']): Background {
     devices: (devices) => createBackground(devices),
     preview: () =>
       createPreview(
-        defineManagerStep((_, tf) =>
-          runInBackground(createManagerConfig(devices, tf)),
-        ),
+        defineManagerStep(async (_, tf) => {
+          const bg = await runInBackground(createManagerConfig(devices, tf));
+
+          return {
+            run: async () => {
+              const result = await bg.run();
+
+              if (result === 'fail') {
+                throw new Error('Failed');
+              }
+            },
+            cleanup: () => bg.cleanup(),
+          };
+        }),
       ),
   };
 }

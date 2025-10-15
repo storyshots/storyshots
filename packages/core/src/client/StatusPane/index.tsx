@@ -1,24 +1,25 @@
-import { flat, StoryID, StoryTree } from '@core';
-import { assertNotEmpty } from '@lib';
+import { Device, flat, Story, StoryTree } from '@core';
+import { assertNotEmpty, isDefined } from '@lib';
 import convert from 'ansi-to-html';
 import { Segmented } from 'antd';
 import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
-import { createSummary } from '../../reusables/summary';
-import { ErrorSummary } from '../../reusables/summary/types';
+import styled from 'styled-components';
 import { UseBehaviourProps } from '../behaviour/types';
 
+import { UIStoryRunState } from '../behaviour/useRun/types';
+
+import { StoryRunResult } from '../../reusables/runner/StoryRunResult';
+
 export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
-  const { selection, results, statusPaneOpen } = props;
+  const { selection, statusPaneOpen } = props;
   const [errorsAreActive, setErrorsAreActive] = useState(true);
 
   if (selection.type === 'initializing' || !statusPaneOpen) {
     return null;
   }
 
-  const summary = createSummary(results);
-  const errors = enrichErrors(selection.stories);
-  const failures = enrichFailures(selection.stories);
+  const errors = toErrors(props, selection.stories);
+  const failures = toFailures(props, selection.stories);
 
   return (
     <Pane>
@@ -56,10 +57,10 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
       {errorsAreActive ? (
         <StatusEntries aria-label="Errors">
           {errors.map(({ story, error }, index) => (
-            <StatusEntry key={index} active$={isSelected(story.id)}>
-              <span
-                style={{ fontWeight: 'bold' }}
-              >{`[${error.device.name}] ${story.title}`}</span>
+            <StatusEntry key={index}>
+              <span style={{ fontWeight: 'bold' }}>
+                {toReadableName(story, error.device)}
+              </span>
               <div
                 style={{ margin: 0 }}
                 dangerouslySetInnerHTML={{
@@ -75,65 +76,81 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
       ) : (
         <StatusEntries aria-label="Failures">
           {failures.map(({ story, failure }, index) => (
-            <StatusEntry
-              key={index}
-              active$={isSelected(story.id)}
-              onClick={() => props.setStory(story.id)}
-            >
-              <span
-                style={{ fontWeight: 'bold' }}
-              >{`[${failure.device.name}] ${story.title}`}</span>
+            <StatusEntry key={index}>
+              <span style={{ fontWeight: 'bold' }}>
+                {toReadableName(story, failure.device)}
+              </span>
             </StatusEntry>
           ))}
         </StatusEntries>
       )}
     </Pane>
   );
+};
 
-  function isSelected(id: StoryID) {
-    return selection.type === 'story' && id === selection.story.id;
-  }
+function toErrors(
+  { selection, results, preview }: UseBehaviourProps,
+  stories: StoryTree,
+) {
+  const errors = results
+    .all()
+    .map((story) =>
+      UIStoryRunState.when(story.state, {
+        onError: (error) => ({
+          id: story.id,
+          device: story.device,
+          message: error.message,
+        }),
+        otherwise: () => undefined,
+      }),
+    )
+    .filter(isDefined);
 
-  function enrichErrors(stories: StoryTree) {
-    const errors: ErrorSummary[] =
-      selection.type === 'story' &&
-      selection.progress.type === 'played' &&
-      selection.progress.result.type === 'error'
-        ? [
-            ...summary.errors,
-            {
-              id: selection.story.id,
-              device: props.device.preview,
-              message: selection.progress.result.message,
-            },
-          ]
-        : summary.errors;
-
-    return errors.map((error) => {
-      const story = flat(stories).find((it) => it.id === error.id);
-
-      assertNotEmpty(story, 'Errors are invalid. Press F5 to update');
-
-      return { story, error };
+  if (
+    selection.type === 'story' &&
+    selection.progress.type === 'played' &&
+    selection.progress.details.type === 'error'
+  ) {
+    errors.push({
+      id: selection.story.id,
+      device: preview.resolved,
+      message: `(FROM PLAY) ${selection.progress.details.message}`,
     });
   }
 
-  function enrichFailures(stories: StoryTree) {
-    return summary.changes
-      .filter(
-        (it) =>
-          it.records?.type === 'fail' ||
-          it.screenshots.some((screenshot) => screenshot.type === 'fail'),
-      )
-      .map((failure) => {
-        const story = flat(stories).find((it) => it.id === failure.id);
+  return errors.map((error) => {
+    const story = flat(stories).find((it) => it.id === error.id);
 
-        assertNotEmpty(story, 'Failures are invalid. Press F5 to update');
+    assertNotEmpty(story, 'Errors are invalid. Press F5 to update');
 
-        return { story, failure };
-      });
-  }
-};
+    return { story, error };
+  });
+}
+
+function toFailures({ results }: UseBehaviourProps, stories: StoryTree) {
+  const failures = results.all().filter((story) =>
+    UIStoryRunState.when(story.state, {
+      onDone: (details) =>
+        StoryRunResult.when(details, {
+          onFail: () => true,
+          otherwise: () => false,
+        }),
+      otherwise: () => undefined,
+    }),
+  );
+
+  return failures.map((failure) => {
+    const story = flat(stories).find((it) => it.id === failure.id);
+
+    assertNotEmpty(story, 'Failures are invalid. Press F5 to update');
+
+    return { story, failure };
+  });
+}
+
+function toReadableName(story: Story, device: Device) {
+  return `[${device.name}] ${[...story.parents, story.title].join(' > ')}`;
+}
 
 const Pane = styled.div`
   display: flex;
@@ -168,22 +185,6 @@ const StatusEntries = styled.ul`
   margin: 0;
 `;
 
-const StatusEntry = styled.li<{ active$: boolean }>`
+const StatusEntry = styled.li`
   padding: 10px;
-
-  ${(props) =>
-    props.active$ &&
-    css`
-      background-color: #e6f4ff;
-    `}
-
-  ${(props) =>
-    !props.active$ &&
-    css`
-      cursor: pointer;
-
-      &:hover {
-        background-color: #fafafa;
-      }
-    `}
 `;

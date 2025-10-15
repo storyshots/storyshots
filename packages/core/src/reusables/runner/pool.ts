@@ -1,28 +1,43 @@
-import { repeat } from '../repeat';
+import { isDefined } from '@lib';
 
-export async function pool(
-  factories: ReadonlyArray<() => Promise<unknown>>,
-  config: { size: number },
-): Promise<void> {
-  const state = Array.from(factories);
+export async function* pool<T>(
+  generators: Array<AsyncGenerator<T, void>>,
+  size: number,
+): AsyncIterable<T, void> {
+  const working = new Set(generators.slice(0, size).map(createWork));
+  const unprocessed = generators.slice(size);
 
-  const workers = repeat(config.size, work);
+  while (working.size > 0) {
+    const { state, generator, work } = await Promise.race(working);
 
-  await Promise.all(workers);
+    working.delete(work);
 
-  async function work() {
-    while (true) {
-      const current = state.shift();
+    if (state.done) {
+      const candidate = unprocessed.shift();
 
-      if (current === undefined) {
-        return;
+      if (isDefined(candidate)) {
+        working.add(createWork(candidate));
       }
 
-      try {
-        await current();
-      } catch (_) {
-        /* empty */
-      }
+      continue;
     }
+
+    yield state.value;
+
+    working.add(createWork(generator));
+  }
+
+  function createWork(generator: AsyncGenerator<T, void>) {
+    const work: Work = generator
+      .next()
+      .then((state) => ({ state, generator, work }));
+
+    type Work = Promise<{
+      state: IteratorResult<T>;
+      generator: AsyncGenerator<T, void>;
+      work: Work;
+    }>;
+
+    return work;
   }
 }

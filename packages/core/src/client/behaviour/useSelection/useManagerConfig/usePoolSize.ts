@@ -1,11 +1,11 @@
 import { assertNotEmpty } from '@lib';
-import { useSearchParams } from 'wouter';
+import { useTypedQSPRoxy } from '../../useTypedQSPRoxy';
 
-export function usePoolSize(): number {
-  const [params] = useSearchParams();
-  const size = params.get('size');
+export function usePoolSize() {
+  const qs = useTypedQSPRoxy();
+  const size = qs.get('size');
 
   assertNotEmpty(size, 'Pool size is required');
 
-  return parseInt(size);
+  return size;
 }

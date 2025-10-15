@@ -13,5 +13,5 @@ export const Main: React.FC<UseBehaviourProps> = (props) => {
     return <Records {...props} selection={props.selection} />;
   }
 
-  return <EmulatePreview {...props} selection={props.selection} />;
+  return <EmulatePreview {...props} />;
 };

@@ -1,13 +1,13 @@
 import { Device } from '@core';
 import { assertNotEmpty } from '@lib';
 import { useMemo } from 'react';
-import { useSearchParams } from 'wouter';
+import { useTypedQSPRoxy } from '../../useTypedQSPRoxy';
 
 export function useDevices(): Device[] {
-  const [params] = useSearchParams();
-  const devices = params.get('devices');
+  const qs = useTypedQSPRoxy();
+  const devices = qs.get('devices');
 
   assertNotEmpty(devices);
 
-  return useMemo(() => JSON.parse(devices) as Device[], [devices]);
+  return useMemo(() => devices, [JSON.stringify(devices)]);
 }

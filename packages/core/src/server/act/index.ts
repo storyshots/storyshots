@@ -20,6 +20,7 @@ import { doUploadFile } from './actions/doUpload';
 import { doWait } from './actions/doWait';
 import { doWaitFor } from './actions/doWaitFor';
 import { doWheel } from './actions/doWheel';
+import { doResize } from './actions/doResize';
 
 export async function act(
   preview: Frame,
@@ -64,6 +65,8 @@ export async function act(
       return doMouseUpDown(preview, action);
     case 'mouseMove':
       return doMouseMove(preview, action);
+    case 'resize':
+      return doResize(preview, action);
   }
 
   assertIsNever(action);

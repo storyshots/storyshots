@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
 import { ScreenshotPath } from '../../reusables/types';
-import { driver } from '../../reusables/runner/driver';
+import { driver } from '../../reusables/driver';
 
 type Props = {
   items: Array<{

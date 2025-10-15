@@ -1,6 +1,8 @@
 import { Request } from 'express';
-import { StoryRunMeta } from '../../reusables/types';
+
+
+import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
 
 export function parseStory(request: Request) {
-  return request.body as StoryRunMeta;
+  return request.body as RunnableStoryMeta;
 }

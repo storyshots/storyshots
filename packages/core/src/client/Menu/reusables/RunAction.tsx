@@ -8,14 +8,16 @@ type Props = Pick<UseBehaviourProps, 'run'> & {
   stories: StoryTree;
 };
 
-export const RunAction: React.FC<Props> = ({ run, stories }) => (
-  <EntryAction
-    label="Run"
-    icon={<CaretRightOutlined />}
-    action={(e) => {
-      e.stopPropagation();
+export const RunAction: React.FC<Props> = ({ run, stories }) => {
+  return (
+    <EntryAction
+      label="Run"
+      icon={<CaretRightOutlined />}
+      action={(e) => {
+        e.stopPropagation();
 
-      void run(stories);
-    }}
-  />
-);
+        void run(stories);
+      }}
+    />
+  );
+};

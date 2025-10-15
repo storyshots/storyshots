@@ -1,8 +1,9 @@
 import { Frame } from 'playwright';
-import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { act } from '../../../../act';
 import { ExpectedPayload } from '../types';
 import { createCompareScreenshot } from './createCompareScreenshot';
+
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/StoryRunResult';
 
 export async function createActualScreenshots(
   payload: ExpectedPayload,

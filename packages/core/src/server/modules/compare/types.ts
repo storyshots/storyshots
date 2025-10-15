@@ -1,9 +1,9 @@
-import { StoryRunMeta } from '../../reusables/types';
+import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
 
 export type ImageComparator = (
   actual: Buffer,
   expected: Buffer,
-  story: StoryRunMeta,
+  story: RunnableStoryMeta,
 ) => Promise<ComparisonResult>;
 
 type EqualComparisonResult = {

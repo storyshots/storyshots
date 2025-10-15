@@ -1,14 +1,11 @@
 import { isNil } from '@lib';
-import {
-  RecordsComparisonResult,
-  TestRunResult,
-} from '../../../../reusables/runner/types';
 import { ActualResults } from '../getActualResults';
 import { ExpectedPayload } from '../getActualResults/types';
+import { RecordsComparisonResult, StoryRunResult } from '../../../../reusables/runner/StoryRunResult';
 
 export async function getTestResults(
   payload: FinalPayload,
-): Promise<TestRunResult> {
+): Promise<StoryRunResult> {
   return {
     records: await createRecordsComparisonResult(payload),
     screenshots: payload.actual.screenshots,

@@ -1,4 +1,4 @@
-import { WithPossibleError } from '../../../reusables/types';
+import { WithPossibleError } from '../../../reusables/error';
 
 export async function handlePossibleErrors<T>(
   func: () => Promise<T>,

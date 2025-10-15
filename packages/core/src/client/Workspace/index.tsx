@@ -18,7 +18,7 @@ export const Workspace: React.FC<Props> = ({ children, actions, title }) => (
 );
 
 const Layout = styled.div`
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -42,7 +42,7 @@ const Actions = styled.div`
 
 const Content = styled.div`
   flex: 1;
-  max-height: calc(100vh - 64px);
+  max-height: calc(100% - 64px);
   background-color: #fff;
   padding: 12px 0;
 `;

@@ -34,6 +34,24 @@ describe('errors', () => {
       .do((page) => page.getByLabel('Progress').click())
       .screenshot(),
   );
+
+  test(
+    'shows an initialization error',
+    desktop()
+      .story(() => ({
+        act: (actor) => {
+          const record = undefined as unknown as number;
+
+          record.toFixed();
+
+          return actor;
+        },
+        render: () => null,
+      }))
+      .actor()
+      .run('is a story')
+      .screenshot(),
+  );
 });
 
 function render(

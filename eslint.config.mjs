@@ -36,7 +36,9 @@ export default defineConfig(
       ],
       '@typescript-eslint/prefer-promise-reject-errors': 0,
       '@typescript-eslint/only-throw-error': 0,
-      'react/jsx-key': 0
+      'react/jsx-key': 0,
+      '@typescript-eslint/restrict-template-expressions': 0,
+      'require-yield': 0
     },
     languageOptions: {
       parserOptions: {

@@ -90,7 +90,11 @@ export function createActor(
     drag: (draggable, to, options) =>
       withAction({
         action: 'drag',
-        payload: { draggable: draggable.__toMeta(), to: to.__toMeta(), options },
+        payload: {
+          draggable: draggable.__toMeta(),
+          to: to.__toMeta(),
+          options,
+        },
       }),
     blur: (on, options) =>
       withAction({
@@ -105,7 +109,11 @@ export function createActor(
     exec: (fn) =>
       withAction({ action: 'exec', payload: { fn: fn.toString() } }),
     waitFor: (on, state, timeout) =>
-      withAction({ action: 'waitFor', payload: { on: on.__toMeta(), state, timeout } }),
+      withAction({
+        action: 'waitFor',
+        payload: { on: on.__toMeta(), state, timeout },
+      }),
+    resize: (viewport) => withAction({ action: 'resize', payload: viewport }),
     do: (transform) => transform(actor, config),
     stop: () => withAction({ action: 'stop' }),
     __toMeta: () => assertScreenshotNameConditions(meta),

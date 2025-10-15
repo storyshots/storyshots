@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { EntryActions } from './EntryActions';
+import { EntryDuration } from './EntryDuration';
 
 type Props = {
   $level: number;
@@ -17,15 +18,28 @@ export const EntryHeader = styled.div<Props>`
   ${EntryActions} {
     display: none;
   }
+    
+  ${EntryDuration} {
+    display: inherit;
+  }
 
   &:hover,
   &:focus {
     ${EntryActions} {
       display: inherit;
     }
+    
+    ${EntryDuration} {
+      display: none;
+    }
   }
 `;
 
+/*
+ TODO: Rewrite EntryHeader
+  It should have title, left and right actions
+  and also elements that are visible when hovered and elements visible on blur.
+*/
 export const ActiveEntryHeader = styled(EntryHeader)<{
   $active: boolean;
   $color: string;

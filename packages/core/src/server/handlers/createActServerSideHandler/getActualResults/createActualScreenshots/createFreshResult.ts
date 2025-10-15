@@ -1,7 +1,8 @@
 import { ScreenshotAction } from '@core';
-import { ScreenshotComparisonResult } from '../../../../../reusables/runner/types';
 import { ExpectedPayload } from '../types';
 import { createActualScreenshotPath } from './createActualScreenshotPath';
+
+import { ScreenshotComparisonResult } from '../../../../../reusables/runner/StoryRunResult';
 
 export async function createFreshResult(
   payload: ExpectedPayload,

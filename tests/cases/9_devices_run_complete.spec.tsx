@@ -31,7 +31,7 @@ describe('devices run complete', () => {
         },
       }))
       .actor()
-      .do(runComplete())
+      .run('is a story')
       .screenshot()
       .open('FINAL', 'mobile')
       .screenshot(),
@@ -52,7 +52,7 @@ describe('devices run complete', () => {
         },
       }))
       .actor()
-      .do(runComplete())
+      .run('is a story')
       .screenshot()
       .open('Records', 'mobile')
       .screenshot(),
@@ -74,9 +74,26 @@ describe('devices run complete', () => {
         ),
       }))
       .actor()
-      .do(runComplete())
+      .do(setAllDevicesToRun())
+      .run('is a story')
       .screenshot()
       .do((page) => page.getByLabel('Progress').click())
+      .screenshot(),
+  );
+
+  test(
+    'displays results depending on config',
+    devices()
+      .story(() => ({ render: (_, { device }) => device.name }))
+      .actor()
+      .run('is a story')
+      .screenshot()
+      .do(setAllDevicesToRun())
+      .screenshot()
+      .run('is a story')
+      .screenshot()
+      .do(selectDeviceToRun(['mobile']))
+      .open('FINAL')
       .screenshot(),
   );
 });
@@ -91,21 +108,34 @@ function setup() {
       },
     }))
     .actor()
-    .do(runComplete());
+    .do(setAllDevicesToRun())
+    .run('is a story');
 }
 
-function runComplete(): ActionStep {
+function setAllDevicesToRun(): ActionStep {
+  return selectDeviceToRun(['desktop', 'mobile']);
+}
+
+function selectDeviceToRun(devices: string[]): ActionStep {
   return async (page) => {
-    await page.getByText('is a story').hover();
+    await page.getByLabel('Toggle config pane').click();
 
-    await page
-      .getByLabel('is a story')
-      .getByLabel('Run complete', { exact: true })
-      .click();
+    const input = page.getByLabel('Devices to run');
 
-    await page
-      .getByLabel('Status')
-      .getByRole('button', { name: 'Run complete' })
-      .waitFor({ state: 'visible' });
+    await input.hover();
+
+    const clear = page.getByLabel('close-circle');
+
+    if (await clear.isVisible()) {
+      await clear.click();
+    }
+
+    await input.click();
+
+    for (const device of devices) {
+      await page.getByTitle(device).click();
+    }
+
+    await page.getByLabel('Toggle config pane').click();
   };
 }

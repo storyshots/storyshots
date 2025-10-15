@@ -1,4 +1,4 @@
-import { assert } from '@lib';
+import { assert, isDefined } from '@lib';
 import { Brand } from '../../brand';
 import { ActionMeta } from './types';
 
@@ -28,7 +28,7 @@ function assertUnique(meta: ActionMeta[]) {
 function addFINALScreenshotIfNeeded(meta: ActionMeta[]): ActionMeta[] {
   const last = meta.at(-1);
 
-  if (last !== undefined && last.action === 'screenshot') {
+  if (isDefined(last) && last.action === 'screenshot') {
     return meta;
   }
 

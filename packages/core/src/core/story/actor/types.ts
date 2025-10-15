@@ -155,6 +155,8 @@ export type Actor = MetaActionsFactory & {
     timeout?: WaitForAction['payload']['timeout'],
   ): Actor;
 
+  resize(viewport: ResizeAction['payload']): Actor;
+
   /**
    * https://storyshots.github.io/storyshots/API/story-elements/actor#do
    */
@@ -349,6 +351,14 @@ export type StopAction = {
   action: 'stop';
 };
 
+export type ResizeAction = {
+  action: 'resize';
+  payload: {
+    width?: number;
+    height?: number;
+  };
+};
+
 export type ActionMeta =
   | ClickAction
   | DblClickAction
@@ -370,4 +380,5 @@ export type ActionMeta =
   | MouseWheelAction
   | MouseMoveAction
   | MouseUpDownAction
+  | ResizeAction
   | StopAction;

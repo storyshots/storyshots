@@ -27,6 +27,8 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/arrangers/lib" />
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/core/src/client/behaviour/useHighlighter/generated" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/faker" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

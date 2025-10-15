@@ -1,4 +1,4 @@
-import { ManagerConfig, mergeServe } from '@storyshots/core/manager';
+import { ManagerConfig, mergeServe, RUNNER } from '@storyshots/core/manager';
 import { createWorkerSupplier } from '@storyshots/msw-externals/createWorkerSupplier';
 import path from 'path';
 import { createPreviewServer } from './createPreviewServer';
@@ -24,4 +24,5 @@ export default {
     temp: path.join(process.cwd(), '..', '..', '..', 'temp'),
   },
   preview: mergeServe(createWorkerSupplier(), createPreviewServer()),
+  runner: RUNNER.pool({ agentsCount: 4 }),
 } satisfies ManagerConfig;

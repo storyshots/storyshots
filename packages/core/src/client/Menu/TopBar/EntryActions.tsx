@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Summary } from '../../../reusables/summary/types';
+import { UseBehaviourProps } from '../../behaviour/types';
+import { isDefined } from '@lib';
+
+
+import { UIStoryRunState } from '../../behaviour/useRun/types';
 
 type Props = React.PropsWithChildren<{
   className?: string;
@@ -16,9 +20,19 @@ export const EntryActions = styled(_EntryActions)`
 `;
 
 export const IdleActions: React.FC<
-  React.PropsWithChildren & { summary: Summary }
-> = ({ children, summary }) => {
-  if (summary.running === 0) {
+  React.PropsWithChildren & Pick<UseBehaviourProps, 'results'>
+> = ({ children, results }) => {
+  const running = results
+    .all()
+    .map((result) =>
+      UIStoryRunState.when(result.state, {
+        onRunning: () => result,
+        otherwise: () => undefined,
+      }),
+    )
+    .filter(isDefined).length;
+
+  if (running === 0) {
     return children;
   }
 

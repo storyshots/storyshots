@@ -1,8 +1,10 @@
-import { createActor, StoryEnvironment, StoryTree } from '@core';
+import { StoryID, StoryTree, toRunnableStoryMeta } from '@core';
 import { useEffect, useState } from 'react';
-import { driver } from '../../../../reusables/runner/driver';
-import { Progress, Selection } from '../types';
+import { driver } from '../../../../reusables/driver';
+import { Selection } from '../types';
 import { ManagerConfig } from '../useManagerConfig';
+import { isNil } from '@lib';
+import { WithPossibleError } from '../../../../reusables/error';
 
 /**
  * Enriches preview state each time it is being reset.
@@ -14,33 +16,52 @@ export function usePreviewStateEnrich(
   manager: ManagerConfig,
   stories: StoryTree | undefined,
 ) {
-  const [progress, setProgress] = useState<Progress>({ type: 'not-played' });
+  const [enriched, setEnriched] = useState<EnrichState>();
 
   useEffect(() => void enrich(trusted, manager), [stories]);
 
-  return progress;
+  return enriched;
 
   async function enrich(trusted: Selection, manager: ManagerConfig) {
-    setProgress({ type: 'not-played' });
-
     if (trusted.type !== 'story') {
       return;
     }
 
-    setProgress({ type: 'playing' });
+    const runnable = toRunnableStoryMeta(
+      trusted.story,
+      manager.preview.resolved,
+      {
+        previewing: true,
+      },
+    );
 
-    const env: StoryEnvironment = {
-      testing: false,
-      device: manager.device.preview,
-    };
+    if (runnable.type === 'error') {
+      console.error(runnable.message);
 
-    const actions = trusted.story.act(createActor(env), env).__toMeta();
+      return setEnriched({
+        for: trusted.story.id,
+        details: runnable,
+      });
+    }
 
-    const result = await driver.play(actions);
+    if (isNil(runnable.data)) {
+      return;
+    }
 
-    setProgress({
-      type: 'played',
-      result,
+    setEnriched({ for: trusted.story.id });
+
+    const result = await driver.play(runnable.data.actions);
+
+    setEnriched({
+      for: trusted.story.id,
+      details: result,
     });
   }
 }
+
+export type EnrichState =
+  | undefined
+  | {
+      for: StoryID;
+      details?: WithPossibleError<void>;
+    };

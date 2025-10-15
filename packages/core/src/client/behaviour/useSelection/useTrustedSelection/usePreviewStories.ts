@@ -38,8 +38,8 @@ export function usePreviewStories(
       return {
         story,
         config: {
-          device: manager.device.preview,
-          testing: false,
+          device: manager.preview.resolved,
+          previewing: true,
           journal: createJournal(),
         },
       };
@@ -57,7 +57,7 @@ export function usePreviewStories(
         frame.src = location.origin;
       }
     };
-  }, [untrusted, manager.device.preview]);
+  }, [untrusted, manager.preview.resolved]);
 
   return stories;
 }

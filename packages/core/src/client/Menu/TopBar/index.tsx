@@ -1,19 +1,17 @@
 import { EyeOutlined, SlidersOutlined } from '@ant-design/icons';
 import { Device, StoryTree } from '@core';
 import { assert } from '@lib';
-import { Checkbox, Form, Select } from 'antd';
+import { Form, Select } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { createSummary } from '../../../reusables/summary';
-import { Summary } from '../../../reusables/summary/types';
 import { UseBehaviourProps } from '../../behaviour/types';
 import { ReadySelection } from '../../behaviour/useSelection/types';
 import { EntryAction } from '../reusables/EntryAction';
 import { RunAction } from '../reusables/RunAction';
-import { RunCompleteAction } from '../reusables/RunCompleteAction';
 import { EntryActions, IdleActions } from './EntryActions';
 import { EntryHeader } from './EntryHeader';
 import { StopAction } from './StopAction';
+import { OverallStatus } from './OverallStatus';
 
 export type Props = UseBehaviourProps & {
   stories: StoryTree;
@@ -21,29 +19,19 @@ export type Props = UseBehaviourProps & {
 };
 
 export const TopBar: React.FC<Props> = (props) => {
-  const { results, toggleStatusPane } = props;
   const [opened, setOpened] = useState(false);
-  const summary = createSummary(results);
 
   return (
     <div aria-label="Status">
       <EntryHeader>
-        <a
-          href="#"
-          aria-label="Progress"
-          style={{ flex: 1 }}
-          onClick={toggleStatusPane}
-        >
-          {renderStatusText(summary)}
-        </a>
+        <OverallStatus
+          toggleStatusPane={props.toggleStatusPane}
+          results={props.results}
+        />
         <EntryActions>
-          <StopAction stopAll={props.stopAll} summary={summary} />
-          <IdleActions summary={summary}>
+          <StopAction stop={props.stop} results={props.results} />
+          <IdleActions results={props.results}>
             <RunAction stories={props.stories} run={props.run} />
-            <RunCompleteAction
-              stories={props.stories}
-              runComplete={props.runComplete}
-            />
             <PickLocatorAction onPick={props.toggleHighlighting} />
             <ToggleConfigPaneAction
               onToggle={() => setOpened((prev) => !prev)}
@@ -53,42 +41,58 @@ export const TopBar: React.FC<Props> = (props) => {
       </EntryHeader>
       {opened && (
         <PreviewConfigForm layout="vertical" size="small">
-          <Form.Item label="Device">
-            <Select<DeviceOption['value'], DeviceOption>
-              value={props.device.selected.name}
-              onChange={(_, option) => {
-                assert(!Array.isArray(option));
+          <Form.Item label="Devices to run" htmlFor="runnable-devices-selector">
+            <Select<DeviceOption['value'][], DeviceOption>
+              id="runnable-devices-selector"
+              mode="multiple"
+              value={props.runnables.selected.map((it) => it.name)}
+              onChange={(_, options) => {
+                assert(Array.isArray(options));
 
-                props.setDevice(option.device);
+                props.runnables.set(options.map((it) => it.device));
               }}
               options={props.devices.map((it) => ({
                 value: it.name,
                 label: it.name,
                 device: it,
               }))}
+              placeholder={
+                <p style={{ fontStyle: 'italic' }}>Default device</p>
+              }
+              showSearch={false}
+              allowClear
             />
           </Form.Item>
-          <Form.Item>
-            <Checkbox
-              checked={props.emulated}
-              onChange={(it) => props.setEmulated(it.target.checked)}
-            >
-              Apply to preview
-            </Checkbox>
+          <Form.Item
+            label="Device to emulate"
+            htmlFor="emulate-device-selector"
+          >
+            <Select<DeviceOption['value'], DeviceOption>
+              id="emulate-device-selector"
+              value={props.preview.emulate?.name}
+              placeholder={<p style={{ fontStyle: 'italic' }}>No emulation</p>}
+              // undefined is important here (when clear pressed)
+              onChange={(
+                _,
+                option: DeviceOption | DeviceOption[] | undefined,
+              ) => {
+                assert(!Array.isArray(option));
+
+                props.preview.set(option?.device);
+              }}
+              options={props.devices.map((it) => ({
+                value: it.name,
+                label: it.name,
+                device: it,
+              }))}
+              allowClear
+            />
           </Form.Item>
         </PreviewConfigForm>
       )}
     </div>
   );
 };
-
-function renderStatusText({ pass, total }: Summary): string {
-  if (total === 0) {
-    return 'Status';
-  }
-
-  return `${pass}/${total} passed (${((pass / total) * 100).toFixed()}%)`;
-}
 
 const PickLocatorAction: React.FC<{ onPick(): void }> = ({ onPick }) => (
   <EntryAction label="Pick locator" icon={<EyeOutlined />} action={onPick} />
@@ -105,7 +109,7 @@ const ToggleConfigPaneAction: React.FC<{ onToggle(): void }> = ({
 );
 
 type DeviceOption = {
-  value: string;
+  value: Device['name'];
   label: string;
   device: Device;
 };

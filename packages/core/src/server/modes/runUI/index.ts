@@ -1,11 +1,9 @@
-import { ManagerConfig, PublicManagerConfig } from '../../types';
+import { ManagerConfig } from '../../types';
 import { createServer } from '../reusables/createServer';
 import { createActHandler } from './createActHandler';
 import { openAppAndGetPage } from './createAttachedDriver';
 
-export async function runUI(_config: PublicManagerConfig) {
-  const config: ManagerConfig = { ..._config, mode: 'ui' };
-  
+export async function runUI(config: ManagerConfig) {
   const server = await createServer(config);
   const page = await openAppAndGetPage(config);
 

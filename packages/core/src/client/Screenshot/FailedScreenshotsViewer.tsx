@@ -1,12 +1,13 @@
 import { Device } from '@core';
 import { Radio, RadioChangeEvent } from 'antd';
 import React, { useState } from 'react';
-import { ScreenshotComparisonResult } from '../../reusables/runner/types';
 import { assertIsNever, assertNotEmpty } from '@lib';
 import { GitLikeImageComparator } from './GitLikeImageComparator';
 import { Viewer } from './Viewer';
 import { Screenshots } from './Screenshots';
 import { ACTUAL_BORDER_COLOR, EXPECTED_BORDER_COLOR } from './constants';
+
+import { ScreenshotComparisonResult } from '../../reusables/runner/StoryRunResult';
 
 enum ViewerMode {
   TwoUp = 'twoup',
