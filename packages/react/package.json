@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/react",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "React storyshots facade",
   "main": "./lib/index.mjs",
   "types": "./lib/index.d.mts",

@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/webpack",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Preview webpack middleware",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
