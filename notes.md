@@ -17,6 +17,7 @@
 * Simplify UI components (introduce UI-lib, reuse and simplify concepts)
 * Move to Disposable interface
 * Add search to docs
+* Add docs build check on PR
 
 # Useful links
 

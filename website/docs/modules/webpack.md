@@ -66,5 +66,5 @@ export default {
 ```
 
 :::tip
-`createWebpackStaticServer` полезен при [`ci`](API/manager/runInBackground) режиме `storyshots`. 
+`createWebpackStaticServer` полезен при [`ci`](/API/manager/runInBackground) режиме `storyshots`. 
 :::
