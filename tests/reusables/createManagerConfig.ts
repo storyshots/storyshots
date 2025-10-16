@@ -5,7 +5,7 @@ import {
   RUNNER,
 } from '@packages/core/src/server';
 
-import { createWebpackServer } from '@packages/servers/webpack/src';
+import { createWebpackWatchServer } from '@packages/servers/webpack/src';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import { TempFolder } from './test/temp-folder';
@@ -24,7 +24,7 @@ export function createManagerConfig(
       screenshots: tf('screenshots'),
       temp: tf('temp'),
     },
-    preview: createWebpackServer({
+    preview: createWebpackWatchServer({
       mode: 'development',
       entry: ['@storyshots/webpack/client', tf('index.tsx')],
       module: {

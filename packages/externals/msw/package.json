@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "react": "*",
-    "@storyshots/core": "0.0.13",
-    "@storyshots/arrangers": "0.0.13",
+    "@storyshots/core": "0.0.14",
+    "@storyshots/arrangers": "0.0.14",
     "msw": "^2.6.8"
   }
 }

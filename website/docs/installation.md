@@ -141,7 +141,7 @@ run(
 Далее необходимо описать [сервер превью](/modules/scheme#ipreviewserver):
 
 ```ts title="/src/storyshots/manager/createAppServer.ts"
-import { createWebpackServer } from '@storyshots/webpack';
+import { createWebpackWatchServer } from '@storyshots/webpack';
 // Переиспользуем конфигурацию сборки
 import config from '../../../webpack.config.ts';
 
@@ -149,7 +149,7 @@ export function createAppServer() {
     // Меняем entry и указываем на preview файл
     config.entry = '/src/storyshots/preview/index.ts';
     
-    return createWebpackServer(config);
+    return createWebpackWatchServer(config);
 }
 ```
 

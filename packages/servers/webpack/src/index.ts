@@ -1,13 +1,15 @@
 import { IPreviewServer } from '@storyshots/core/manager';
-import { Router } from 'express';
+import express from 'express';
 import { EventEmitter } from 'node:events';
 import { Configuration, webpack } from 'webpack';
 import _dev from 'webpack-dev-middleware';
 
 /**
- * https://storyshots.github.io/storyshots/modules/webpack#createwebpackserver
+ * https://storyshots.github.io/storyshots/modules/webpack#createwebpackwatchserver
  */
-export function createWebpackServer(config: Configuration): IPreviewServer {
+export function createWebpackWatchServer(
+  config: Configuration,
+): IPreviewServer {
   const compiler = webpack(config);
   const dev = _dev(compiler);
 
@@ -18,7 +20,8 @@ export function createWebpackServer(config: Configuration): IPreviewServer {
   );
 
   return {
-    handler: Router()
+    handler: express
+      .Router()
       .get('/__live_reload', (_, response) => {
         response.set({
           'Cache-Control': 'no-cache',
@@ -38,8 +41,37 @@ export function createWebpackServer(config: Configuration): IPreviewServer {
     cleanup: () =>
       new Promise<void>((resolve, reject) => {
         emitter.removeAllListeners();
-        
+
         dev.close((error) => (error ? reject(error) : resolve()));
       }),
   };
+}
+
+/**
+ * https://storyshots.github.io/storyshots/modules/webpack#createwebpackstaticserver
+ */
+export async function createWebpackStaticServer(
+  root: string,
+  config: Configuration,
+): Promise<IPreviewServer> {
+  return new Promise((resolve, reject) =>
+    webpack(config, (error, stats) => {
+      if (error) {
+        console.error(error.stack || error);
+
+        return reject();
+      }
+
+      console.log(stats?.toString({ chunks: false, colors: true }));
+
+      if (stats?.hasErrors()) {
+        return reject();
+      }
+
+      return resolve({
+        handler: express.static(root),
+        cleanup: async () => {},
+      });
+    }),
+  );
 }

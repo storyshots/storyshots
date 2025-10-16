@@ -14,13 +14,13 @@ sidebar_position: 6
 ```ts
 import { ManagerConfig, mergeServe } from '@storyshots/core/manager';
 import { createWorkerSupplier } from '@storyshots/msw-externals/createWorkerSupplier';
-import { createWebpackServer } from '@storyshots/webpack';
+import { createWebpackWatchServer } from '@storyshots/webpack';
 
 export default {
     preview: mergeServe(
         createWorkerSupplier(),
         // Может использоваться любой другой сервер
-        createWebpackServer(/* ... */),
+        createWebpackWatchServer(/* ... */),
     ),
     /* ... */
 } satisfies ManagerConfig;

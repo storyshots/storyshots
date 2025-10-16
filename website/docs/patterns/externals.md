@@ -64,7 +64,7 @@ const userRepository: UserRepository = {
 
 ```ts title="manager.ts"
 runUI({
-  preview: createWebpackServer({ /* собственная конфигурация тестирования */ }),
+  preview: createWebpackWatchServer({ /* собственная конфигурация тестирования */ }),
 });
 ```
 
@@ -75,7 +75,7 @@ runUI({
 import config from './webpack.config.ts';
 
 runUI({
-  preview: createWebpackServer(withPreviewEntry(config)),
+  preview: createWebpackWatchServer(withPreviewEntry(config)),
 });
 ```
 
