@@ -2,7 +2,7 @@ import colors from 'colors/safe';
 import { Device, InitializationError, RunnableStoryMeta } from '@core';
 import { ManagerConfig } from '../../types';
 import { Duration } from '../../../reusables/duration';
-import { assertNotEmpty, isDefined } from '@lib';
+import { assertNotEmpty, isDefined, isNil } from '@lib';
 import { StoryRunState } from '../../../reusables/runner/StoryRunState';
 import { StoryRunResult } from '../../../reusables/runner/StoryRunResult';
 import { Results } from './createResults';
@@ -29,26 +29,32 @@ export const createReporter = (config: ManagerConfig) => {
         'agents',
       );
     },
-    onStoryStateChange: (results: Results) => {
+    onStoryStateChange: (stories: RunnableStoryMeta[], results: Results) => {
       const event = results.events().at(-1);
 
       assertNotEmpty(event);
 
       const [story, state] = event;
-      return StoryRunState.when(state, {
+      const part: LogPart = StoryRunState.when(state, {
         onRunning: () => {
           // TODO: Add option to display when test is running
           /* Do nothing when test is running */
+          return undefined;
         },
         onDone: (details, { duration }) =>
           StoryRunResult.when(details, {
-            onFail: () => console.log(toFailString(story, results, duration)),
-            onFresh: () => console.log(toFreshString(story, results, duration)),
-            onPass: () => console.log(toPassString(story, results, duration)),
+            onFail: () => toFailString(story, results, duration),
+            onFresh: () => toFreshString(story, results, duration),
+            onPass: () => toPassString(story, results, duration),
           }),
-        onError: (_, { duration }) =>
-          console.log(toErrorString(story, results, duration)),
+        onError: (_, { duration }) => toErrorString(story, results, duration),
       });
+
+      if (isNil(part)) {
+        return;
+      }
+
+      return console.log(withStoryProgress(stories, results, part));
     },
     onAllStoriesRan: (results: Results) => {
       console.log('\n');
@@ -72,7 +78,12 @@ export const createReporter = (config: ManagerConfig) => {
       );
 
       if (failures.length > 0) {
-        console.log(colors.red(`${failures.length} failed`));
+        console.log(colors.red(`${failures.length} failed:`));
+        console.log('\n');
+
+        failures.forEach(([event]) => console.log(toShallowFailString(event)));
+
+        console.log('\n');
       }
 
       // Story is considered flaky when it is pass and also was retried
@@ -87,7 +98,12 @@ export const createReporter = (config: ManagerConfig) => {
         .filter(([story]) => results.attempts(story).length > 1);
 
       if (flaky.length > 0) {
-        console.log(colors.yellow(`${flaky.length} flaky`));
+        console.log(colors.yellow(`${flaky.length} flaky:`));
+        console.log('\n');
+
+        flaky.forEach(([event]) => console.log(toFlakyString(event)));
+
+        console.log('\n');
       }
 
       const fresh = results.done().filter(([, details]) =>
@@ -146,7 +162,7 @@ function toPassString(
   return join(
     colors.green('pass'),
     toStoryTitleString(story),
-    toFlakyString(story, results),
+    toFlakyStatusString(story, results),
     toDurationString(duration),
   );
 }
@@ -159,7 +175,7 @@ function toFreshString(
   return join(
     colors.blue('fresh'),
     toStoryTitleString(story),
-    toFlakyString(story, results),
+    toFlakyStatusString(story, results),
     toDurationString(duration),
   );
 }
@@ -176,8 +192,23 @@ function toFailString(
   );
 }
 
+function toFlakyString(story: ShallowStoryRunMeta) {
+  return join(colors.yellow('flaky'), toStoryTitleString(story));
+}
+
 function toShallowFailString(story: ShallowStoryRunMeta) {
   return join(colors.red('fail'), toStoryTitleString(story));
+}
+
+function withStoryProgress(
+  stories: RunnableStoryMeta[],
+  results: Results,
+  part: LogPart,
+) {
+  const ran = [...results.done(), ...results.errors()].length;
+  const total = stories.length;
+
+  return join(colors.grey(`${((ran / total) * 100).toFixed(0)}%`), part);
 }
 
 function toErrorString(
@@ -196,7 +227,7 @@ function toShallowErrorString(story: ShallowStoryRunMeta) {
   return join(colors.bgRed('error'), colors.red(toStoryTitleString(story)));
 }
 
-function toFlakyString(story: RunnableStoryMeta, results: Results) {
+function toFlakyStatusString(story: RunnableStoryMeta, results: Results) {
   const attempts = results.attempts(story);
 
   if (attempts.length === 1) {
@@ -224,6 +255,8 @@ function toStoryTitleString({ story, device }: ShallowStoryRunMeta) {
   return [`[${device.name}]`, ...story.parents, story.title].join(' > ');
 }
 
-function join(...parts: Array<string | undefined>) {
+function join(...parts: LogPart[]): LogPart {
   return parts.filter(isDefined).join(' ');
 }
+
+type LogPart = string | undefined;

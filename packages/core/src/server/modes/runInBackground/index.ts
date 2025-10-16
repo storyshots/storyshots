@@ -111,7 +111,7 @@ async function runAllStories(
   for await (const event of running) {
     results = createResults([event, results]);
 
-    reporter.onStoryStateChange(results);
+    reporter.onStoryStateChange(stories, results);
   }
 
   return results;

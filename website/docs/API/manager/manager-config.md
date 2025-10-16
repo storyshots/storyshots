@@ -39,7 +39,7 @@
 
 ```ts
 {
-    preview: createWebpackServer(/* конфигурация */),
+    preview: createWebpackWatchServer(/* конфигурация */),
     /* ... */
 }
 ```

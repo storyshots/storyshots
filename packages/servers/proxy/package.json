@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "http-proxy-middleware": "^3.0.0",
-    "@storyshots/core": "0.0.13"
+    "@storyshots/core": "0.0.14"
   }
 }
