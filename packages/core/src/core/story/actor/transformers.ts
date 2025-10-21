@@ -1,15 +1,14 @@
-import { StoryTree } from '../types';
-import { map } from '../../transformers';
+import { map } from '../struct';
 import { ResizeAction, ScreenshotAction } from './types';
 import { Finder, FinderMeta } from '../finder/types';
 import { isNil } from '@lib';
-import { StoryEnvironment } from '@core';
+import { ExtendableStoryTree, StoryEnvironment } from '@core';
 
 // TODO: Add docs
-export function masked<TExternals>(
+export function masked<TArg>(
   options: MaskOptions,
-  stories: StoryTree<TExternals>,
-): StoryTree<TExternals> {
+  stories: ExtendableStoryTree<TArg>,
+): ExtendableStoryTree<TArg> {
   return map(stories, (story) => ({
     ...story,
     act: (actor, config) => {
@@ -63,10 +62,10 @@ type MaskOptions = {
 };
 
 // TODO: Add docs
-export function resized<TExternals>(
+export function resized<TArg>(
   resize: (config: StoryEnvironment) => ResizeAction['payload'] | undefined,
-  stories: StoryTree<TExternals>,
-): StoryTree<TExternals> {
+  stories: ExtendableStoryTree<TArg>,
+): ExtendableStoryTree<TArg> {
   return map(stories, (story) => ({
     ...story,
     act: (actor, config) => {

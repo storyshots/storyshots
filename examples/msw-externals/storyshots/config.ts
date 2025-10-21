@@ -1,5 +1,5 @@
-import { ManagerConfig, mergeServe, RUNNER } from '@storyshots/core/manager';
-import { createWorkerSupplier } from '@storyshots/msw-externals/createWorkerSupplier';
+import { UserDefinedManagerConfig, merge, RUNNER } from '@storyshots/core/manager';
+import { createWorkerSupplier } from '@storyshots/msw-externals/preview';
 import path from 'path';
 import { createPreviewServer } from './createPreviewServer';
 
@@ -21,8 +21,7 @@ export default {
   paths: {
     screenshots: path.join(process.cwd(), 'screenshots'),
     records: path.join(process.cwd(), 'records'),
-    temp: path.join(process.cwd(), '..', '..', '..', 'temp'),
   },
-  preview: mergeServe(createWorkerSupplier(), createPreviewServer()),
+  preview: merge(createWorkerSupplier(), createPreviewServer()),
   runner: RUNNER.pool({ agentsCount: 4 }),
-} satisfies ManagerConfig;
+} satisfies UserDefinedManagerConfig;

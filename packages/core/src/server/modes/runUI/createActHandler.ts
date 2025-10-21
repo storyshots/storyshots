@@ -3,7 +3,7 @@ import { RequestHandler } from 'express';
 import { Page } from 'playwright';
 import { act } from '../../act';
 import { handlePossibleErrors } from '../../handlers/reusables/handlePossibleErrors';
-import { toPreviewFrame } from '../../handlers/reusables/toPreviewFrame';
+import { toPreviewFrameLocator } from '../../handlers/reusables/toPreviewFrameLocator';
 import { Server } from '../reusables/createServer';
 import { WithPossibleError } from '../../../reusables/error';
 
@@ -14,7 +14,7 @@ export function createActHandler(server: Server, page: Page): RequestHandler {
 
     const result: WithPossibleError<void> = await handlePossibleErrors(
       async () => {
-        const preview = await toPreviewFrame(page);
+        const preview = await toPreviewFrameLocator(page);
 
         for (const action of actions) {
           if (action.action === 'screenshot' || action.action === 'resize') {

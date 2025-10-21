@@ -4,7 +4,7 @@
     "baseUrl": "./",
     "paths": {
       "@lib": [
-        "../../../lib/utils.ts"
+        "../../lib/utils.ts"
       ]
     }
   }

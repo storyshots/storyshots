@@ -12,10 +12,24 @@ export async function createServer(config: ManagerConfig) {
 
   const api = await createApiHandlers(router, config);
   const dynamic = createLazySetHandler();
+  const preview = await config.preview(config);
 
   app.use(express.json({ reviver: regexpJSONReviver }));
 
-  app.use(createManagerPreviewSwitch(config));
+  app.use((request, response, next) => {
+    const qs = createROTypedQSProxy({
+      get: (key) => request.query[key] as string,
+    });
+
+    if (qs.get('manager') === MANAGER_UNIQ_KEY) {
+      return next();
+    }
+
+    return preview.handler(request, response, () =>
+      response.status(404).send(),
+    );
+  });
+
   app.use(api.router);
   app.use(dynamic.handler);
   app.use(createUIHandler());
@@ -27,7 +41,7 @@ export async function createServer(config: ManagerConfig) {
     use: dynamic.set,
     router,
     cleanup: async () => {
-      await config.preview.cleanup();
+      await preview.cleanup?.();
 
       await api.cleanup();
 
@@ -37,22 +51,6 @@ export async function createServer(config: ManagerConfig) {
 }
 
 export type Server = Awaited<ReturnType<typeof createServer>>;
-
-function createManagerPreviewSwitch(config: ManagerConfig): RequestHandler {
-  return (request, response, next) => {
-    const qs = createROTypedQSProxy({
-      get: (key) => request.query[key] as string,
-    });
-
-    if (qs.get('manager') === MANAGER_UNIQ_KEY) {
-      return next();
-    }
-
-    return config.preview.handler(request, response, () =>
-      response.status(404).send(),
-    );
-  };
-}
 
 // Allows to define handler position first and handler function later
 function createLazySetHandler() {

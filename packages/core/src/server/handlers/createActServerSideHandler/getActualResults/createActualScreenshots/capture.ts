@@ -10,8 +10,6 @@ export function capture(
 ) {
   return config.capture({
     story,
-    page: preview.page(),
     capture: () => doScreenshotAction(preview, action),
-    manager: config,
   });
 }

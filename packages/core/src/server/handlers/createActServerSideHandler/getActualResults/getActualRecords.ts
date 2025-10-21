@@ -1,5 +1,5 @@
 import { Frame } from 'playwright';
 
-export function getActualRecords(preview: Frame) {
-  return preview.page().evaluate(() => window.getJournalRecords());
+export async function getActualRecords(preview: Frame) {
+  return preview.evaluate(() => window.getJournalRecords());
 }

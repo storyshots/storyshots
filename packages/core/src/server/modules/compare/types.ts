@@ -1,4 +1,4 @@
-import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export type ImageComparator = (
   actual: Buffer,

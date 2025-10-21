@@ -3,9 +3,8 @@
 import {
   runInBackground,
   runUI,
-  ManagerConfig,
+  UserDefinedManagerConfig,
 } from '@storyshots/core/manager';
-import * as process from 'node:process';
 import path from 'path';
 import { register } from 'ts-node';
 import yargs from 'yargs';
@@ -33,15 +32,9 @@ async function main() {
       'Error: Please provide a storyshots config file path as the last argument (e.g., storyshots --ui path/to/config.ts)',
     ).argv;
 
-  const config = await parse(path.join(process.cwd(), argv._[0] as string));
+  const config: UserDefinedManagerConfig = await require(
+    path.join(process.cwd(), argv._[0] as string),
+  ).default;
 
   return argv.ui ? runUI(config) : runInBackground(config);
-}
-
-async function parse(path: string): Promise<ManagerConfig> {
-  const config: ManagerConfig | (() => Promise<ManagerConfig>) =
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require(path).default;
-
-  return typeof config === 'function' ? config() : config;
 }

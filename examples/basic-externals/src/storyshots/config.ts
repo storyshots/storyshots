@@ -1,4 +1,8 @@
-import { ManagerConfig, RUNNER, COMPARE } from '@storyshots/core/manager';
+import {
+  UserDefinedManagerConfig,
+  RUNNER,
+  COMPARE,
+} from '@storyshots/core/manager';
 import path from 'path';
 import { createPreviewServer } from './createPreviewServer';
 
@@ -20,9 +24,8 @@ export default {
   paths: {
     screenshots: path.join(process.cwd(), 'screenshots'),
     records: path.join(process.cwd(), 'records'),
-    temp: path.join(process.cwd(), '..', '..', 'temp'),
   },
   preview: createPreviewServer(),
   runner: RUNNER.pool({ agentsCount: 4 }),
   compare: COMPARE.withLooksSame(),
-} satisfies ManagerConfig;
+} satisfies UserDefinedManagerConfig;

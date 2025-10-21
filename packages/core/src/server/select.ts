@@ -30,22 +30,29 @@ function byIndex(element: Locator, finder: ByIndex) {
   }
 }
 
-function withFilter(frame: Frame, element: Locator, filter: WithFilter) {
+function withFilter(
+  preview: Frame,
+  element: Locator,
+  filter: WithFilter,
+) {
   const options = filter.options;
 
   return element.filter({
-    has: isNil(options.has) ? undefined : select(frame, options.has),
-    hasNot: isNil(options.hasNot) ? undefined : select(frame, options.hasNot),
+    has: isNil(options.has) ? undefined : select(preview, options.has),
+    hasNot: isNil(options.hasNot) ? undefined : select(preview, options.hasNot),
     hasText: options.hasText,
     hasNotText: options.hasNotText,
   });
 }
 
-function withAnd(frame: Frame, element: Locator, finder: WithAnd) {
-  return element.and(select(frame, finder.condition));
+function withAnd(preview: Frame, element: Locator, finder: WithAnd) {
+  return element.and(select(preview, finder.condition));
 }
 
-function byLocator(element: Frame | Locator, finder: ByLocator): Locator {
+function byLocator(
+  element: Frame | Locator,
+  finder: ByLocator,
+): Locator {
   switch (finder.by.type) {
     case 'selector':
       return element.locator(finder.by.selector);

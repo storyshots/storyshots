@@ -1,3 +1,4 @@
+// Exports members for all @storyshots/core clients
 export {
   map,
   filter,
@@ -5,12 +6,10 @@ export {
   masked,
   resized,
   finder,
-  __bindStoryFactories,
-  type StoryConfig,
-  type StoryTree,
-  type ActiveStory,
   type ActorTransformer,
   type FinderTransformer,
+  type ExtendableStoryTree as StoryTree,
+  type ExtendableStory as Story,
   type StoryAttributes,
-  type RunnableStoryMeta,
+  type StoryConfig,
 } from './index';

@@ -3,9 +3,10 @@ import {
   COMPARE,
   ManagerConfig,
   RUNNER,
+  UserDefinedManagerConfig,
 } from '@packages/core/src/server';
 
-import { createWebpackWatchServer } from '@packages/servers/webpack/src';
+import { createWebpackPreview } from '@packages/servers/webpack/src';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import webpack from 'webpack';
 import { TempFolder } from './test/temp-folder';
@@ -13,7 +14,7 @@ import { TempFolder } from './test/temp-folder';
 export function createManagerConfig(
   devices: ManagerConfig['devices'],
   tf: TempFolder,
-) {
+): ManagerConfig {
   return {
     devices,
     compare: COMPARE.withPlaywright(),
@@ -22,40 +23,41 @@ export function createManagerConfig(
     paths: {
       records: tf('records'),
       screenshots: tf('screenshots'),
-      temp: tf('temp'),
     },
-    preview: createWebpackWatchServer({
-      mode: 'development',
-      entry: ['@storyshots/webpack/client', tf('index.tsx')],
-      module: {
-        rules: [
-          {
-            oneOf: [
-              {
-                test: /\.(ts|js)x?$/,
-                loader: 'babel-loader',
-                exclude: /node_modules/,
-                options: {
-                  presets: [
-                    '@babel/preset-env',
-                    '@babel/preset-react',
-                    '@babel/preset-typescript',
-                  ],
+    mode: 'ui',
+    preview: (config) =>
+      createWebpackPreview(process.cwd(), {
+        mode: 'development',
+        entry: ['@storyshots/webpack/client', tf('index.tsx')],
+        module: {
+          rules: [
+            {
+              oneOf: [
+                {
+                  test: /\.(ts|js)x?$/,
+                  loader: 'babel-loader',
+                  exclude: /node_modules/,
+                  options: {
+                    presets: [
+                      '@babel/preset-env',
+                      '@babel/preset-react',
+                      '@babel/preset-typescript',
+                    ],
+                  },
                 },
-              },
-            ],
-          },
+              ],
+            },
+          ],
+        },
+        resolve: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
+        plugins: [
+          new HtmlWebpackPlugin(),
+          new webpack.DefinePlugin({
+            'process.env': { NODE_ENV: '"development"' },
+          }),
         ],
-      },
-      resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-      plugins: [
-        new HtmlWebpackPlugin(),
-        new webpack.DefinePlugin({
-          'process.env': { NODE_ENV: '"development"' },
-        }),
-      ],
-    }),
+      })({ ...config, mode: 'ui' }),
   };
 }

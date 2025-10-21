@@ -1,15 +1,24 @@
-import { IPreviewServer } from '@storyshots/core/manager';
+import { IPreviewServer, PreviewServerFactory } from '@storyshots/core/manager';
 import express from 'express';
 import { EventEmitter } from 'node:events';
 import { Configuration, webpack } from 'webpack';
 import _dev from 'webpack-dev-middleware';
+import { assert } from '@lib';
+import path from 'node:path';
 
-/**
- * https://storyshots.github.io/storyshots/modules/webpack#createwebpackwatchserver
- */
-export function createWebpackWatchServer(
+export const createWebpackPreview = (
+  root: string,
   config: Configuration,
-): IPreviewServer {
+): PreviewServerFactory => {
+  assert(path.isAbsolute(root), 'Path to root must be absolute');
+
+  return (manager) =>
+    manager.mode === 'ui'
+      ? createWebpackWatchServer(config)
+      : createWebpackStaticServer(root, config);
+};
+
+function createWebpackWatchServer(config: Configuration): IPreviewServer {
   const compiler = webpack(config);
   const dev = _dev(compiler);
 
@@ -47,14 +56,8 @@ export function createWebpackWatchServer(
   };
 }
 
-/**
- * https://storyshots.github.io/storyshots/modules/webpack#createwebpackstaticserver
- */
-export async function createWebpackStaticServer(
-  root: string,
-  config: Configuration,
-): Promise<IPreviewServer> {
-  return new Promise((resolve, reject) =>
+async function createWebpackStaticServer(root: string, config: Configuration) {
+  return new Promise<IPreviewServer>((resolve, reject) =>
     webpack(config, (error, stats) => {
       if (error) {
         console.error(error.stack || error);
@@ -70,7 +73,6 @@ export async function createWebpackStaticServer(
 
       return resolve({
         handler: express.static(root),
-        cleanup: async () => {},
       });
     }),
   );

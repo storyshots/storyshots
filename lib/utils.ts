@@ -2,8 +2,11 @@ export function wait(ms: number): Promise<void> {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-export function assertIsNever(input?: never): never {
-  throw new Error('Should never be called');
+export function assertIsNever(
+  input?: never,
+  message = 'Should never be called',
+): never {
+  throw new Error(message);
 }
 
 export function assertNotEmpty<T>(
@@ -31,3 +34,38 @@ export function isNil(input: unknown): input is null | undefined {
 export function isDefined<T>(input: T): input is Exclude<T, undefined | null> {
   return !isNil(input);
 }
+
+/**
+ * Omits only functions appearing on first level of a record for simplicity.
+ *
+ * Used to convert structs to serializable entities
+ */
+export type ToJSONLike<T> = T extends JSONLike
+  ? T
+  : {
+      [TKey in keyof T as T[TKey] extends (...args: never[]) => unknown
+        ? never
+        : TKey]: ToJSONLike<T[TKey]>;
+    };
+
+type JSONLike =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONLike[]
+  | { [key: string]: JSONLike };
+
+export type PathsOf<T> = _PathOf<T, keyof T>;
+
+export type GetByPath<TPath extends string, TType> = TPath extends keyof TType
+  ? TType[TPath]
+  : TPath extends `${infer THead extends keyof TType & string}.${infer TRest}`
+    ? GetByPath<TRest, TType[THead]>
+    : unknown;
+
+type _PathOf<T, TKey extends keyof T> = TKey extends string
+  ? T[TKey] extends Record<string, any>
+    ? TKey | `${TKey}.${_PathOf<T[TKey], keyof T[TKey]>}`
+    : TKey
+  : never;

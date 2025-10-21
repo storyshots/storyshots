@@ -1,4 +1,4 @@
-import { assert } from '../../../../lib/utils';
+import { assert } from '@lib';
 import { UnknownArrangers } from '../arrangers-types';
 import { compose } from './compose';
 

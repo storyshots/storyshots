@@ -1,17 +1,25 @@
-import { Story, StoryConfig, StoryTree } from './story';
-
-export type ActiveStory =
-  | undefined
-  | {
-      story: Story;
-      config: StoryConfig;
-    };
+import {
+  ExtendableStory,
+  ExtendableStoryTree,
+  StoryEnvironment,
+} from './story';
+import { AppFrameReference } from '../reusables/types';
 
 declare global {
   interface Window {
     /**
-     * Preview gives all defined stories and expects active story to be returned
+     * Preview gives config and all defined stories.
+     *
+     * Expects active story to be returned.
      */
-    onPreviewReady(stories: StoryTree): ActiveStory;
+    onPreviewReady<TArg>(
+      stories: ExtendableStoryTree<TArg>,
+      config: { frame: AppFrameReference },
+    ):
+      | undefined
+      | {
+          story: ExtendableStory<TArg>;
+          env: StoryEnvironment;
+        };
   }
 }

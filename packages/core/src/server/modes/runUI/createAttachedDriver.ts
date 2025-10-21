@@ -5,16 +5,18 @@ import { ManagerConfig } from '../../types';
 
 export async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
   const context = await chromium.launchPersistentContext(
-    path.join(config.paths.temp, 'chrome-data'),
+    path.join('./.storyshots', 'chrome-data'),
     {
       timeout: 0,
       headless: false,
       viewport: null,
+      bypassCSP: true,
       ignoreDefaultArgs: ['--enable-automation'],
       args: [
         `--app=${createManagerRootURL(config).href}`,
         '--start-maximized',
         '--test-type=gpu',
+        '--disable-web-security',
       ],
     },
   );

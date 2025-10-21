@@ -1,7 +1,7 @@
 import { ManagerConfig } from '../../types';
 import { Baseline } from '../reusables/baseline';
 
-import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export type BasePayload = {
   story: RunnableStoryMeta;

@@ -1,7 +1,7 @@
 import { Page } from 'playwright';
 
 
-import { RunnableStoryMeta } from '../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 import { WithPossibleError } from '../../../reusables/error';
 import { StoryRunResult } from '../../../reusables/runner/StoryRunResult';
 

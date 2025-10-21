@@ -1,13 +1,9 @@
-import { assertNotEmpty } from '@lib';
 import { StoryConfig } from '@storyshots/core';
-import {
-  Arrangers,
-  UnknownArranger,
-  UnknownArrangers,
-} from '@storyshots/arrangers';
+import { Arrangers, UnknownArranger, UnknownArrangers } from '@storyshots/arrangers';
 import { Endpoints, UnknownEndpoint } from '../types';
 import { body, params, query } from '../utils';
 import { MSWArrangers, UnknownMSWArrangers } from './types';
+import { assertIsEndpoint } from '../assertIsEndpoint';
 
 /**
  * https://storyshots.github.io/storyshots/modules/msw#createmswarrangers
@@ -15,7 +11,9 @@ import { MSWArrangers, UnknownMSWArrangers } from './types';
 export function createMSWArrangers<TExternals>(
   arrangers: Arrangers<TExternals, Endpoints>,
 ) {
-  return _create(arrangers as UnknownArrangers) as MSWArrangers<TExternals>;
+  return _create(
+    arrangers as UnknownArrangers,
+  ) as unknown as MSWArrangers<TExternals>;
 }
 
 function _create(arrangers: UnknownArrangers): UnknownMSWArrangers {
@@ -35,7 +33,7 @@ function _create(arrangers: UnknownArrangers): UnknownMSWArrangers {
       ),
     record: (name, fn) =>
       mapHandler(name, (original, config) => async (args) => {
-        config.journal.record(name, {
+        await config.journal.record(name, {
           query: query(args),
           params: params(args),
           body: await body(args),
@@ -52,10 +50,8 @@ function _create(arrangers: UnknownArrangers): UnknownMSWArrangers {
       config: StoryConfig,
     ) => UnknownEndpoint['handle'],
   ): UnknownArranger {
-    return arrangers.compose(name, (_endpoint, config): UnknownEndpoint => {
-      const endpoint = _endpoint as UnknownEndpoint | undefined;
-
-      assertNotEmpty(endpoint, `${name} endpoint is not defined`);
+    return arrangers.compose(name, (endpoint, config): UnknownEndpoint => {
+      assertIsEndpoint(name, endpoint);
 
       return {
         ...endpoint,

@@ -1,4 +1,4 @@
-import { __bindStoryFactories } from '@storyshots/core';
+import { createBindStoryFactories } from '@storyshots/core/toolbox';
 import { createRun } from './createRun';
 import { ExternalsFactory } from './types';
 
@@ -9,7 +9,7 @@ export function createPreviewApp<TExternals>(
   factory: ExternalsFactory<TExternals>,
 ) {
   return {
-    ...__bindStoryFactories<TExternals>(),
+    ...createBindStoryFactories<TExternals>(),
     /**
      * https://storyshots.github.io/storyshots/API/createPreviewApp#run
      */

@@ -1,8 +1,10 @@
-import type { Locator } from 'playwright';
+import type { Locator, Page } from 'playwright';
 import { FileChooser, Keyboard, Mouse } from 'playwright-core';
 import { Finder, FinderMeta } from '../finder/types';
 import { StoryEnvironment } from '../story-config';
 import { ScreenshotName } from './screenshot';
+import { Brand } from '../../brand';
+import { assert } from '@lib';
 
 export type ActorTransformer = (
   actor: Actor,
@@ -66,8 +68,8 @@ export type Actor = MetaActionsFactory & {
      * https://playwright.dev/docs/api/class-mouse#mouse-move
      */
     move(
-      x: number,
-      y: number,
+      x: number | string,
+      y: number | string,
       options?: MouseMoveAction['payload']['options'],
     ): Actor;
     /**
@@ -153,6 +155,11 @@ export type Actor = MetaActionsFactory & {
     on: Finder,
     state: WaitForAction['payload']['state'],
     timeout?: WaitForAction['payload']['timeout'],
+  ): Actor;
+
+  waitForURL(
+    url: WaitForURLAction['payload']['url'],
+    options?: WaitForURLAction['payload']['options'],
   ): Actor;
 
   resize(viewport: ResizeAction['payload']): Actor;
@@ -322,11 +329,19 @@ export type WaitForAction = {
   };
 };
 
+export type WaitForURLAction = {
+  action: 'waitForURL';
+  payload: {
+    url: string | RegExp;
+    options?: Parameters<Page['waitForURL']>[1];
+  };
+};
+
 export type MouseMoveAction = {
   action: 'mouseMove';
   payload: {
-    x: number;
-    y: number;
+    x: number | RelativeMeasure;
+    y: number | RelativeMeasure;
     options?: Parameters<Mouse['move']>[2];
   };
 };
@@ -359,6 +374,27 @@ export type ResizeAction = {
   };
 };
 
+/**
+ * Measure relative to CSS screen size.
+ *
+ * @example
+ * '50%', '100%'
+ */
+export type RelativeMeasure = Brand<string, 'RelativeMeasure'>;
+
+export function parseRelativeMeasure(measure: RelativeMeasure): number {
+  return parseFloat(measure) / 100;
+}
+
+export function createRelativeMeasure(expression: string): RelativeMeasure {
+  assert(
+    `${parseFloat(expression)}%` === expression,
+    `Invalid relative measure was provided. Received ${expression}, expected value like: 80%, 25.5% and etc.`,
+  );
+
+  return expression as RelativeMeasure;
+}
+
 export type ActionMeta =
   | ClickAction
   | DblClickAction
@@ -381,4 +417,5 @@ export type ActionMeta =
   | MouseMoveAction
   | MouseUpDownAction
   | ResizeAction
-  | StopAction;
+  | StopAction
+  | WaitForURLAction;

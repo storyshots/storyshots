@@ -4,7 +4,10 @@ import { Frame } from 'playwright';
 import { PageScreenshotOptions } from 'playwright-core';
 import { select } from '../../../../select';
 
-export async function doScreenshotAction(preview: Frame, action: ScreenshotAction) {
+export async function doScreenshotAction(
+  preview: Frame,
+  action: ScreenshotAction,
+) {
   return preview.page().screenshot({
     type: 'png',
     caret: 'hide',

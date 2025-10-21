@@ -2,17 +2,17 @@
 sidebar_position: 7
 ---
 
-# @storyshots/proxy
+# @storyshots/middleware
 
 [Сервер](/modules/scheme#ipreviewserver) `preview` проксирующий обращения на переданный адрес.
 
 ## createProxyServer
 
-Создает `proxy` до заданного сервера:
+Создает `middleware` до заданного сервера:
 
 ```ts
 import { ManagerConfig } from '@storyshots/core/manager';
-import { createProxyServer } from '@storyshots/proxy';
+import { createProxyServer } from '@storyshots/middleware';
 
 export default {
     preview: createProxyServer('http://localhost:3000'),
@@ -21,7 +21,7 @@ export default {
 ```
 
 :::warning Важно
-`@storyshots/proxy` следует рассматривать как временное решение при интеграции `storyshots` в проект.
+`@storyshots/middleware` следует рассматривать как временное решение при интеграции `storyshots` в проект.
 
 Модуль хоть и позволяет облегчить интеграцию, однако не поддерживает некоторые из функций, такие как автоматическая
 перезагрузка историй, а также не позволяет интегрировать UI режим в полной мере.

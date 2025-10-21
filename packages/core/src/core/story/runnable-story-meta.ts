@@ -2,12 +2,13 @@ import {
   ActionMeta,
   createActor,
   Device,
+  ExtendableStory,
   flat,
   Story,
   StoryEnvironment,
   StoryTree,
 } from '@core';
-import { isNil } from '@lib';
+import { isNil, ToJSONLike } from '@lib';
 
 export function toRunnableStoryMetas(
   stories: StoryTree,
@@ -95,21 +96,10 @@ function withPossibleStoryError<T>(
  * Represents ready to run, unfolded, json-like story with concrete device and actions
  */
 export type RunnableStoryMeta = {
-  story: ShallowOmitFunctions<Story>;
+  story: ToJSONLike<ExtendableStory<unknown>>;
   actions: ActionMeta[];
   device: Device;
   retries: number;
-};
-
-/**
- * Disallows usage of act, arrange etc. functions because they are not available on node env.
- *
- * Omits only functions appearing on first level of a record for simplicity.
- */
-type ShallowOmitFunctions<T> = {
-  [TKey in keyof T as T[TKey] extends (...args: never[]) => unknown
-    ? never
-    : TKey]: T[TKey];
 };
 
 // Extended kind of WithPossibleError

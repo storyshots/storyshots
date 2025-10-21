@@ -3,7 +3,7 @@ import path from 'path';
 import { ScreenshotPath } from '../../../../reusables/types';
 import { ManagerConfig } from '../../../types';
 import { copy, exists, mkdir, mkfile, read, rmdir } from './utils';
-import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export async function createScreenshotsBaseline(env: ManagerConfig) {
   const { getActualDirFor, actualResultsDir } = await prepareStorage();
@@ -60,7 +60,11 @@ export async function createScreenshotsBaseline(env: ManagerConfig) {
   };
 
   async function prepareStorage() {
-    const actualResultsDir = path.join(env.paths.temp, 'actual');
+    const actualResultsDir = path.join(
+      process.cwd(),
+      '.storyshots',
+      'actual',
+    );
 
     if (await exists(actualResultsDir)) {
       await rmdir(actualResultsDir);

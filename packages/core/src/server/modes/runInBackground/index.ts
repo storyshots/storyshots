@@ -1,7 +1,7 @@
 import { assertNotEmpty } from '@lib';
 import { chromium } from 'playwright';
 import { createManagerRootURL } from '../../paths';
-import { ManagerConfig } from '../../types';
+import { ManagerConfig, UserDefinedManagerConfig } from '../../types';
 import { createServer } from '../reusables/createServer';
 import { createReporter } from './createReporter';
 import { run } from '../../../reusables/runner/run';
@@ -9,8 +9,14 @@ import { driver } from '../../../reusables/driver';
 import { RunnableStoryMeta } from '@core';
 import { Duration } from '../../../reusables/duration';
 import { createResults } from './createResults';
+import { createManagerConfig } from '../../createManagerConfig';
 
-export async function runInBackground(config: ManagerConfig) {
+export async function runInBackground(_config: UserDefinedManagerConfig) {
+  const config: ManagerConfig = {
+    ...createManagerConfig(_config),
+    mode: 'background',
+  };
+
   const server = await createServer(config);
   const reporter = createReporter(config);
 

@@ -1,13 +1,13 @@
-import { StoryTree } from './story';
-import { map } from './transformers';
+import { map } from './story';
+import { ExtendableStoryTree } from './story';
 
 /**
  * https://storyshots.github.io/storyshots/API/operators/only
  */
-export function only<TExternals>(
+export function only<TArg>(
   devices: string[],
-  stories: StoryTree<TExternals>,
-): StoryTree<TExternals> {
+  stories: ExtendableStoryTree<TArg>,
+): ExtendableStoryTree<TArg> {
   return map(stories, (story) => ({
     ...story,
     act: (actor, config) =>

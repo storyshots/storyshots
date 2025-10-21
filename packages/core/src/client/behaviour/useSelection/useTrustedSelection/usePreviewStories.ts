@@ -1,4 +1,4 @@
-import { createJournal, find, StoryTree } from '@core';
+import { find, StoryTree } from '@core';
 import { useEffect, useState } from 'react';
 import { ManagerConfig } from '../useManagerConfig';
 import { UserSelection } from '../useUserSelection';
@@ -12,8 +12,7 @@ import { UserSelection } from '../useUserSelection';
  * * Preview was reloaded. For example during webpack build (Live reloading).
  * * Preview stories were changed. As a subset of the former.
  *
- * **CAUTION**
- * It makes behaviours including `window.location.reload` impossible to test.
+ * TODO: It makes behaviours including `window.location.reload` impossible to test.
  */
 export function usePreviewStories(
   untrusted: UserSelection,
@@ -22,7 +21,11 @@ export function usePreviewStories(
   const [stories, setStories] = useState<StoryTree>();
 
   useEffect(() => {
-    window.onPreviewReady = (stories) => {
+    window.onPreviewReady = (stories, config) => {
+      // Exposing app frame reference
+      // TODO: Can global refs be avoided?
+      window.getAppFrameRef = () => config.frame;
+
       setStories(stories);
 
       if (untrusted.type === 'no-selection') {
@@ -37,10 +40,9 @@ export function usePreviewStories(
 
       return {
         story,
-        config: {
+        env: {
           device: manager.preview.resolved,
           previewing: true,
-          journal: createJournal(),
         },
       };
     };
@@ -61,3 +63,4 @@ export function usePreviewStories(
 
   return stories;
 }
+

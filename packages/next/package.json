@@ -1,0 +1,53 @@
+{
+  "name": "@storyshots/next",
+  "version": "0.0.15",
+  "description": "Next storyshots facade",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "default": "./lib/index.js"
+    },
+    "./preview": {
+      "types": "./lib/preview.d.ts",
+      "require": "./lib/preview.js",
+      "default": "./lib/preview.js"
+    },
+    "./client": {
+      "types": "./lib/client.d.ts",
+      "require": "./lib/client.js",
+      "default": "./lib/client.js"
+    },
+    "./stubs": {
+      "require": "./lib/stubs.js",
+      "default": "./lib/stubs.js"
+    }
+  },
+  "repository": "https://github.com/storyshots/storyshots.git",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "preview",
+    "client",
+    "stubs"
+  ],
+  "scripts": {
+    "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts",
+    "compile": "tsc --noEmit",
+    "lint": "eslint ./src"
+  },
+  "dependencies": {
+    "@storyshots/core": "0.0.15",
+    "@storyshots/proxy": "0.0.15",
+    "react": "*",
+    "react-dom": "*",
+    "next": "^15",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17"
+  }
+}

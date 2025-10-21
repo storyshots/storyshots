@@ -1,6 +1,6 @@
 import { StoryEnvironment } from '../story-config';
 import { assertScreenshotNameConditions, ScreenshotName } from './screenshot';
-import { ActionMeta, Actor } from './types';
+import { ActionMeta, Actor, createRelativeMeasure } from './types';
 
 export function createActor(
   config: StoryEnvironment,
@@ -76,7 +76,14 @@ export function createActor(
     },
     mouse: {
       move: (x, y, options) =>
-        withAction({ action: 'mouseMove', payload: { x, y, options } }),
+        withAction({
+          action: 'mouseMove',
+          payload: {
+            x: typeof x === 'number' ? x : createRelativeMeasure(x),
+            y: typeof y === 'number' ? y : createRelativeMeasure(y),
+            options,
+          },
+        }),
       up: (options) =>
         withAction({ action: 'mouseUpDown', payload: { type: 'up', options } }),
       down: (options) =>
@@ -85,7 +92,10 @@ export function createActor(
           payload: { type: 'down', options },
         }),
       wheel: (dx, dy) =>
-        withAction({ action: 'mouseWheel', payload: { dx, dy } }),
+        withAction({
+          action: 'mouseWheel',
+          payload: { dx, dy },
+        }),
     },
     drag: (draggable, to, options) =>
       withAction({
@@ -113,6 +123,8 @@ export function createActor(
         action: 'waitFor',
         payload: { on: on.__toMeta(), state, timeout },
       }),
+    waitForURL: (url, options) =>
+      withAction({ action: 'waitForURL', payload: { url, options } }),
     resize: (viewport) => withAction({ action: 'resize', payload: viewport }),
     do: (transform) => transform(actor, config),
     stop: () => withAction({ action: 'stop' }),

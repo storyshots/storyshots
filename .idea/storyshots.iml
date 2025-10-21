@@ -29,6 +29,16 @@
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages/core/src/client/behaviour/useHighlighter/generated" />
       <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/faker" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/next/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/next-app/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/next-app/.preview" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/next-app/.story" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/next-app/.storyshots" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/basic-externals/.storyshots" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/basic-externals/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/msw-externals/.storyshots" />
+      <excludeFolder url="file://$MODULE_DIR$/examples/msw-externals/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/.storyshots" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

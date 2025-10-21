@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/webpack",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Preview webpack middleware",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "lint": "eslint ./src client.ts"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.14",
+    "@storyshots/core": "0.0.15",
     "html-webpack-plugin": "^5.5.3",
     "webpack": "^5.89.0",
     "webpack-dev-middleware": "^7.0.0",

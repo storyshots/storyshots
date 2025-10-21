@@ -15,17 +15,32 @@ export function useHighlighting(cb: OnHighlightStart) {
         return;
       }
 
-      const preview = document.querySelector<HTMLIFrameElement>('#preview');
-      const frame = preview?.contentWindow;
-
-      assertNotEmpty(frame);
-
-      const stop = await cb(frame);
+      const stop = await cb(toPreviewFrame());
 
       setOnDone(() => stop);
     },
     highlighting,
   };
+}
+
+function toPreviewFrame() {
+  const reference = window.getAppFrameRef();
+
+  switch (reference.type) {
+    case 'self':
+      return frame('preview');
+    case 'id':
+      return frame(reference.value, frame('preview').document);
+  }
+
+  function frame(id: string, context = document) {
+    const result = context.querySelector<HTMLIFrameElement>(`#${id}`)
+      ?.contentWindow;
+
+    assertNotEmpty(result, `Frame ${id} was not found`);
+
+    return result;
+  }
 }
 
 type OnHighlightStart = (frame: Window) => Promise<OnHighlightFinish>;
