@@ -1,7 +1,7 @@
 import { Page } from 'playwright';
 import { Task, TaskResult } from '../types';
 
-import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export type Worker = {
   allocate(story: RunnableStoryMeta): Promise<AllocatedResource>;

@@ -1,21 +1,12 @@
 import { StoryTree } from '@storyshots/core';
+import { createRoot } from 'react-dom/client';
 import { createStoryView } from './App';
 import { ExternalsFactory } from './types';
 
 export const createRun =
   <TExternals extends unknown>(factory: ExternalsFactory<TExternals>) =>
-  async (stories: StoryTree) => {
-    try {
-      const { createRoot } = await import(/* webpackIgnore: true */ 'react-dom/client');
-
-      createRoot(createRootElement()).render(createStoryView(stories, factory));
-    } catch (_) {
-      const ReactDOM = await import('react-dom');
-
-      // eslint-disable-next-line react/no-deprecated
-      ReactDOM.render(createStoryView(stories, factory), createRootElement());
-    }
-  };
+  async (stories: StoryTree<TExternals>) =>
+    createRoot(createRootElement()).render(createStoryView(stories, factory));
 
 function createRootElement(): Element {
   const found = document.querySelector('#root');

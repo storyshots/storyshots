@@ -1,10 +1,13 @@
-import { IPreviewServer } from '@storyshots/core/manager';
-import { createWebpackWatchServer } from '@storyshots/webpack';
+import { PreviewServerFactory } from '@storyshots/core/manager';
+import { createWebpackPreview } from '@storyshots/webpack';
 import path from 'path';
 import config from '../../webpack.config';
 
-export function createPreviewServer(): IPreviewServer {
-  config.entry = ['@storyshots/webpack/client', path.join(__dirname, 'preview', 'index.tsx')];
+export function createPreviewServer(): PreviewServerFactory {
+  config.entry = [
+    '@storyshots/webpack/client',
+    path.join(__dirname, 'preview', 'index.tsx'),
+  ];
 
-  return createWebpackWatchServer(config);
+  return createWebpackPreview(path.join(process.cwd(), 'dist'), config);
 }

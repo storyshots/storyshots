@@ -1,21 +1,20 @@
 {
   "name": "@storyshots/react",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "React storyshots facade",
-  "main": "./lib/index.mjs",
-  "types": "./lib/index.d.mts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "files": [
-    "lib",
-    "manager"
+    "lib"
   ],
   "scripts": {
     "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts",
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.14",
+    "@storyshots/core": "0.0.15",
     "react": "*",
     "react-dom": "*"
   },

@@ -1,7 +1,7 @@
 import { Task, TaskResult } from '../types';
 import { Job } from './types';
 
-import { RunnableStoryMeta } from '../../../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export const jobs = {
   create: (): Job[] => [],

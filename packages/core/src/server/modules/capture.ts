@@ -1,16 +1,12 @@
 import { wait } from '@lib';
-import { Page } from 'playwright';
-import { ManagerConfig } from '../types';
 
-import { RunnableStoryMeta } from '../../core/story/runnable-story-meta';
+import { RunnableStoryMeta } from '@core';
 
 export type Capture = (config: CaptureConfig) => Promise<Buffer>;
 
 type CaptureConfig = {
-  capture: () => Promise<Buffer>;
   story: RunnableStoryMeta;
-  manager: ManagerConfig;
-  page: Page;
+  capture(): Promise<Buffer>;
 };
 
 export const CAPTURE = {

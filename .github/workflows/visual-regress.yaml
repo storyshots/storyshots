@@ -44,6 +44,10 @@ jobs:
         run: npm run ci
         working-directory: ./examples/msw-externals
 
+      - name: Run next-app tests
+        run: npm run ci
+        working-directory: ./examples/next-app
+
       - name: Commit changes
         run: |
           git config --global user.name 'CI-bot'

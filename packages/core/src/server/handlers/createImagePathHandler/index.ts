@@ -8,6 +8,6 @@ export function createImagePathHandler(router: Router) {
 
     assert(typeof file === 'string');
 
-    return send(request, file).pipe(response);
+    return send(request, file, { dotfiles: 'allow' }).pipe(response);
   });
 }

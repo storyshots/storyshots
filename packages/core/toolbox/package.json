@@ -1,0 +1,4 @@
+{
+  "main": "../lib/toolbox.js",
+  "types": "../lib/toolbox.d.ts"
+}

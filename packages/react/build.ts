@@ -5,6 +5,6 @@ void build({
   outDir: 'lib',
   platform: 'browser',
   target: 'node18',
-  format: 'esm',
+  format: 'cjs',
   dts: true,
 });

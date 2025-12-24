@@ -1,5 +1,5 @@
 import { StoryConfig } from '@storyshots/core';
-import { GetByPath, PathsOf } from './path-types';
+import { GetByPath, PathsOf } from '@lib';
 
 export type UnknownArrangers = {
   focus(path: string): UnknownArrangers;

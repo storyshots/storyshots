@@ -1,5 +1,5 @@
 import { Brand } from '../brand';
-import { Journal } from './journal/types';
+import { Journal } from './journal';
 
 /**
  * https://storyshots.github.io/storyshots/API/story-elements/story-config

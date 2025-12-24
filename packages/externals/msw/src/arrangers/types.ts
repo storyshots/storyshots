@@ -1,10 +1,5 @@
 import { Arranger, UnknownArranger } from '@storyshots/arrangers';
-import {
-  EndpointArgs,
-  EndpointResult,
-  Endpoints,
-  UnknownEndpoint,
-} from '../types';
+import { EndpointArgs, Endpoints, UnknownEndpoint } from '../types';
 
 export type UnknownMSWArrangers = {
   endpoint(
@@ -21,35 +16,35 @@ export type UnknownMSWArrangers = {
 
 export type MSWArrangers<TExternals> = {
   /**
+   * https://storyshots.github.io/storyshots/modules/msw#endpoint
+   */
+  endpoint<TPath extends keyof Endpoints>(
+    name: TPath,
+    endpoint: PartialByKey<Endpoints[TPath], 'handle'>,
+  ): Arranger<TExternals>;
+  /**
    * https://storyshots.github.io/storyshots/modules/msw#handle
    */
-  handle<TEndpoint extends keyof Endpoints>(
-    name: TEndpoint,
-    handle: Endpoints[TEndpoint]['handle'],
+  handle<TPath extends keyof Endpoints>(
+    name: TPath,
+    handle: Endpoints[TPath]['handle'],
   ): Arranger<TExternals>;
   /**
    * https://storyshots.github.io/storyshots/modules/msw#transform
    */
-  transform<TEndpoint extends keyof Endpoints>(
-    name: TEndpoint,
+  transform<TPath extends keyof Endpoints>(
+    name: TPath,
     fn: (
-      result: EndpointResult<Endpoints[TEndpoint]>,
+      result: Awaited<ReturnType<Endpoints[TPath]['handle']>>,
       args: EndpointArgs,
-    ) => ReturnType<Endpoints[TEndpoint]['handle']>,
+    ) => Awaited<ReturnType<Endpoints[TPath]['handle']>>,
   ): Arranger<TExternals>;
   /**
    * https://storyshots.github.io/storyshots/modules/msw#record
    */
-  record<TEndpoint extends keyof Endpoints>(
-    name: TEndpoint,
-    handle?: Endpoints[TEndpoint]['handle'],
-  ): Arranger<TExternals>;
-  /**
-   * https://storyshots.github.io/storyshots/modules/msw#endpoint
-   */
-  endpoint<TEndpoint extends keyof Endpoints>(
-    name: TEndpoint,
-    endpoint: PartialByKey<Endpoints[TEndpoint], 'handle'>,
+  record<TPath extends keyof Endpoints>(
+    name: TPath,
+    handle?: Endpoints[TPath]['handle'],
   ): Arranger<TExternals>;
 };
 

@@ -21,6 +21,7 @@ import { doWait } from './actions/doWait';
 import { doWaitFor } from './actions/doWaitFor';
 import { doWheel } from './actions/doWheel';
 import { doResize } from './actions/doResize';
+import { doWaitForURL } from './actions/doWaitForURL';
 
 export async function act(
   preview: Frame,
@@ -67,6 +68,8 @@ export async function act(
       return doMouseMove(preview, action);
     case 'resize':
       return doResize(preview, action);
+    case 'waitForURL':
+      return doWaitForURL(preview, action);
   }
 
   assertIsNever(action);

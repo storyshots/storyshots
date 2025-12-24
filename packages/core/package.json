@@ -1,29 +1,49 @@
 {
   "name": "@storyshots/core",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Reusable entities across all projects",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "default": "./lib/index.js"
+    },
+    "./manager": {
+      "types": "./lib/manager.d.ts",
+      "require": "./lib/manager.js",
+      "default": "./lib/manager.js"
+    },
+    "./toolbox": {
+      "types": "./lib/toolbox.d.ts",
+      "require": "./lib/toolbox.js",
+      "default": "./lib/toolbox.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "lib",
-    "manager"
+    "manager",
+    "toolbox",
+    "postinstall.js"
   ],
   "bin": {
     "storyshots": "./cli.js"
   },
   "scripts": {
-    "build": "rimraf ./lib && ts-node ./build.core.ts && ts-node ./build.client.ts && tsc -b tsconfig.cli.json && tsc --noEmit",
+    "build": "rimraf ./lib && ts-node ./build.ts && tsc -b tsconfig.cli.json && tsc --noEmit",
     "lint": "eslint ./src",
     "compile": "tsc --noEmit",
-    "postinstall": "playwright install chromium"
+    "postinstall": "node ./postinstall.js"
   },
   "dependencies": {
     "colors": "^1.4.0",
     "express": "^4.18.2",
-    "looks-same": "^9.0.1",
-    "playwright": "^1.49.1",
+    "looks-same": "^10.0.1",
+    "playwright": "^1.57.0",
     "send": "^1.2.0",
     "ts-node": "^10.9.2",
     "yargs": "^17.7.2"

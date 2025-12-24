@@ -1,0 +1,13 @@
+{
+  "renders_empty_blogs": [
+    {
+      "method": "blogGetPosts",
+      "args": [
+        {
+          "query": {},
+          "params": {}
+        }
+      ]
+    }
+  ]
+}

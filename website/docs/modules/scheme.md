@@ -146,10 +146,10 @@ const server = mergeServe(createImageStubber(), createPreviewServer());
 Слой содержит адаптеры сборщиков и серверов AUT на интерфейс `IPreviewServer`.
 
 - [`@storyshots/webpack`](/modules/webpack) - адаптер для AUT использующих `webpack` в качестве сборщика.
-- [`@storyshots/proxy`](/modules/proxy) - fallback адаптер перенаправляющий обращения `storyshots` на сервер AUT.
+- [`@storyshots/middleware`](/modules/proxy) - fallback адаптер перенаправляющий обращения `storyshots` на сервер AUT.
 
 :::tip
-`@storyshots/proxy` рекомендуется использовать в случаях когда сложно интегрировать сборщик в сервер
+`@storyshots/middleware` рекомендуется использовать в случаях когда сложно интегрировать сборщик в сервер
 `storyshots` в качестве `middleware`.
 :::
 

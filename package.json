@@ -26,15 +26,15 @@
   },
   "workspaces": [
     "packages/core",
-    "packages/react",
     "packages/arrangers",
     "packages/servers/webpack",
     "packages/servers/proxy",
     "packages/externals/msw",
     "packages/externals/web-api",
+    "packages/react",
+    "packages/next",
     "examples/basic-externals",
-    "examples/msw-externals",
-    "tests"
+    "examples/msw-externals"
   ],
   "engines": {
     "node": ">=22.12.0"

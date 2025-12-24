@@ -3,7 +3,7 @@ import { callback } from '../reusables/preview/pure-function-factory';
 import { CreateStories } from '../reusables/preview/stories';
 import { describe, test } from '../reusables/test';
 import { desktop } from './reusables/device';
-import { StoryTree } from '@packages/core/src/core';
+import { ExtendableStoryTree } from '@packages/core/src/core';
 
 describe('errors', () => {
   test(
@@ -55,7 +55,9 @@ describe('errors', () => {
 });
 
 function render(
-  factory: (error: (message: string) => StoryTree) => CreateStories<unknown>,
+  factory: (
+    error: (message: string) => ExtendableStoryTree<unknown>,
+  ) => CreateStories<unknown>,
 ): CreateStories<unknown> {
   return callback(factory, ([args, _factory]) =>
     _factory((message) => {

@@ -1,0 +1,34 @@
+{
+  "allows_to_create_a_post": [
+    {
+      "method": "blogGetPosts",
+      "args": [
+        {
+          "query": {},
+          "params": {}
+        }
+      ]
+    },
+    {
+      "method": "blogCreatePost",
+      "args": [
+        {
+          "query": {},
+          "params": {},
+          "body": {
+            "title": "My 1 post"
+          }
+        }
+      ]
+    },
+    {
+      "method": "blogGetPosts",
+      "args": [
+        {
+          "query": {},
+          "params": {}
+        }
+      ]
+    }
+  ]
+}

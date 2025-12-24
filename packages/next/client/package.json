@@ -1,0 +1,4 @@
+{
+  "main": "../lib/client.js",
+  "types": "../lib/client.d.ts"
+}

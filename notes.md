@@ -1,3 +1,8 @@
+PROBLEMS:
+Next is bundled with NODE_ENV="production" which is a problem
+How to test shared components? For example selector opened state
+tests are fragile for now. (maybe write them directly in @core package?)
+
 # High priority
 
 * Integrate react-devtools
@@ -6,6 +11,7 @@
 * Add coverage tool
 * Add progress logging inside CI job
 * Mark flaky tests on UI (Make device entry to be exact as story entry)
+* Recorder (especially for mouse related events with coordinates)
 
 # Low priority
 
@@ -18,6 +24,13 @@
 * Move to Disposable interface
 * Add search to docs
 * Add docs build check on PR
+* Allow to extend preview server per story for next.js
+* Ease creation of previews for @storyshots/core
+    * Sparse global functions should be united (app ref, journal, etc.)
+    * Preview kinds should be described explicitly (flat, nested/detached)
+* Main models in @core must be simplified
+    * Avoid usage of complex nexted types and structures (remove visitors and simplify duration type)
+    * Try to rewrite state container using functional and side effect-less structures (streams)
 
 # Useful links
 
@@ -30,7 +43,8 @@ playwright UI https://playwright.dev/docs/test-ui-mode
     * Long pages. What, how and when
     * Async content. waitFor, trials and etc
     * Dynamic content.
-      * Displaying time or how long it took to complete request. I could mock the timer or replace html content with static data using actor.exec fn
+        * Displaying time or how long it took to complete request. I could mock the timer or replace html content with
+          static data using actor.exec fn
 * Action specific stabilization
     * Find data (it could be animation having accordion)
 * AI Engine to turn text commands in playwright API https://github.com/zerostep-ai/zerostep
