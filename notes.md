@@ -1,8 +1,3 @@
-PROBLEMS:
-Next is bundled with NODE_ENV="production" which is a problem
-How to test shared components? For example selector opened state
-tests are fragile for now. (maybe write them directly in @core package?)
-
 # High priority
 
 * Integrate react-devtools
@@ -12,6 +7,9 @@ tests are fragile for now. (maybe write them directly in @core package?)
 * Add progress logging inside CI job
 * Mark flaky tests on UI (Make device entry to be exact as story entry)
 * Recorder (especially for mouse related events with coordinates)
+* Allow to show only actual screenshot (add Actual switch)
+* Memo screenshot mode selection between stories
+* Manager must react on Preview changes even when screenshot or record is selected
 
 # Low priority
 
@@ -31,6 +29,10 @@ tests are fragile for now. (maybe write them directly in @core package?)
 * Main models in @core must be simplified
     * Avoid usage of complex nexted types and structures (remove visitors and simplify duration type)
     * Try to rewrite state container using functional and side effect-less structures (streams)
+
+# Opened questions
+
+* How to test shared components? For example selector opened state
 
 # Useful links
 

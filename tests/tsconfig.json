@@ -6,14 +6,8 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@core": [
-        "../packages/core/src/core/index.ts"
-      ],
       "@lib": [
         "../lib/utils.ts"
-      ],
-      "@packages/*": [
-        "../packages/*"
       ]
     }
   }

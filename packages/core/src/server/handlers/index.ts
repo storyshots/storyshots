@@ -6,14 +6,12 @@ import { createActServerSideHandler } from './createActServerSideHandler';
 import { createImagePathHandler } from './createImagePathHandler';
 import { createBaseline } from './reusables/baseline';
 
-export async function createApiHandlers(router: Router, config: ManagerConfig) {
+export async function attachApiHandlers(router: Router, config: ManagerConfig) {
   const baseline = await createBaseline(config);
 
   createAcceptScreenshotHandler(router, baseline);
   createAcceptRecordsHandler(router, baseline);
   createImagePathHandler(router);
 
-  const cleanup = await createActServerSideHandler(router, baseline, config);
-
-  return { router, cleanup };
+  return createActServerSideHandler(router, baseline, config);
 }

@@ -1,0 +1,4 @@
+{
+  "main": "../../lib/devkit/manager.js",
+  "types": "../../lib/devkit/manager.d.ts"
+}

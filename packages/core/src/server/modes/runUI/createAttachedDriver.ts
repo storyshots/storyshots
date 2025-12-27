@@ -1,9 +1,10 @@
 import path from 'path';
 import { chromium, Page } from 'playwright';
-import { createManagerRootURL } from '../../paths';
-import { ManagerConfig } from '../../types';
+import { StoryshotsServer } from '../reusables/createStoryshotsServer';
 
-export async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
+export async function openAppAndGetPage(
+  server: StoryshotsServer,
+): Promise<Page> {
   const context = await chromium.launchPersistentContext(
     path.join('./.storyshots', 'chrome-data'),
     {
@@ -13,7 +14,7 @@ export async function openAppAndGetPage(config: ManagerConfig): Promise<Page> {
       bypassCSP: true,
       ignoreDefaultArgs: ['--enable-automation'],
       args: [
-        `--app=${createManagerRootURL(config).href}`,
+        `--app=${server.root.href}`,
         '--start-maximized',
         '--test-type=gpu',
         '--disable-web-security',

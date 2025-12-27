@@ -1,20 +1,28 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
-import { rw } from './reusables/rw';
+import { test } from '../fixtures/ui';
 
-describe('emulating behaviour', () => {
-  test(
-    'allows to emulate behaviour',
-    desktop()
-      .externals(rw())
-      .story(({ useState, finder }) => ({
-        arrange: () => {
+test('allows to emulate behaviour', async ({ ui }) => {
+  await ui.change(({ createPreviewApp, useState, finder }) => {
+    type Externals = {
+      read(): string;
+      write(next: string): void;
+    };
+
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}) as Externals,
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        arrange: (_, { journal }) => {
           let name = 'Ivan';
 
           return {
             read: () => name,
-            write: (_name) => void (name = _name),
+            write: journal.asRecordable(
+              'write',
+              (_name) => void (name = _name),
+            ),
           };
         },
         act: (actor) =>
@@ -37,14 +45,21 @@ describe('emulating behaviour', () => {
             </div>
           );
         },
-      }))
-      .actor()
-      .run('is a story')
-      .open('Records')
-      .screenshot()
-      .open('Initial')
-      .screenshot()
-      .open('FINAL')
-      .screenshot(),
-  );
+      }),
+    );
+  });
+
+  await ui.run('is a story');
+
+  await ui.open('Records');
+
+  await ui.screenshot();
+
+  await ui.open('Initial');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL');
+
+  await ui.screenshot();
 });

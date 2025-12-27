@@ -1,6 +1,6 @@
 import { assertNotEmpty } from '@lib';
 import { StoryConfig } from '@storyshots/core';
-import { JournalRecord } from '@storyshots/core/toolbox';
+import { JournalRecord } from '@storyshots/core/devkit';
 import React, { useMemo } from 'react';
 import { ExternalsFactory } from '../types';
 
@@ -11,7 +11,21 @@ type Props = {
 
 export const View: React.FC<Props> = (props) => {
   const story = props.active.story;
-  const { config, externals } = useMemo(() => createBindComponents(props), []);
+
+  const result = useMemo(
+    () => fromThrowable(() => createBindComponents(props)),
+    [],
+  );
+
+  if (!result.success) {
+    console.error(result.error);
+
+    return <h1>Initialization error, check console for more details</h1>;
+  }
+
+  const {
+    data: { externals, config },
+  } = result;
 
   assertNotEmpty(story.render, 'Render must be defined');
 
@@ -51,4 +65,17 @@ function createExposeJournal(): StoryConfig['journal'] {
   };
 
   return journal;
+}
+
+function fromThrowable<T>(
+  fn: () => T,
+): { success: true; data: T } | { success: false; error: unknown } {
+  try {
+    return {
+      success: true,
+      data: fn(),
+    };
+  } catch (error) {
+    return { success: false, error };
+  }
 }

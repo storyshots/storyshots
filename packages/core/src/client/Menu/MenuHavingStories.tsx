@@ -5,23 +5,23 @@ import { StoryEntry } from './StoryEntry/StoryEntry';
 import { Props } from './types';
 
 export const MenuHavingStories: React.FC<Props> = (props) => {
-  if (Array.isArray(props.stories)) {
-    return (
-      <Entries $level={props.level}>
-        {props.stories.map((it, index) => (
-          <MenuHavingStories key={index} {...props} stories={it} />
-        ))}
-      </Entries>
-    );
-  }
+  return <Entries $level={props.level}>{renderEntries()}</Entries>;
 
-  const node = props.stories;
+  function renderEntries() {
+    if (Array.isArray(props.stories)) {
+      return props.stories.map((it, index) => (
+        <MenuHavingStories key={index} {...props} stories={it} />
+      ));
+    }
 
-  switch (node.type) {
-    case 'group':
-      return <GroupEntry key={node.id} {...props} group={node} />;
-    case 'story':
-      return <StoryEntry key={node.id} {...props} story={node} />;
+    const node = props.stories;
+
+    switch (node.type) {
+      case 'group':
+        return <GroupEntry key={node.id} {...props} group={node} />;
+      case 'story':
+        return <StoryEntry key={node.id} {...props} story={node} />;
+    }
   }
 };
 

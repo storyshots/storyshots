@@ -15,3 +15,15 @@ export const rejects =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (...args: unknown[]): Promise<never> =>
     Promise.reject(error);
+
+export const iterated = <T>(values: T[]) => {
+  let iter = 0;
+
+  return async (): Promise<Awaited<T>> => {
+    const result = values[iter % values.length];
+
+    iter += 1;
+
+    return result as Awaited<T>;
+  };
+};

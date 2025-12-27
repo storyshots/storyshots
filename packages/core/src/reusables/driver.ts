@@ -1,6 +1,5 @@
 import { createRegexpJSON } from './regexpJSON';
 import { IWebDriver } from './types';
-import { toManagerURL } from './toManagerURL';
 
 export const driver: IWebDriver = {
   play: async (action) =>
@@ -42,5 +41,5 @@ export const driver: IWebDriver = {
 };
 
 function createURL(url: string) {
-  return toManagerURL(`http://localhost:6006/${url}`);
+  return `http://localhost:6006/${url}`;
 }

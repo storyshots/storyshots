@@ -1,68 +1,123 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { callback } from '../reusables/preview/pure-function-factory';
-import { CreateStory } from '../reusables/preview/stories';
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
+import { test } from '../fixtures/ui';
 
-describe('intermediate shots', () => {
-  test(
-    'allows to define intermediate shots',
-    setup()
-      .open('EmailFilled')
-      .screenshot()
-      .open('MessageFilled')
-      .screenshot()
-      .open('FINAL')
-      .screenshot(),
-  );
+test('allows to define intermediate shots', async ({ ui }) => {
+  await ui.change(({ createPreviewApp, finder }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test('allows to accept all', setup().accept('is a story').screenshot());
+    run([
+      it('is a story', {
+        act: (actor) =>
+          actor
+            .screenshot('Initial')
+            .click(finder.getByLabel('Remember me'))
+            .screenshot('Checked')
+            .click(finder.getByLabel('Remember theme')),
+        render: () => (
+          <>
+            <label>
+              Remember me
+              <input type="checkbox" />
+            </label>
+            <label>
+              Remember theme
+              <input type="checkbox" />
+            </label>
+          </>
+        ),
+      }),
+    ]);
+  });
 
-  test(
-    'checks each shot separately',
-    setup()
-      .accept('is a story')
-      .preview()
-      .story(render(() => <textarea placeholder="Message:" />))
-      .actor()
-      .run('is a story')
-      .open('EmailFilled')
-      .do((page) => page.getByText('2-up').click())
-      .screenshot()
-      .do((page) => page.getByText('Diff', { exact: true }).click())
-      .screenshot(),
-  );
+  await ui.run('is a story');
+
+  await ui.screenshot();
+
+  await ui.open('Initial');
+
+  await ui.screenshot();
+
+  await ui.open('Checked');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL');
+
+  await ui.screenshot();
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
+
+  await ui.change(({ createPreviewApp, finder }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run([
+      it('is a story', {
+        act: (actor) =>
+          actor
+            .screenshot('Initial')
+            .click(finder.getByLabel('Remember theme'))
+            .screenshot('Checked')
+            .click(finder.getByLabel('Remember me')),
+        render: () => (
+          <>
+            <label>
+              Remember me
+              <input type="checkbox" />
+            </label>
+            <label>
+              Remember theme
+              <input type="checkbox" />
+            </label>
+          </>
+        ),
+      }),
+    ]);
+  });
+
+  await ui.run('is a story');
+
+  await ui.open('Checked');
+
+  await ui.screenshot();
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
 });
 
-function setup() {
-  return desktop().story(render()).actor().run('is a story');
-}
-
-function render(
-  field = () => <input type="text" placeholder="Message:" />,
-): CreateStory<unknown> {
-  return callback(field, ([{ useState, finder }, _field]) => ({
-    act: (actor) =>
-      actor
-        .fill(finder.getByPlaceholder('Email'), 'example@mail.com')
-        .screenshot('EmailFilled')
-        .fill(finder.getByPlaceholder('Message'), 'Hello.')
-        .screenshot('MessageFilled')
-        .click(finder.getByText('Send')),
-    render: () => {
-      const [sent, setSent] = useState(false);
-
-      if (sent) {
-        return <h1>Sent</h1>;
-      }
-
-      return (
-        <form>
-          <input type="email" placeholder="Email:" />
-          {_field()}
-          <button onClick={() => setSent(true)}>Send</button>
-        </form>
-      );
-    },
-  }));
-}
+// {
+//   ui(
+//     'allows to define intermediate shots',
+//     setup()
+//       .open('EmailFilled')
+//       .screenshot()
+//       .open('MessageFilled')
+//       .screenshot()
+//       .open('FINAL')
+//       .screenshot(),
+//   );
+//
+//   ui('allows to accept all', setup().accept('is a story').screenshot());
+//
+//   ui(
+//     'checks each shot separately',
+//     setup()
+//       .accept('is a story')
+//       .preview()
+//       .story(render(() => <textarea placeholder="Message:" />))
+//       .actor()
+//       .run('is a story')
+//       .open('EmailFilled')
+//       .do((page) => page.getByText('2-up').click())
+//       .screenshot()
+//       .do((page) => page.getByText('Diff', { exact: true }).click())
+//       .screenshot(),
+//   );
+// }

@@ -3,14 +3,18 @@ import { fork } from 'node:child_process';
 import { createENVFromKey } from '../../../neutral/safe-env';
 import { assert } from '@lib';
 import { getScriptPath } from '../reusables/getScriptPath';
+import * as process from 'node:process';
 
-export function run(active: DefinedActiveStory, dev: boolean) {
+export function run(active: DefinedActiveStory, { dev }: { dev: boolean }) {
   const story = fork(getScriptPath('story'), {
-    env: createENVFromKey('STORYSHOTS_MODE', {
-      type: 'story',
-      dev,
-      ...active,
-    }) as NodeJS.ProcessEnv,
+    env: {
+      ...process.env,
+      ...createENVFromKey('STORYSHOTS_MODE', {
+        type: 'story',
+        dev,
+        ...active,
+      }),
+    },
     stdio: 'inherit',
   });
 

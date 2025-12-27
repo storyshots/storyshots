@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/core",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Reusable entities across all projects",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -17,17 +17,22 @@
       "require": "./lib/manager.js",
       "default": "./lib/manager.js"
     },
-    "./toolbox": {
-      "types": "./lib/toolbox.d.ts",
-      "require": "./lib/toolbox.js",
-      "default": "./lib/toolbox.js"
+    "./devkit": {
+      "types": "./lib/devkit/index.d.ts",
+      "require": "./lib/devkit/index.js",
+      "default": "./lib/devkit/index.js"
+    },
+    "./devkit/manager": {
+      "types": "./lib/devkit/manager.d.ts",
+      "require": "./lib/devkit/manager.js",
+      "default": "./lib/devkit/manager.js"
     },
     "./package.json": "./package.json"
   },
   "files": [
     "lib",
     "manager",
-    "toolbox",
+    "devkit",
     "postinstall.js"
   ],
   "bin": {

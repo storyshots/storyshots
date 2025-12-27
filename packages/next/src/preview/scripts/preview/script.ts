@@ -50,7 +50,7 @@ async function servePreBuiltStory(
   request: Request,
   response: Response,
 ) {
-  const { host, kill } = story.run(active, false);
+  const { host, kill } = story.run(active, { dev: false });
 
   request.on('close', kill);
 
@@ -71,7 +71,7 @@ const serveWatchStory = (() => {
   return async (active: DefinedActiveStory, _: Request, response: Response) => {
     cleanup();
 
-    const { host, kill } = story.run(active, true);
+    const { host, kill } = story.run(active, { dev: true });
 
     cleanup = kill;
 
@@ -102,7 +102,7 @@ const serveStaticStory = (() => {
 
     locker.unlock();
 
-    const { host, kill } = story.run(active, false);
+    const { host, kill } = story.run(active, { dev: false });
 
     request.on('close', kill);
 

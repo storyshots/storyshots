@@ -4,8 +4,8 @@ import { isNil } from '@lib';
 declare global {
   // Declares global extendable qs storage
   interface QSStorage {
-    // manager unique key
-    manager: number;
+    // preview host location
+    at: string;
     // pool size
     size: number;
     // user defined devices
@@ -17,16 +17,6 @@ declare global {
 
 export function createTypedQSProxy(qs: QSLike) {
   const operations = {
-    ...createROTypedQSProxy(qs),
-    set: (key, value) => qs.set(key, JSON.stringify(value)),
-    delete: (key) => qs.delete(key),
-  } satisfies Operations;
-
-  return operations as Operations;
-}
-
-export function createROTypedQSProxy(qs: Pick<QSLike, 'get'>) {
-  const operations = {
     get: (key) => {
       const value = qs.get(key);
 
@@ -36,7 +26,9 @@ export function createROTypedQSProxy(qs: Pick<QSLike, 'get'>) {
 
       return JSON.parse(value) as never;
     },
-  } satisfies Pick<Operations, 'get'>;
+    set: (key, value) => qs.set(key, JSON.stringify(value)),
+    delete: (key) => qs.delete(key),
+  } satisfies Operations;
 
   return operations as Operations;
 }

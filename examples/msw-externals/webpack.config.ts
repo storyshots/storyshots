@@ -3,6 +3,10 @@ import 'webpack-dev-server';
 import webpack, { Configuration } from 'webpack';
 
 const config: Configuration = {
+  entry:
+    process.env.STORYSHOTS === 'true'
+      ? './storyshots/preview/index.tsx'
+      : './src/index.tsx',
   devServer: {
     historyApiFallback: true,
     hot: true,
@@ -19,7 +23,6 @@ const config: Configuration = {
   },
   mode: 'development',
   bail: false,
-  entry: './src/index.tsx',
   devtool: 'cheap-module-source-map',
   stats: {
     errorDetails: true,

@@ -1,28 +1,17 @@
 import { Device } from '@core';
-import { RequestHandler } from 'express';
 import { Capture } from './modules/capture';
 
 import { Runner } from './modules/runner/types';
 import { ImageComparator } from './modules/compare/types';
 
 export type PreviewServerFactory = (
-  config: ManagerConfig,
+  mode: 'ui' | 'ci',
 ) => Awaitable<IPreviewServer>;
 
-// TODO: Provide better names for preview (not always a server)
-/**
- * https://storyshots.github.io/storyshots/modules/scheme#ipreviewserver
- */
 export interface IPreviewServer {
-  /**
-   * https://storyshots.github.io/storyshots/modules/scheme#handler
-   */
-  handler: RequestHandler;
+  at: string;
 
-  /**
-   * https://storyshots.github.io/storyshots/modules/scheme#cleanup
-   */
-  cleanup?(): Promise<unknown>;
+  cleanup(): Promise<unknown>;
 }
 
 type Awaitable<T> = Promise<T> | T;
@@ -45,7 +34,7 @@ export type UserDefinedManagerConfig = {
   /**
    * https://storyshots.github.io/storyshots/API/manager/manager-config#preview
    */
-  preview: PreviewServerFactory;
+  preview: PreviewServerFactory | IPreviewServer;
   /**
    * https://storyshots.github.io/storyshots/API/manager/manager-config#runner
    */
@@ -62,6 +51,14 @@ export type UserDefinedManagerConfig = {
 
 type UserDefinedDevice = Omit<Device, 'name'> & { name: string };
 
-export type ManagerConfig = Required<UserDefinedManagerConfig> & {
-  mode: 'ui' | 'background';
+export type ManagerConfig = {
+  paths: {
+    records: string;
+    screenshots: string;
+  };
+  preview: IPreviewServer;
+  devices: Device[];
+  runner: Runner;
+  capture: Capture;
+  compare: ImageComparator;
 };

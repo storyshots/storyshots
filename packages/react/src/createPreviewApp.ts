@@ -1,4 +1,4 @@
-import { createBindStoryFactories } from '@storyshots/core/toolbox';
+import { createBindStoryFactories } from '@storyshots/core/devkit';
 import { createRun } from './createRun';
 import { ExternalsFactory } from './types';
 

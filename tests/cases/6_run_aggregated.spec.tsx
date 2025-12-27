@@ -1,39 +1,13 @@
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
+import { test } from '../fixtures/ui';
 
-describe('run aggregated', () => {
-  test(
-    'allows to run whole group at once',
-    setup()
-      .run('Group')
-      .screenshot()
-      .open('Group')
-      .open('SubGroup')
-      .open('Records', 'is second')
-      .screenshot()
-      .open('FINAL', 'is second')
-      .screenshot()
-      .open('Records', 'is first')
-      .screenshot()
-      .open('FINAL', 'is first')
-      .screenshot(),
-  );
+test('allows to run and accept whole group at once', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, describe, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test(
-    'allows to accept all at once',
-    setup()
-      .run('Group')
-      .accept('Group')
-      .screenshot()
-      .open('Group')
-      .open('SubGroup')
-      .screenshot(),
-  );
-});
-
-function setup() {
-  return desktop()
-    .stories(({ describe, it }) => [
+    run(
       describe('Group', [
         describe('SubGroup', [
           it('is second', {
@@ -52,6 +26,33 @@ function setup() {
           },
         }),
       ]),
-    ])
-    .actor();
-}
+    );
+  });
+
+  await ui.run('Group');
+
+  await ui.screenshot();
+
+  await ui.open('Group');
+  await ui.open('SubGroup');
+
+  await ui.open('Records', 'is second');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL', 'is second');
+
+  await ui.screenshot();
+
+  await ui.open('Records', 'is first');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL', 'is first');
+
+  await ui.screenshot();
+
+  await ui.accept('Group');
+
+  await ui.screenshot();
+});

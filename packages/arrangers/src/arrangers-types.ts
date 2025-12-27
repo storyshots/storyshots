@@ -7,10 +7,6 @@ export type UnknownArrangers = {
   transform(path: string, handler: UnknownFunction): UnknownArranger;
   set(path: string, value: unknown): UnknownArranger;
   arrange(...arrangers: UnknownArranger[]): UnknownArranger;
-  iterated(
-    values: unknown[],
-    transform: (next: () => unknown) => UnknownArranger,
-  ): UnknownArranger;
   compose(
     path: string,
     transform: (value: unknown, config: StoryConfig) => unknown,
@@ -26,11 +22,6 @@ export type UnknownFunction = (...args: unknown[]) => unknown;
 
 export type Arrangers<TExternals, TFocus> = {
   arrange(...arrangers: Arranger<TExternals>[]): Arranger<TExternals>;
-
-  iterated<T>(
-    values: T[],
-    transform: (next: () => T) => Arranger<TExternals>,
-  ): Arranger<TExternals>;
 
   /**
    * https://storyshots.github.io/storyshots/modules/arrangers#set

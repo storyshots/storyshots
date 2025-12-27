@@ -14,7 +14,6 @@
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/test-results" />
       <excludeFolder url="file://$MODULE_DIR$/examples/tests/temp" />
       <excludeFolder url="file://$MODULE_DIR$/packages/msw-replacer/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/externals/msw/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/externals/rtk/lib" />
       <excludeFolder url="file://$MODULE_DIR$/tests/playwright-report" />
       <excludeFolder url="file://$MODULE_DIR$/tests/temp" />
@@ -22,13 +21,10 @@
       <excludeFolder url="file://$MODULE_DIR$/website/.docusaurus" />
       <excludeFolder url="file://$MODULE_DIR$/packages/react/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/react/react-devtools" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/servers/proxy/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/servers/webpack/lib" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/arrangers/lib" />
       <excludeFolder url="file://$MODULE_DIR$/website/build" />
       <excludeFolder url="file://$MODULE_DIR$/packages/core/src/client/behaviour/useHighlighter/generated" />
-      <excludeFolder url="file://$MODULE_DIR$/packages/externals/web-api/faker" />
       <excludeFolder url="file://$MODULE_DIR$/packages/next/lib" />
       <excludeFolder url="file://$MODULE_DIR$/examples/next-app/temp" />
       <excludeFolder url="file://$MODULE_DIR$/examples/next-app/.preview" />
@@ -39,6 +35,10 @@
       <excludeFolder url="file://$MODULE_DIR$/examples/msw-externals/.storyshots" />
       <excludeFolder url="file://$MODULE_DIR$/examples/msw-externals/dist" />
       <excludeFolder url="file://$MODULE_DIR$/tests/.storyshots" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/exec-preview/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/msw/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/web-api/faker" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/web-api/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,0 +1,4 @@
+{
+  "main": "../lib/devkit/index.js",
+  "types": "../lib/devkit/index.d.ts"
+}

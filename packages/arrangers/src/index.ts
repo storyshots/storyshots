@@ -15,4 +15,4 @@ export type {
   UnknownArranger,
 } from './arrangers-types';
 
-export { rejects, resolves } from './utils';
+export { rejects, resolves, iterated } from './utils';
