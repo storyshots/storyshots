@@ -1,8 +1,8 @@
-import { UserDefinedManagerConfig, RUNNER } from '@storyshots/core/manager';
+import { ManagerConfig, RUNNER } from '@storyshots/core/manager';
 import { createNextPreview } from '@storyshots/next/preview';
 import path from 'node:path';
 
-export const config: UserDefinedManagerConfig = {
+export const config: ManagerConfig = {
   devices: [
     {
       name: 'desktop',

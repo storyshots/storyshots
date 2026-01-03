@@ -1,10 +1,9 @@
 import { IPreviewServer, PreviewServerFactory } from '@storyshots/core/manager';
-import { execSync, spawn, spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { assertNotEmpty, wait } from '@lib';
 import treeKill from 'tree-kill';
-import express, { RequestHandler, Router } from 'express';
+import express, { RequestHandler } from 'express';
 import * as path from 'node:path';
-import * as process from 'node:process';
 
 type Config = {
   ui: {

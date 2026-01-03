@@ -19,7 +19,7 @@ export const createStoryView = (
    * Resetting url after a change must be preview responsibility because strategy might change depending
    * on the implementation details.
    *
-   * Thus, we must reload our page manually to point specifically at root location statically.
+   * Thus, we must reload our page manually to point specifically at root location.
    */
   if (location.pathname !== '/') {
     location.replace(location.origin);

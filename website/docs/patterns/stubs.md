@@ -19,7 +19,7 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 Заглушки можно описать двумя основными способами:
 
-* В виде статичного объекта:
+- В виде статичного объекта:
 
 ```ts
 const userStub = {
@@ -27,12 +27,12 @@ const userStub = {
   position: {
     role: {
       isAdmin: true,
-    }
+    },
   },
 };
 ```
 
-* И в виде фабрики:
+- И в виде фабрики:
 
 ```ts
 function createUserStub(): User {
@@ -41,7 +41,7 @@ function createUserStub(): User {
     position: {
       role: {
         isAdmin: true,
-      }
+      },
     },
   };
 }
@@ -58,7 +58,7 @@ function createUserStub(): User {
 Создаваться будут все стабы без исключения, даже если они не используются в выполняемом тесте.
 :::
 
-Фабрики лишены данной проблемы, так как они представляют собой *ленивые* данные, которые будут созданы только тогда,
+Фабрики лишены данной проблемы, так как они представляют собой _ленивые_ данные, которые будут созданы только тогда,
 когда они понадобятся в истории.
 
 ### Упрощение изменений
@@ -74,7 +74,7 @@ it('...', {
        * Объект опасно изменять напрямую, ведь он может использоваться где то ещё.
        */
       userStub.position.role.isAdmin = false;
-      
+
       return userStub;
     },
     /**
@@ -82,7 +82,7 @@ it('...', {
      * что может быть нежелательным.
      */
     getAdmin: () => userStub,
-  })
+  }),
 });
 ```
 
@@ -99,11 +99,11 @@ it('displays living address', {
         role: {
           ...userStub.position.role,
           isAdmin: false,
-        }
+        },
       },
     }),
     getAdmin: () => userStub,
-  })
+  }),
 });
 ```
 
@@ -118,19 +118,19 @@ it('displays living address', {
        * Объект можно спокойно изменять напрямую, так как мы работаем с уникальной копией user.
        */
       user.position.role.isAdmin = false;
-      
+
       return user;
     },
     /**
      * Другая функция ссылается на свой экземпляр user.
      */
     getAdmin: () => createUserStub(),
-  })
+  }),
 });
 ```
 
 :::note
-Такое свойство фабрик (их *чистота*), делает их простыми с точки зрения расширяемости и повторного использования.
+Такое свойство фабрик (их _чистота_), делает их простыми с точки зрения расширяемости и повторного использования.
 Поэтому в данной документации все основные примеры демонстрируются с использованием преимущественно данного подхода.
 :::
 
@@ -150,14 +150,14 @@ it('displays living address', {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-        living: {
-            city: 'Moscow',
-        },
-        /* И ещё 20+ свойств */
-    };
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+    living: {
+      city: 'Moscow',
+    },
+    /* И ещё 20+ свойств */
+  };
 }
 ```
 
@@ -168,24 +168,24 @@ function createUserStub(): User {
  * Описать минимальный набор полей для всех историй или оставить пустым
  */
 function createMinimalUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        position: 'developer',
-    } as User;
+  return {
+    name: 'Vasiliy',
+    position: 'developer',
+  } as User;
 }
 
 it('displays living address', {
-    arrange: (user) => ({
-        getUser: async () => ({
-            ...createMinimalUserStub(),
-            living: { city: 'Moscow' } // История устанавливает только нужные ей поля 
-        })
-    })
+  arrange: (user) => ({
+    getUser: async () => ({
+      ...createMinimalUserStub(),
+      living: { city: 'Moscow' }, // История устанавливает только нужные ей поля
+    }),
+  }),
 });
 ```
 
 Модульность позволяет историям определять только нужные им данные в заглушках, но это лишь один из инструментов
-сокращения их объёма. Другие варианты также приведены в данном руководстве.
+сокращения их объёма.
 
 :::note
 Заглушки также наследуют от репозиториев проблемы связанные с отвественностью, которые были описаны подробно в
@@ -194,8 +194,7 @@ it('displays living address', {
 
 :::warning Важно
 Следует применять с осторожностью решения для генерации заглушек на
-подобии [faker-js](https://github.com/faker-js/faker). Так как подобные решения зачастую используют рандомные числа в
-своих механизмах делая их [недереминированными](/specification/requirements/env#идемпотентность).
+подобии [faker-js](https://github.com/faker-js/faker). Так как они зачастую производят [недереминированные](/specification/requirements/query#детерминированность) данные.
 :::
 
 ## Неизбыточные заглушки
@@ -214,13 +213,13 @@ it('displays living address', {
 ```ts
 // Все поля в модели обязательные и при этом их достаточно много
 type User = {
-    name: string,
-    position: string,
-    living: {
-        city: string,
-    },
-    /* И ещё 20+ свойств */
-}
+  name: string;
+  position: string;
+  living: {
+    city: string;
+  };
+  /* И ещё 20+ свойств */
+};
 ```
 
 :::note
@@ -236,12 +235,12 @@ type User = {
 
 ```ts
 type User = {
-    name: string,
-    position: string,
-    living: {
-        city: string,
-    },
-}
+  name: string;
+  position: string;
+  living: {
+    city: string;
+  };
+};
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
@@ -251,15 +250,14 @@ type User = {
  * Делать модель более точной и избавляться от неиспользуемых полей
  */
 type User = {
-    name: string,
-    position?: string,
-}
+  name: string;
+  position?: string;
+};
 ```
 
 :::warning Важно
-На проектах зачастую используются разного рода генераторы интерфейсов API. Это удобный инструмент и позволяет избавиться
-от проблем связанных с дублированием на проекте, однако точность результата генерации зачастую оставляет желать лучшего.
-Следует внимательней относиться к заглушкам в особенности если используются такие средства на проекте.
+На проектах зачастую используются разного рода генераторы интерфейсов API. Это удобный инструмент, однако итоговая
+точность моделей может быть [недостаточной](https://en.wikipedia.org/wiki/Algebraic_data_type).
 :::
 
 ## Релевантные заглушки
@@ -273,10 +271,10 @@ type User = {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'UserName',
-        roles: [],
-    };
+  return {
+    name: 'UserName',
+    roles: [],
+  };
 }
 ```
 
@@ -284,18 +282,18 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
-        roles: ['admin'], // Роли по модели не могут быть пустыми
-    };
+  return {
+    name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
+    roles: ['admin'], // Роли по модели не могут быть пустыми
+  };
 }
 ```
 
 Релевантные по отношению к предметной области и модели заглушки приносят следующие преимущества в тесты:
 
-* Защита от регресса - заглушки обладают ровно теми свойствами, что и реальные данные на сервере. Это увеличивает
+- Защита от регресса - заглушки обладают ровно теми свойствами, что и реальные данные на сервере. Это увеличивает
   эффективность тестирования, ведь система верифицируется в идентичном реальному окружении.
-* Документация - за счёт использования более репрезентативных данных сами истории и снимки в эталоне больше
+- Документация - за счёт использования более репрезентативных данных сами истории и снимки в эталоне больше
   напоминают реальное приложение и могут использоваться в качестве дополнительного источника документации.
 
 :::note
@@ -315,10 +313,10 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        address: 'Moscow'
-    };
+  return {
+    name: 'Vasiliy',
+    address: 'Moscow',
+  };
 }
 ```
 
@@ -326,13 +324,13 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        name: 'Vasiliy',
-        /**
-         * Поле с адресом убрано так как оно не используется в приложении
-         * и как следствие не требуется для покрытия всех его сценариев.
-         */
-    };
+  return {
+    name: 'Vasiliy',
+    /**
+     * Поле с адресом убрано так как оно не используется в приложении
+     * и как следствие не требуется для покрытия всех его сценариев.
+     */
+  };
 }
 ```
 
@@ -355,11 +353,11 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        id: 5142,
-        name: 'Vasiliy',
-        updatedAt: '2024-06-28T15:00:00.000Z',
-    };
+  return {
+    id: 5142,
+    name: 'Vasiliy',
+    updatedAt: '2024-06-28T15:00:00.000Z',
+  };
 }
 ```
 
@@ -367,11 +365,11 @@ function createUserStub(): User {
 
 ```ts
 function createUserStub(): User {
-    return {
-        id: 1,
-        name: 'Vasiliy',
-        updatedAt: createConstDate().toJSON(),
-    };
+  return {
+    id: 1,
+    name: 'Vasiliy',
+    updatedAt: createConstDate().toJSON(),
+  };
 }
 
 /**

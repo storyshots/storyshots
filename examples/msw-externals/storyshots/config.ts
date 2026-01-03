@@ -1,4 +1,4 @@
-import { RUNNER, UserDefinedManagerConfig } from '@storyshots/core/manager';
+import { RUNNER, ManagerConfig } from '@storyshots/core/manager';
 import path from 'path';
 import { createExecPreview } from '@storyshots/exec-preview';
 
@@ -32,4 +32,4 @@ export default {
     },
   }),
   runner: RUNNER.pool({ agentsCount: 4 }),
-} satisfies UserDefinedManagerConfig;
+} satisfies ManagerConfig;

@@ -13,7 +13,7 @@ import { Duration } from '../../../reusables/duration';
 import { createResults } from './createResults';
 
 /**
- * https://storyshots.github.io/storyshots/API/manager/runInBackground
+ * https://storyshots.github.io/storyshots/API/run-modes/runCI
  */
 export async function runCI(config: UserDefinedManagerConfig) {
   const server = await createStoryshotsServer({

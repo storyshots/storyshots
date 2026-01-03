@@ -67,6 +67,7 @@ function createExposeJournal(): StoryConfig['journal'] {
   return journal;
 }
 
+// TODO: Reuse WithPossibleError
 function fromThrowable<T>(
   fn: () => T,
 ): { success: true; data: T } | { success: false; error: unknown } {

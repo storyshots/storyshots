@@ -1,7 +1,7 @@
 import type { Page } from 'playwright';
 
 /**
- * https://storyshots.github.io/storyshots/API/story-elements/finder
+ * https://storyshots.github.io/storyshots/API/test-components/finder
  */
 export type Finder = {
   /**
@@ -70,7 +70,7 @@ export type Finder = {
   and(selector: Finder): Finder;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/finder#get
+   * https://storyshots.github.io/storyshots/API/test-components/finder#get
    */
   get(transformer: FinderTransformer): Finder;
 

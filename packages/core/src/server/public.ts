@@ -2,7 +2,7 @@ export { CAPTURE } from './modules/capture';
 export { COMPARE } from './modules/compare';
 export { RUNNER } from './modules/runner';
 
-export type { UserDefinedManagerConfig, ManagerConfig } from './types';
+export type { UserDefinedManagerConfig as ManagerConfig } from './types';
 
 export type { PreviewServerFactory, IPreviewServer } from './types';
 

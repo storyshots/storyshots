@@ -6,37 +6,37 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Внешняя среда
 
-[Внешняя среда](/specification/requirements/env) - это один из ключевых компонентов `storyshots`, работа с которым бывает не простой и требует особого
+[*Запросы*](/specification/requirements/query) - это один из ключевых компонентов `storyshots`, работа с которым бывает не простой и требует особого
 внимания для сохранения качества тестирования.
 
 ## Игнорирование query
 
 <MetricsTip improves={[Metric.RefactoringAllowance, Metric.Maintainability]} degrades={[Metric.RegressionProtection]} />
 
-`storyshots` предоставляет методы для отслеживания вызовов функций, а именно [журнал](/specification/requirements/storage#способ-верификации). Записывать можно абсолютно
+`storyshots` предоставляет методы для отслеживания вызовов функций, а именно [журнал](/specification/requirements/command#способ-верификации). Записывать можно абсолютно
 любой метод и тут зачастую возникает путаница. Рассмотрим пример:
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
-    return {
-        getUser: async () => createUserStub(),
-    }
-}
+  return {
+    getUser: async () => createUserStub(),
+  };
+};
 ```
 
-`UserRepository` содержит метод `getUser` который не выполняет никаких сайд-эффектов в БД, но является не
-детерминированным. Вследствие этого он относится к компоненту [внешней среды](/specification/requirements/env), что означает что взаимодействия с
-данной функцией не должны отслеживаться ведь она не является частью секции *результата*.
+`UserRepository` содержит метод `getUser` который не выполняет никаких сайд-эффектов в БД, но является
+недетерминированным. `getUser` относится к компоненту [*запросы*](/specification/requirements/query) - а значит данная
+функция [не должна проверяться](/specification/requirements/borders).
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts
 it('shows user', {
-    arrange: (externals, { journal }) => ({
-        ...externals,
-        getUser: journal.asRecordable('getUser', externals.getUser)
-    }),
-})
+  arrange: (externals, { journal }) => ({
+    ...externals,
+    getUser: journal.asRecordable('getUser', externals.getUser),
+  }),
+});
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
@@ -49,11 +49,11 @@ it('shows user');
 Отслеживание `getUser` является бессмысленным так как метод не выполняет сайд-эффект.
 
 :::tip
-[Cайд-эффект](/specification/requirements/storage#сайд-эффект) - это не просто результат работы выходящий за пределы функции, в рамках спецификации это ещё и
-*видимые* сторонними клиентами данные:
+[Cайд-эффект](/specification/requirements/command#сайд-эффект) - это не просто результат работы выходящий за пределы функции, в рамках спецификации это ещё и
+_видимые_ сторонними клиентами данные:
 
-* Для сервера - это команды модифицирующие БД
-* Для пользователя - это функции рисующие интерфейс на экране
+- Для сервера - это команды модифицирующие БД
+- Для пользователя - это функции рисующие интерфейс на экране
 
 Такие внешние эффекты и фиксируются `storyshots` в эталоне.
 :::
@@ -63,19 +63,19 @@ it('shows user');
 
 ```tsx
 const User: React.FC = () => {
-    const response = useQuery(userRepository.getUser);
+  const response = useQuery(userRepository.getUser);
 
-    if (response.loading) {
-        return <Preloader />;
-    }
+  if (response.loading) {
+    return <Preloader />;
+  }
 
-    return <UserInfo user={response.data} />
+  return <UserInfo user={response.data} />;
 };
 ```
 
 :::warning Важно
 У данного правила есть одно очень важное исключение - запросы, такие как `getUser`, хоть и не выполняют сайд-эффектов,
-однако могут реализовывать не тривиальную логику, опирающуюся на то, с какими *аргументами* был вызван метод.
+однако могут реализовывать нетривиальную логику, опирающуюся на то, с какими _аргументами_ был вызван метод.
 
 Рекомендуется фиксировать в журнал взаимодействия с подобного рода запросами.
 :::
@@ -84,7 +84,7 @@ const User: React.FC = () => {
 
 <MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability, Metric.Speed]} />
 
-К сожалению, далеко не всегда существует возможность полного контроля над [внешней средой](/specification/requirements/env) приложения. Вследствие
+К сожалению, далеко не всегда существует возможность полного контроля над [*запросами*](/specification/requirements/query) приложения. Вследствие
 чего появляется вероятность получения нестабильного эталона.
 
 :::tip
@@ -96,8 +96,8 @@ const User: React.FC = () => {
 
 ```ts
 it('shows read notification', {
-    // У теста будет три попытки на успешное прохождение
-    retries: (config) => 3,
+  // У теста будет три попытки на успешное прохождение
+  retries: (config) => 3,
 });
 ```
 
@@ -123,28 +123,26 @@ setTimeout(() => notification.close(), 5_000);
 ```
 
 Функция выше, показывает пользователю уведомление, после чего ожидает 5 секунд и закрывает его. При тестировании данного
-поведения, необходимо помнить о запрете использования [оригинального внешнего окружения](/specification/requirements/env) в историях.
+поведения, необходимо помнить о запрете использования [*запросов*](/specification/requirements/query) в историях.
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts
 it('shows message to a user', {
-    act: (actor) => actor
-        .screenshot('Message')
-        .wait(5_000)
-        .screenshot('Hidden'),
-}); 
+  act: (actor) => actor.screenshot('Message').wait(5_000).screenshot('Hidden'),
+});
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
 
 ```ts
 it('shows message to a user', {
-    act: (actor) => actor
-        .screenshot('Message')
-        // Отправить таймеры в будущее на 5 секунд вперёд
-        .exec(() => window.clock.tick(5_000))
-        .screenshot('Hidden'),
+  act: (actor) =>
+    actor
+      .screenshot('Message')
+      // Отправить таймеры в будущее на 5 секунд вперёд
+      .exec(() => window.clock.tick(5_000))
+      .screenshot('Hidden'),
 });
 ```
 
@@ -152,11 +150,11 @@ it('shows message to a user', {
 время выполнения теста - это крайне важная величина. Поэтому во втором примере используются ложные таймеры.
 
 :::note
-В данном примере используется библиотека [`@storyshots/web-api-externals`](/modules/web-api) которая
+В данном примере используется библиотека [`@storyshots/web-api-mocks`](/modules/web-api) которая
 выполняет [подмену через сайд-эффекты](/patterns/replace#подмена-через-сайд-эффекты).
 :::
 
 :::warning Внимание
 Существует также альтернатива ввиде подмены API через [инверсию зависимостей](/patterns/replace#подмена-через-инверсию), однако данный метод не является
-рекомендуемым.
+рекомендуемым для таймеров.
 :::

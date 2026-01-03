@@ -2,9 +2,9 @@
 sidebar_position: 4
 ---
 
-# @storyshots/web-api-externals
+# @storyshots/web-api-mocks
 
-Подменяет `WebAPI` на их [тестируемые аналоги](/specification/requirements/env)
+Подменяет `Date`, таймеры и локальные хранилища на их [тестируемые аналоги](/specification/requirements/query)
 через [инвазивный метод](/patterns/replace#подмена-через-сайд-эффекты).
 
 ## install
@@ -12,7 +12,7 @@ sidebar_position: 4
 Подменяет недетерминированный браузерный API. Возвращает [Clock](/modules/web-api#clock).
 
 ```ts
-import { install } from '@storyshots/web-api-externals';
+import { install } from '@storyshots/web-api-mocks';
 
 // Замораживает время на странице на отметке 13.01.2024 12:00
 export const clock = install({ now: new Date(2024, 0, 13, 12) });
@@ -28,11 +28,11 @@ export const clock = install({ now: new Date(2024, 0, 13, 12) });
 
 Работает по следующим правилам:
 
-* Дата остаётся фиксированной и не изменяется с течением времени.
-* Таймеры (`setTimeout`, `setInterval`) на странице выполняются в обычном режиме.
+- Дата остаётся фиксированной и не изменяется с течением времени.
+- Таймеры (`setTimeout`, `setInterval`) на странице выполняются в обычном режиме.
 
 :::tip
-`clock` доступен в глобальном объекте `window`, что делает доступным его использование в [`exec`](/API/story-elements/actor#exec).
+`clock` доступен в глобальном объекте `window`, что делает доступным его использование в [`exec`](/API/test-components/actor#exec).
 :::
 
 ### tick
@@ -50,11 +50,12 @@ setTimeout(() => closeNotification(), 5_000);
 
 ```ts
 it('closes notification', {
-    act: (actor) => actor
-        .screenshot('NotificationShown')
-        // Перемотать на 5 секунд вперёд
-        .exec(() => window.clock.tick(5_000))
-        .screenshot('NotificationHidden')
+  act: (actor) =>
+    actor
+      .screenshot('NotificationShown')
+      // Перемотать на 5 секунд вперёд
+      .exec(() => window.clock.tick(5_000))
+      .screenshot('NotificationHidden'),
 });
 ```
 
@@ -68,12 +69,12 @@ it('closes notification', {
 
 ```ts
 it('...', {
-    arrange: (externals) => {
-        // Для данной истории дата будет установлена как 13.01.2024
-        clock.setSystemTime(new Date(2024, 0, 13));
+  arrange: (externals) => {
+    // Для данной истории дата будет установлена как 13.01.2024
+    clock.setSystemTime(new Date(2024, 0, 13));
 
-        return externals;
-    },
+    return externals;
+  },
 });
 ```
 
@@ -87,26 +88,26 @@ it('...', {
 
 ```ts
 it('...', {
-    arrange: (externals) => {
-        // Для данной истории дата будет изменяться с течением времени 
-        clock.unfreeze();
+  arrange: (externals) => {
+    // Для данной истории дата будет изменяться с течением времени
+    clock.unfreeze();
 
-        return externals;
-    },
+    return externals;
+  },
 });
 ```
 
 :::warning Внимание
 Функция `unfreeze` по сути возвращает естественное течение времени на страницу, частично отменяя действия
-`@storyshots/web-api-externals`.
+`@storyshots/web-api-mocks`.
 
 Полезен крайне редко, например при использовании [`debounce`](https://lodash.com/docs/4.17.15#debounce).
-В остальном, не рекомендуется к применению. 
+В остальном, не рекомендуется к применению.
 :::
 
 ## Состояние
 
-`@storyshots/web-api-externals` также подменяет локальные хранилища на те, что хранят свои данные во временной памяти.
+`@storyshots/web-api-mocks` также подменяет локальные хранилища на те, что хранят свои данные во временной памяти.
 
 ```ts
 // Данная запись будет автоматически стёрта при запуске новой истории

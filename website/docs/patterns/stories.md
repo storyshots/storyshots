@@ -6,7 +6,7 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Истории
 
-История это базовый элемент `storyshots`. Он фиксирует приложение в его определённом состоянии, описывая параметры
+История это базовый элемент `storyshots`. Она фиксирует приложение в определённом состоянии, описывая параметры
 внешнего окружения и действия пользователя.
 
 ## Разделение историй
@@ -16,21 +16,21 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 `storyshots` реализует множество инструментов направленных на разделение тестовых сценариев. Один из них - это
 использование семантических групп `describe`.
 
-Большое кол-во сценариев, объеденённых вместе не только увеличивают размер файла, но и усложняют свою поддержку ввиду
-разности их ответсвенностей.
+Большое кол-во сценариев, объединённых вместе не только увеличивают размер файла, но и усложняют свою поддержку ввиду
+разности их ответственностей.
 
 :::note
-Ответственность - это причина по которой код может быть измененён. Если две разные функции меняются в одно и тоже время,
-по одной и той же причине, то в таком случае их отвественности считаются равными.
+Ответственность - это причина по которой код может быть изменён. Если две разные функции меняются в одно и то же время и
+по одной и той же причине, то тогда, и только тогда их ответственности считаются **равными**.
 :::
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts
 const stories = [
-    it('shows list of products', /* ... */),
-    it('allows to add a product', /* ... */),
-    it('rejects unauthorized access to a store', /* ... */),
+  it('shows list of products' /* ... */),
+  it('allows to add a product' /* ... */),
+  it('rejects unauthorized access to a store' /* ... */),
 ];
 ```
 
@@ -38,13 +38,11 @@ const stories = [
 
 ```ts
 const stories = [
-    describe('Products', [
-        it('shows list of products', /* ... */),
-        it('allows to add a product', /* ... */),
-    ]),
-    describe('Auth', [
-        it('rejects unauthorized access to a store', /* ... */),
-    ]),
+  describe('Products', [
+    it('shows list of products' /* ... */),
+    it('allows to add a product' /* ... */),
+  ]),
+  describe('Auth', [it('rejects unauthorized access to a store' /* ... */)]),
 ];
 ```
 
@@ -53,16 +51,9 @@ const stories = [
 можно меньше избыточных элементов.
 :::
 
-[//]: # (TODO: Move from here START)
-
-:::warning Внимание
-Текст в блоках `describe` и `it` являются основанием имён файлов и папок, поэтому должны иметь совместимое содержание, а
-именно: латиница без специальных символов внутри.
-:::
-
-* `describe` блоки - это чаще всего наименование домена, подфункции или отвественности. Рекомендуется именовать коротким
+- `describe` блоки - это чаще всего наименование домена, подфункции или отвественности. Рекомендуется именовать коротким
   словосочетанием в CamelCase (с заглавной буквы).
-* `it` блоки - это конкретная история, читается как - "Это приложение (it) текст истории".
+- `it` блоки - это конкретная история, читается как - "Это приложение (it) текст истории".
 
 :::tip
 
@@ -73,7 +64,7 @@ it('allows for user to logout');
 Читается как - "Это приложение позволяет пользователью выйти из учётной записи".
 :::
 
-[//]: # (TODO: Move from here END)
+[//]: # 'TODO: Move from here END'
 
 ## Слияние историй
 
@@ -84,31 +75,34 @@ it('allows for user to logout');
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts
-const stories = [
-    it('shows disabled password initially'), // Тест просто делает снимок изначального состояния страницы
-    it('allows to enter password after login filled', { // Проверяет активность пароля после ввода
-        act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
-    }),
-    it('allows to enter credentials', { // Проверяет возможность заполнения формы
-        act: (actor) => actor
-            .fill(finder.getByPlaceholder('Login'), 'Логин')
-            .fill(finder.getByPlaceholder('Password'), '1235'),
-    })
-];
+describe('Login', [
+  it('shows disabled password initially'), // Тест просто делает снимок изначального состояния формы
+  it('allows to fill login field', {
+    // Проверяет возможность заполнения поля
+    act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
+  }),
+  it('allows to enter credentials', {
+    // Проверяет возможность заполнения всей формы
+    act: (actor) =>
+      actor
+        .fill(finder.getByPlaceholder('Login'), 'Логин')
+        .fill(finder.getByPlaceholder('Password'), '1235'),
+  }),
+]);
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
 
 ```ts
-const stories = [
-    it('allows to enter credentials', { // История проверяет все состояния сразу
-        act: (actor) => actor
-            .screenshot('Initial')
-            .fill(finder.getByPlaceholder('Login'), 'Логин')
-            .screenshot('PasswordEnabled')
-            .fill(finder.getByPlaceholder('Password'), '1235'),
-    })
-];
+it('allows to enter credentials', {
+  // История проверяет все состояния сразу
+  act: (actor) =>
+    actor
+      .screenshot('Initial')
+      .fill(finder.getByPlaceholder('Login'), 'Логин')
+      .screenshot('PasswordEnabled')
+      .fill(finder.getByPlaceholder('Password'), '1235'),
+});
 ```
 
 Изначально, существовало 3 разных истории каждая из которых проверяла отдельное состояние формы. Благодаря
@@ -118,12 +112,12 @@ const stories = [
 :::note
 Вопрос декомпозиции тестов является достаточно комплексным:
 
-* С одной стороны, тестов должно быть как можно меньше, ведь в противном случае растет кол-во кода, увеличивается время
+- С одной стороны, тестов должно быть как можно меньше, ведь в противном случае растет кол-во кода, увеличивается время
   выполнения и сами проверки также могут дублировать части друг друга.
-* С другой стороны, чем больше тест, тем сложнее контролировать уровень покрытия сценариев работы приложения, к тому же
+- С другой стороны, чем больше тест, тем сложнее контролировать уровень покрытия сценариев работы приложения, к тому же
   растёт риск смешивания ответственностей с которым борется пункт [декомпозиция историй](/patterns/stories#разделение-историй).
 
-Другими словами, дело в *балансе*.
+Другими словами, дело в _балансе_.
 
 Общая рекомендация - начинать с самого простого, в большинстве случаев это написание одной крупной истории. Далее, при
 возникновении проблем с поддержкой её следует разбивать на более атомарные и независимые элементы.
@@ -134,13 +128,11 @@ const stories = [
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RegressionProtection]} />
 
 Со временем количество историй в проекте будет расти, вместе с этим будет увеличиваться и время их выполнения. Для того
-чтобы смягчить влияние данной проблемы, можно добавить дополнительные атрибуты истории:
-
+чтобы смягчить влияние данной проблемы, можно объявить приоритет с помощью [мета-аттрибутов](/API/factories/it#storyattributes):
 
 ```ts title="extend-module.ts"
 declare module '@storyshots/core' {
-  interface StoryAttributes<TExternals> {
-    // Можно использовать любые структуры, даже функции.
+  interface StoryAttributes<TArgs> {
     secondary?: true;
   }
 }
@@ -150,12 +142,12 @@ declare module '@storyshots/core' {
 
 ```ts
 const stories = [
-    // Важно чтобы в приложении работал вход 
-    it('allows to login'),
-    // При этом, выбор темы относится к второстепенным сценариям 
-    it('allows to set dark theme', {
-      secondary: true,
-    }),
+  // Важно чтобы в приложении работал вход
+  it('allows to login'),
+  // При этом, выбор темы относится к второстепенным сценариям
+  it('allows to set dark theme', {
+    secondary: true,
+  }),
 ];
 ```
 
@@ -166,27 +158,26 @@ run(filter(stories, (story) => not(story.secondary)));
 ```
 
 :::tip
-При использовании данного паттерна, рекомендуется по умолчанию устанавливать либо низкий, либо высокий
-приоритет у историй.
+Для того чтобы случайно не исключить лишнего, рекомендуется по умолчанию устанавливать высокий приоритет у историй.
 :::
 
 ## Универсальный render
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-`storyshots` предоставляет возможность описывать функцию `render` у каждой истории по отдельности, что может подойти для
+`@storyshots/react` предоставляет возможность описывать функцию `render` у каждой истории по отдельности, что может подойти для
 тестирования UI библиотеки:
 
 ```tsx
 const renders = it;
 
 const buttonStories = [
-    renders('primary button', {
-        render: () => <Button type="primary" />,
-    }),
-    renders('primary disabled button', {
-        render: () => <Button type="primary" disabled />,
-    }),
+  renders('primary button', {
+    render: () => <Button type="primary" />,
+  }),
+  renders('primary disabled button', {
+    render: () => <Button type="primary" disabled />,
+  }),
 ];
 ```
 
@@ -199,21 +190,20 @@ export const { run, it } = createPreviewApp(/* ... */);
 
 ```tsx title="index.tsx"
 run(
-    map(stories, (story) => ({
-            // По умолчанию будет отрисовываться корневой компонент приложения 
-            render: (externals) => <App externals={externals} />,
-            ...story,
-        })
-    )
+  map(stories, (story) => ({
+    // По умолчанию будет отрисовываться корневой компонент приложения
+    render: (externals) => <App externals={externals} />,
+    ...story,
+  })),
 );
 ```
 
 ```tsx title="stories.tsx"
 export const stories = [
-    it('...', {
-        /**
-         * Описывать render в истории не обязательно.
-         */
-    }),
+  it('...', {
+    /**
+     * Описывать render в истории теперь не обязательно.
+     */
+  }),
 ];
 ```

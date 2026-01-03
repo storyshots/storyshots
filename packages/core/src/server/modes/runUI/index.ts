@@ -4,7 +4,7 @@ import { attachActHandler } from './attachActHandler';
 import { openAppAndGetPage } from './createAttachedDriver';
 
 /**
- * https://storyshots.github.io/storyshots/API/manager/runUI
+ * https://storyshots.github.io/storyshots/API/run-modes/runUI
  */
 export async function runUI(config: UserDefinedManagerConfig) {
   const server = await createStoryshotsServer({

@@ -1,5 +1,5 @@
 {
-  "name": "@storyshots/web-api-externals",
+  "name": "@storyshots/web-api-mocks",
   "version": "0.0.16",
   "description": "Web API mocks",
   "repository": "https://github.com/storyshots/storyshots.git",

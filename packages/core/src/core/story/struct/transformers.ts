@@ -30,8 +30,6 @@ export function filter<TArg>(
   }));
 }
 
-// TODO: Add docs
-// TODO: Move to toolkit space (separate export entry for previews)
 export function find<TArg>(
   id: StoryID,
   stories: ExtendableStoryTree<TArg>,
