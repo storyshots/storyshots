@@ -3,8 +3,6 @@ import { FileChooser, Keyboard, Mouse } from 'playwright-core';
 import { Finder, FinderMeta } from '../finder/types';
 import { StoryEnvironment } from '../story-config';
 import { ScreenshotName } from './screenshot';
-import { Brand } from '../../brand';
-import { assert } from '@lib';
 
 export type ActorTransformer = (
   actor: Actor,
@@ -12,7 +10,7 @@ export type ActorTransformer = (
 ) => Actor;
 
 /**
- * https://storyshots.github.io/storyshots/API/story-elements/actor
+ * https://storyshots.github.io/storyshots/API/test-components/actor
  */
 export type Actor = MetaActionsFactory & {
   /**
@@ -40,12 +38,12 @@ export type Actor = MetaActionsFactory & {
   ): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#wait
+   * https://storyshots.github.io/storyshots/API/test-components/actor#wait
    */
   wait(ms: number): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#screenshot
+   * https://storyshots.github.io/storyshots/API/test-components/actor#screenshot
    */
   screenshot(name: string, options?: UserScreenshotOptions): Actor;
 
@@ -68,8 +66,8 @@ export type Actor = MetaActionsFactory & {
      * https://playwright.dev/docs/api/class-mouse#mouse-move
      */
     move(
-      x: number | string,
-      y: number | string,
+      x: number,
+      y: number,
       options?: MouseMoveAction['payload']['options'],
     ): Actor;
     /**
@@ -107,7 +105,7 @@ export type Actor = MetaActionsFactory & {
   clear(on: Finder, options?: ClearAction['payload']['options']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#uploadfile
+   * https://storyshots.github.io/storyshots/API/test-components/actor#uploadfile
    */
   uploadFile(
     chooser: Finder,
@@ -116,7 +114,7 @@ export type Actor = MetaActionsFactory & {
   ): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#highlight
+   * https://storyshots.github.io/storyshots/API/test-components/actor#highlight
    */
   highlight(on: Finder): Actor;
 
@@ -144,7 +142,7 @@ export type Actor = MetaActionsFactory & {
   ): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#exec
+   * https://storyshots.github.io/storyshots/API/test-components/actor#exec
    */
   exec(fn: () => unknown): Actor;
 
@@ -157,20 +155,26 @@ export type Actor = MetaActionsFactory & {
     timeout?: WaitForAction['payload']['timeout'],
   ): Actor;
 
+  /**
+   * https://playwright.dev/docs/api/class-page#page-wait-for-url
+   */
   waitForURL(
     url: WaitForURLAction['payload']['url'],
     options?: WaitForURLAction['payload']['options'],
   ): Actor;
 
+  /**
+   * https://storyshots.github.io/storyshots/API/test-components/actor#resize
+   */
   resize(viewport: ResizeAction['payload']): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#do
+   * https://storyshots.github.io/storyshots/API/test-components/actor#do
    */
   do(transformer: ActorTransformer): Actor;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/actor#stop
+   * https://storyshots.github.io/storyshots/API/test-components/actor#stop
    */
   stop(): Actor;
 };
@@ -340,8 +344,8 @@ export type WaitForURLAction = {
 export type MouseMoveAction = {
   action: 'mouseMove';
   payload: {
-    x: number | RelativeMeasure;
-    y: number | RelativeMeasure;
+    x: number;
+    y: number;
     options?: Parameters<Mouse['move']>[2];
   };
 };
@@ -373,27 +377,6 @@ export type ResizeAction = {
     height?: number;
   };
 };
-
-/**
- * Measure relative to CSS screen size.
- *
- * @example
- * '50%', '100%'
- */
-export type RelativeMeasure = Brand<string, 'RelativeMeasure'>;
-
-export function parseRelativeMeasure(measure: RelativeMeasure): number {
-  return parseFloat(measure) / 100;
-}
-
-export function createRelativeMeasure(expression: string): RelativeMeasure {
-  assert(
-    `${parseFloat(expression)}%` === expression,
-    `Invalid relative measure was provided. Received ${expression}, expected value like: 80%, 25.5% and etc.`,
-  );
-
-  return expression as RelativeMeasure;
-}
 
 export type ActionMeta =
   | ClickAction

@@ -3,7 +3,6 @@ import { fork } from 'node:child_process';
 import { createENVFromKey } from '../../../neutral/safe-env';
 import { assert } from '@lib';
 import { getScriptPath } from '../reusables/getScriptPath';
-import * as process from 'node:process';
 
 export function run(active: DefinedActiveStory, { dev }: { dev: boolean }) {
   const story = fork(getScriptPath('story'), {

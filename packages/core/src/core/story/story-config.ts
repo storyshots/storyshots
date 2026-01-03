@@ -28,7 +28,7 @@ export type StoryEnvironment = {
 export type DeviceName = Brand<string, 'DeviceName'>;
 
 /**
- * https://storyshots.github.io/storyshots/API/story-elements/device
+ * https://storyshots.github.io/storyshots/API/test-components/story-config#device
  */
 export type Device = {
   name: DeviceName;

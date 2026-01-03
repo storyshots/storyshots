@@ -3,7 +3,7 @@
 import {
   runCI,
   runUI,
-  UserDefinedManagerConfig,
+  ManagerConfig,
 } from '@storyshots/core/manager';
 import path from 'path';
 import { register } from 'ts-node';
@@ -32,7 +32,7 @@ async function main() {
       'Error: Please provide a storyshots config file path as the last argument (e.g., storyshots --ui path/to/config.ts)',
     ).argv;
 
-  const config: UserDefinedManagerConfig = await require(
+  const config: ManagerConfig = await require(
     path.join(process.cwd(), argv._[0] as string),
   ).default;
 

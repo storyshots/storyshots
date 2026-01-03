@@ -17,34 +17,34 @@ export interface IPreviewServer {
 type Awaitable<T> = Promise<T> | T;
 
 /**
- * https://storyshots.github.io/storyshots/API/manager/manager-config
+ * https://storyshots.github.io/storyshots/API/run-modes/manager-config
  */
 export type UserDefinedManagerConfig = {
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#paths
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#paths
    */
   paths: {
     records: string;
     screenshots: string;
   };
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#devices
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#devices
    */
   devices: UserDefinedDevice[];
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#preview
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#preview
    */
   preview: PreviewServerFactory | IPreviewServer;
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#runner
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#runner
    */
   runner?: Runner;
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#capture
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#capture
    */
   capture?: Capture;
   /**
-   * https://storyshots.github.io/storyshots/API/manager/manager-config#compare
+   * https://storyshots.github.io/storyshots/API/run-modes/manager-config#compare
    */
   compare?: ImageComparator;
 };

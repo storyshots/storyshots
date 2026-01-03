@@ -50,8 +50,8 @@ const METRIC_TO_ICON: Record<Metric, React.ReactNode> = {
   ),
   [Metric.RefactoringAllowance]: (
     <Link
-      to="/specification/metrics#-независимость-от-рефакторинга"
-      title="Независимость от рефакторинга"
+      to="/specification/metrics#-устойчивость-к-рефакторингу"
+      title="Устойчивость к рефакторингу"
     >
       🔧
     </Link>

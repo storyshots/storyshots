@@ -9,7 +9,6 @@
 * Recorder (especially for mouse related events with coordinates)
 * Allow to show only actual screenshot (add Actual switch)
 * Memo screenshot mode selection between stories
-* Manager must react on Preview changes even when screenshot or record is selected
 
 # Low priority
 

@@ -18,17 +18,17 @@ degrades={[Metric.Speed]} />
 
 ```ts
 it('shows dismissible user removal notice', {
-    act: (actor, config) =>
-        actor.screenshot('Notice').click(
-            /**
-             * config содержит информацию об устройстве на котором сейчас исполняется тест
-             */
-            config.device.name === 'desktop'
-                // На десктоп это иконка крестика
-                ? finder.getByRole('image', { name: 'close-note' })
-                // На мобилке это просто текст "Закрыть"
-                : finder.getByRole('button', { name: 'Закрыть' }),
-        ),
+  act: (actor, config) =>
+    actor.screenshot('Notice').click(
+      /**
+       * config содержит информацию об устройстве на котором сейчас исполняется тест
+       */
+      config.device.name === 'desktop'
+        ? // На десктоп это иконка крестика
+          finder.getByRole('image', { name: 'close-note' })
+        : // На мобилке это просто текст "Закрыть"
+          finder.getByRole('button', { name: 'Закрыть' }),
+    ),
 });
 ```
 
@@ -41,10 +41,10 @@ it('shows dismissible user removal notice', {
 
 ```ts
 it('shows dismissible user removal notice', {
-    act: (actor) =>
-        actor
-            .screenshot('Notice')
-            .click(finder.getByRole('button', { name: 'Закрыть уведомление' })),
+  act: (actor) =>
+    actor
+      .screenshot('Notice')
+      .click(finder.getByRole('button', { name: 'Закрыть уведомление' })),
 });
 ```
 
@@ -64,17 +64,19 @@ it('shows dismissible user removal notice', {
 
 ```ts
 const usersStories = describe('Users', [
-    it('shows nothing when there is no users', {
-        /* ... */
+  it('shows nothing when there is no users', {
+    /* ... */
+  }),
+  it('shows users', {
+    /* ... */
+  }),
+  only(
+    ['mobile'],
+    // В мобильной версии доступны новые действия
+    it('allows to swipe users to delete them', {
+      /* ... */
     }),
-    it('shows users', {
-        /* ... */
-    }),
-    only(
-        ['mobile'],
-        // В мобильной версии доступны новые действия
-        it('allows to swipe users to delete them', { /* ... */ }),
-    ),
+  ),
 ]);
 ```
 
@@ -101,16 +103,17 @@ run(mobileStories);
 
 ```ts title="manager/desktop-ui.ts"
 runUI({
-    devices: [
-        {
-            name: 'desktop',
-            width: 1480,
-            height: 920
-        },
-    ],
-    /* ... */
-})
+  devices: [
+    {
+      name: 'desktop',
+      width: 1480,
+      height: 920,
+    },
+  ],
+  /* ... */
+});
 ```
+
 :::
 
 ## Сокращение устройств
@@ -126,15 +129,15 @@ runUI({
 
 ```ts
 const config = {
-    devices: [
-        { name: 'desktopXL', /* ... */ },
-        { name: 'desktopL', /* ... */ },
-        { name: 'desktopS', /* ... */ },
-        { name: 'mobileL', /* ... */ },
-        { name: 'mobileS', /* ... */ },
-        { name: 'tablet', /* ... */ },
-    ],
-    /* ... */
+  devices: [
+    { name: 'desktopXL' /* ... */ },
+    { name: 'desktopL' /* ... */ },
+    { name: 'desktopS' /* ... */ },
+    { name: 'mobileL' /* ... */ },
+    { name: 'mobileS' /* ... */ },
+    { name: 'tablet' /* ... */ },
+  ],
+  /* ... */
 };
 ```
 
@@ -145,12 +148,12 @@ const config = {
 
 ```ts
 const config = {
-    devices: [
-        { name: 'desktop', /* ... */ },
-        { name: 'mobile', /* ... */ },
-        { name: 'tablet', /* ... */ },
-    ],
-    /* ... */
+  devices: [
+    { name: 'desktop' /* ... */ },
+    { name: 'mobile' /* ... */ },
+    { name: 'tablet' /* ... */ },
+  ],
+  /* ... */
 };
 ```
 

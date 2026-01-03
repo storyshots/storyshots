@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # @storyshots/web-api-externals
 
-Подменяет `WebAPI` на их [тестируемые аналоги](/specification/requirements/env)
+Подменяет `Web API` на их [тестируемые аналоги](/specification/requirements/query)
 через [инвазивный метод](/patterns/replace#подмена-через-сайд-эффекты).
 
 ## install
@@ -32,7 +32,7 @@ export const clock = install({ now: new Date(2024, 0, 13, 12) });
 * Таймеры (`setTimeout`, `setInterval`) на странице выполняются в обычном режиме.
 
 :::tip
-`clock` доступен в глобальном объекте `window`, что делает доступным его использование в [`exec`](/API/story-elements/actor#exec).
+`clock` доступен в глобальном объекте `window`, что делает доступным его использование в [`exec`](/API/test-components/actor#exec).
 :::
 
 ### tick

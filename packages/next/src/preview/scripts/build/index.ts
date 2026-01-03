@@ -1,7 +1,6 @@
 import { fork } from 'node:child_process';
 import { createENVFromKey } from '../../../neutral/safe-env';
 import { getScriptPath } from '../reusables/getScriptPath';
-import * as process from 'node:process';
 
 // Generates master build
 export function run() {

@@ -1,4 +1,4 @@
-import { MouseMoveAction, parseRelativeMeasure } from '@core';
+import { MouseMoveAction } from '@core';
 import { Frame } from 'playwright';
 
 export async function doMouseMove(preview: Frame, move: MouseMoveAction) {
@@ -11,11 +11,5 @@ export async function doMouseMove(preview: Frame, move: MouseMoveAction) {
 
   return preview
     .page()
-    .mouse.move(
-      size.left +
-        (typeof x === 'number' ? x : size.width * parseRelativeMeasure(x)),
-      size.top +
-        (typeof y === 'number' ? y : size.height * parseRelativeMeasure(y)),
-      move.payload.options,
-    );
+    .mouse.move(size.left + x, size.top + y, move.payload.options);
 }

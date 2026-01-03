@@ -1,6 +1,6 @@
 import { StoryEnvironment } from '../story-config';
 import { assertScreenshotNameConditions, ScreenshotName } from './screenshot';
-import { ActionMeta, Actor, createRelativeMeasure } from './types';
+import { ActionMeta, Actor } from './types';
 
 export function createActor(
   config: StoryEnvironment,
@@ -78,11 +78,7 @@ export function createActor(
       move: (x, y, options) =>
         withAction({
           action: 'mouseMove',
-          payload: {
-            x: typeof x === 'number' ? x : createRelativeMeasure(x),
-            y: typeof y === 'number' ? y : createRelativeMeasure(y),
-            options,
-          },
+          payload: { x, y, options },
         }),
       up: (options) =>
         withAction({ action: 'mouseUpDown', payload: { type: 'up', options } }),
