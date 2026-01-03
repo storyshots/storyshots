@@ -1,12 +1,18 @@
-import { merge, PreviewServerFactory, tap } from '@storyshots/core/manager';
-import { createProxyServer } from '@storyshots/proxy';
-import { runStaticPreview } from './runStaticPreview';
-import { runWatchPreview } from './runWatchPreview';
+import { PreviewServerFactory } from '@storyshots/core/manager';
+import * as preview from './scripts/preview';
+import * as build from './scripts/build';
 
-export const createNextPreview = (): PreviewServerFactory =>
-  merge(
-    tap((config) =>
-      config.mode === 'ui' ? runWatchPreview() : runStaticPreview(),
-    ),
-    createProxyServer('http://localhost:3000'),
-  );
+export const createNextPreview = (): PreviewServerFactory => async (mode) => {
+  if (mode === 'ci') {
+    await build.run();
+  }
+
+  const { ready, kill } = preview.run({ dev: mode === 'ui' });
+
+  await ready;
+
+  return {
+    at: 'http://localhost:3000',
+    cleanup: async () => kill(),
+  };
+};

@@ -1,66 +1,144 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { Background, background } from '../reusables/background';
-import { describe, test } from '../reusables/test';
-import {
-  concatDescriptions,
-  withManagerThrowing,
-} from '../reusables/test/test-description';
-import { UI, ui } from '../reusables/ui';
-import { desktop } from './reusables/device';
+import { test } from '../fixtures/tf';
 
-describe('using background run', () => {
-  test(
-    'allows to run all',
-    concatDescriptions(
-      setup(background),
-      setup(ui).run('is a story').screenshot(),
-    ),
-  );
+import { runCI, runUI } from '../fixtures/modes';
+import { UserDefinedManagerConfig } from '@storyshots/core/manager';
+import { expect } from '@playwright/test';
 
-  test(
-    'accepts any changes automatically',
-    concatDescriptions(
-      setup(background),
-      desktop(background)
-        .story(() => ({
-          render: () => <h1>Changed</h1>,
-        }))
-        .actor(),
-      setup(ui).run('is a story').open('FINAL').screenshot(),
-    ),
-  );
+test('allows to run all', async ({ tf, page }) => {
+  tf.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test(
-    'does not do anything when there is no diff',
-    concatDescriptions(
-      setup(ui).run('is a story').accept('is a story'),
-      setup(background),
-      setup(ui).run('is a story').screenshot(),
-    ),
-  );
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
 
-  test(
-    'throws when error has occurred',
-    withManagerThrowing(
-      desktop(background)
-        .story(({ finder }) => ({
-          act: (actor) => actor.click(finder.getByText('Submit')),
-          render: () => (
-            <div>
-              <button>Submit</button>
-              <button>Submit</button>
-            </div>
-          ),
-        }))
-        .actor(),
-    ),
-  );
+  await runCI(tf, DEVICES);
+
+  // TODO: Is there a way do dynamically inject fixtures?
+  const { ui, cleanup } = await runUI(tf, page, DEVICES);
+
+  try {
+    await ui.run('is a story');
+
+    await ui.screenshot();
+  } finally {
+    await cleanup();
+  }
 });
 
-function setup(on: UI | Background) {
-  return desktop(on)
-    .story(() => ({
-      render: () => <h1>Hello, App!</h1>,
-    }))
-    .actor();
-}
+test('accepts any changes automatically', async ({ tf, page }) => {
+  tf.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  await runCI(tf, DEVICES);
+
+  tf.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Bye, app!</h1>,
+      }),
+    );
+  });
+
+  await runCI(tf, DEVICES);
+
+  const { ui, cleanup } = await runUI(tf, page, DEVICES);
+
+  try {
+    await ui.run('is a story');
+    await ui.open('FINAL');
+
+    await ui.screenshot();
+  } finally {
+    await cleanup();
+  }
+});
+
+test('does not do anything when there is no diff', async ({ tf, page }) => {
+  tf.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  const client_0 = await runUI(tf, page, DEVICES);
+
+  try {
+    await client_0.ui.run('is a story');
+    await client_0.ui.accept('is a story');
+  } finally {
+    await client_0.cleanup();
+  }
+
+  await runCI(tf, DEVICES);
+
+  const client_1 = await runUI(tf, page, DEVICES);
+
+  try {
+    await client_1.ui.run('is a story');
+
+    await client_1.ui.screenshot();
+  } finally {
+    await client_1.cleanup();
+  }
+});
+
+test('throws when error has occurred', async ({ tf, page }) => {
+  tf.change(({ createPreviewApp, finder }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        act: (actor) => actor.click(finder.getByText('Click me')),
+        render: () => (
+          <>
+            <button>Click me</button>
+            <button>Click me</button>
+          </>
+        ),
+      }),
+    );
+  });
+
+  await expect(() => runCI(tf, DEVICES)).rejects.toThrow();
+});
+
+// TODO: Unify devices
+const DEVICES: UserDefinedManagerConfig['devices'] = [
+  {
+    name: 'desktop',
+    width: 1480,
+    height: 920,
+  },
+];

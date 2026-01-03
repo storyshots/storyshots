@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build --no-lint",
-    "start": "next start",
-    "storyshots": "ts-node storyshots/ui.ts",
+    "ui": "ts-node storyshots/ui.ts",
     "ci": "ts-node storyshots/ci.ts"
   }
 }

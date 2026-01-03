@@ -1,0 +1,21 @@
+{
+  "name": "@storyshots/web-api-externals",
+  "version": "0.0.16",
+  "description": "Web API mocks",
+  "repository": "https://github.com/storyshots/storyshots.git",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf lib && ts-node build.ts",
+    "lint": "eslint ./src"
+  },
+  "dependencies": {
+    "@sinonjs/commons": "^3.0.1",
+    "mock-local-storage": "^1.1.24",
+    "mockdate": "^3.0.5"
+  }
+}

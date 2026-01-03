@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "files": [
+    "tsconfig.json"
+  ],
   "scripts": {
     "start": "playwright test --ui",
     "compile": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@playwright/test": "^1.57.0",
+    "webpack-dev-middleware": "^7.4.5"
+  }
 }

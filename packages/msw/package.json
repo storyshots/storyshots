@@ -1,0 +1,30 @@
+{
+  "name": "@storyshots/msw-externals",
+  "version": "0.0.16",
+  "description": "Direct fetch middleware",
+  "repository": "https://github.com/storyshots/storyshots.git",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs",
+      "default": "./lib/index.js"
+    }
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf lib && ts-node build.ts",
+    "lint": "eslint ./src"
+  },
+  "dependencies": {
+    "@storyshots/core": "0.0.16",
+    "@storyshots/arrangers": "0.0.16",
+    "msw": "^2.6.8"
+  }
+}

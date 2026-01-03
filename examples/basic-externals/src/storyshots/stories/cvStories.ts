@@ -26,6 +26,7 @@ export const cvStories = resized(
           .fill(finder.getByLabel('Donation'), '300')
           .click(finder.getByRole('combobox', { name: 'Currency' }))
           .click(finder.getByText('$'))
+          .waitFor(finder.locator('ant-select-focused'), 'detached')
           .fill(finder.getByLabel('Website'), 'hello')
           .click(finder.getByText('hello.com').nth(1))
           .clear(finder.getByLabel('Intro'))

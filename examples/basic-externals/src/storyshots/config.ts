@@ -1,10 +1,10 @@
 import {
-  UserDefinedManagerConfig,
-  RUNNER,
   COMPARE,
+  RUNNER,
+  UserDefinedManagerConfig,
 } from '@storyshots/core/manager';
 import path from 'path';
-import { createPreviewServer } from './createPreviewServer';
+import { createExecPreview } from '@storyshots/exec-preview';
 
 export default {
   devices: [
@@ -25,7 +25,16 @@ export default {
     screenshots: path.join(process.cwd(), 'screenshots'),
     records: path.join(process.cwd(), 'records'),
   },
-  preview: createPreviewServer(),
+  preview: createExecPreview({
+    ui: {
+      command: 'npx webpack-cli serve',
+      at: 'http://localhost:8080',
+    },
+    ci: {
+      command: 'npx webpack-cli build',
+      serve: './dist',
+    },
+  }),
   runner: RUNNER.pool({ agentsCount: 4 }),
   compare: COMPARE.withLooksSame(),
 } satisfies UserDefinedManagerConfig;

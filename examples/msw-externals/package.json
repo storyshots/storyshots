@@ -5,7 +5,7 @@
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "scripts": {
-    "start": "storyshots --ui storyshots/config.ts",
+    "ui": "storyshots --ui storyshots/config.ts",
     "ci": "storyshots storyshots/config.ts",
     "codegen": "ts-node codegen/generator.ts",
     "compile": "tsc --noEmit"

@@ -5,15 +5,6 @@
   <title>Storyshots UI</title>
 </head>
 <body>
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const source = `/index.js?manager=${params.get('manager')}`;
-
-  const script = document.createElement('script');
-
-  script.src = source;
-
-  document.body.appendChild(script);
-</script>
+<script src="/index.js"></script>
 </body>
 </html>

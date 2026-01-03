@@ -1,60 +1,50 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { callback } from '../reusables/preview/pure-function-factory';
-import { CreateStory, StoryConfig } from '../reusables/preview/stories';
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
-import { ReadWriteExternals, rw } from './reusables/rw';
+import { test } from '../fixtures/ui';
 
-describe('utilizing recorder', () => {
-  test(
-    'allows to record calls',
-    setup().run('is a story').open('Records').screenshot(),
-  );
+test('allows to journal function calls', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test(
-    'allows to catch calls changes',
-    setup()
-      .run('is a story')
-      .accept('is a story')
-      .preview()
-      .story(render(() => <button>Write</button>))
-      .actor()
-      .run('is a story')
-      .open('Records')
-      .screenshot(),
-  );
+    run([
+      it('is a story', {
+        render: () => <button>Make a call</button>,
+      }),
+    ]);
+  });
 
-  test(
-    'allows to accept new calls changes',
-    setup()
-      .run('is a story')
-      .accept('is a story')
-      .preview()
-      .story(render(() => <button>Write</button>))
-      .actor()
-      .run('is a story')
-      .accept('is a story')
-      .open('Records')
-      .screenshot(),
-  );
+  await ui.run('is a story');
+
+  await ui.open('Records');
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
+
+  await ui.change(({ createPreviewApp, finder }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run([
+      it('is a story', {
+        act: (actor) => actor.click(finder.getByText('Make a call')),
+        render: (_, { journal }) => (
+          <button onClick={() => journal.record('call', 'arg0', 'arg1')}>
+            Make a call
+          </button>
+        ),
+      }),
+    ]);
+  });
+
+  await ui.run('is a story');
+
+  await ui.screenshot();
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
 });
-
-function setup() {
-  return desktop()
-    .externals(rw())
-    .story(
-      render((externals) => (
-        <button onClick={() => externals.write('User')}>Write</button>
-      )),
-    )
-    .actor();
-}
-
-function render(
-  _render: NonNullable<StoryConfig<ReadWriteExternals>['render']>,
-): CreateStory<never> {
-  return callback(_render, ([{ finder }, render]) => ({
-    act: (actor) => actor.click(finder.getByText('Write')),
-    render,
-  }));
-}

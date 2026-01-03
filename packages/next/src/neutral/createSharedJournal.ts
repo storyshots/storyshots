@@ -1,4 +1,4 @@
-import { JournalRecord } from '@storyshots/core/toolbox';
+import { JournalRecord } from '@storyshots/core/devkit';
 import { createSharedState } from './shared-state';
 import { StoryConfig } from '@storyshots/core';
 

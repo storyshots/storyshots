@@ -5,7 +5,13 @@ import webpack, { Configuration } from 'webpack';
 const config: Configuration = {
   mode: 'development',
   bail: false,
-  entry: './src/index.tsx',
+  entry:
+    process.env.STORYSHOTS === 'true'
+      ? './src/storyshots/preview/index.tsx'
+      : './src/index.tsx',
+  devServer: {
+    historyApiFallback: true,
+  },
   devtool: 'cheap-module-source-map',
   stats: {
     errorDetails: true,

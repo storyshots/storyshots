@@ -1,4 +1,4 @@
-import { runInBackground } from '@storyshots/core/manager';
+import { runCI } from '@storyshots/core/manager';
 import { config } from './config';
 
-runInBackground(config);
+runCI(config);

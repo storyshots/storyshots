@@ -1,17 +1,24 @@
 import { createENVFromKey } from '../../../neutral/safe-env';
 import { fork } from 'node:child_process';
 import { getScriptPath } from '../reusables/getScriptPath';
+import * as process from 'node:process';
 
-export function run(dev: boolean) {
+export function run({ dev }: { dev: boolean }) {
   const preview = fork(getScriptPath('preview'), {
-    env: createENVFromKey('STORYSHOTS_MODE', {
-      type: 'preview',
-      dev,
-    }) as NodeJS.ProcessEnv,
+    env: {
+      ...process.env,
+      ...createENVFromKey('STORYSHOTS_MODE', {
+        type: 'preview',
+        dev,
+      }),
+    },
     stdio: 'inherit',
   });
 
-  return new Promise<void>((resolve) =>
-    preview.once('message', () => resolve()),
-  );
+  return {
+    ready: new Promise<void>((resolve) =>
+      preview.once('message', () => resolve()),
+    ),
+    kill: preview.kill.bind(preview),
+  };
 }

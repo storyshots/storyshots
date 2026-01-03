@@ -9,8 +9,9 @@ async function main() {
   await tsup.build({
     entry: {
       index: './src/core/public.ts',
-      toolbox: './src/core/toolbox.ts',
-      manager: './src/server/index.ts',
+      ['devkit/index']: './src/core/devkit.ts',
+      manager: './src/server/public.ts',
+      ['devkit/manager']: './src/server/devkit.ts',
     },
     outDir: 'lib',
     platform: 'node',

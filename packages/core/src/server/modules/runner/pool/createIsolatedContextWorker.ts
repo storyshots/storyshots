@@ -5,7 +5,9 @@ import { Worker } from './types';
 import { RunnableStoryMeta } from '@core';
 
 export async function createIsolatedContextWorker(): Promise<Worker> {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    args: ['--disable-web-security'],
+  });
 
   return {
     allocate: async (story) => {

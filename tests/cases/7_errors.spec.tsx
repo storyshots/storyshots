@@ -1,77 +1,115 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { callback } from '../reusables/preview/pure-function-factory';
-import { CreateStories } from '../reusables/preview/stories';
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
-import { ExtendableStoryTree } from '@packages/core/src/core';
+import { test } from '../fixtures/ui';
 
-describe('errors', () => {
-  test(
-    'shows an error dedicated to passed story',
-    desktop()
-      .stories(render((error) => () => [error('is a story')]))
-      .actor()
-      .run('is a story')
-      .screenshot()
-      .do((page) => page.getByLabel('Progress').click())
-      .screenshot()
-      // It is important to see that nothing is happening on click
-      .do((page) => page.getByText('[desktop]').click())
-      .screenshot(),
-  );
+test('shows an error dedicated to passed story', async ({
+  ui,
+  page,
+}) => {
+  await ui.change(({ createPreviewApp, finder }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test(
-    'shows several messages',
-    desktop()
-      .stories(
-        render((error) => ({ describe }) => [
-          describe('Group', [error('is first'), error('is second')]),
-        ]),
-      )
-      .actor()
-      .run('Group')
-      .screenshot()
-      .do((page) => page.getByLabel('Progress').click())
-      .screenshot(),
-  );
+    run(
+      it('is a story', {
+        act: (actor) => actor.click(finder.getByText('Click')),
+        render: () => (
+          <>
+            <button>Click</button>
+            <button>Click</button>
+          </>
+        ),
+      }),
+    );
+  });
 
-  test(
-    'shows an initialization error',
-    desktop()
-      .story(() => ({
-        act: (actor) => {
-          const record = undefined as unknown as number;
+  await ui.run('is a story');
 
-          record.toFixed();
+  await ui.screenshot();
 
-          return actor;
-        },
-        render: () => null,
-      }))
-      .actor()
-      .run('is a story')
-      .screenshot(),
-  );
+  await page.getByLabel('Progress').click();
+
+  await ui.screenshot();
+
+  // It is important to see that nothing is happening on click
+  await page.getByText('[desktop]').click();
+
+  await ui.screenshot();
 });
 
-function render(
-  factory: (
-    error: (message: string) => ExtendableStoryTree<unknown>,
-  ) => CreateStories<unknown>,
-): CreateStories<unknown> {
-  return callback(factory, ([args, _factory]) =>
-    _factory((message) => {
-      const text = `Submit ${message}`;
+test('shows several messages', async ({ ui, page }) => {
+  await ui.change(({ createPreviewApp, finder }) => {
+    const { run, it, describe } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-      return args.it(message, {
-        act: (actor) => actor.click(args.finder.getByText(text)),
+    const error = (title: string) =>
+      it(title, {
+        act: (actor) => actor.click(finder.getByText('Click')),
         render: () => (
-          <div>
-            <button>{text}</button>
-            <button>{text}</button>
-          </div>
+          <>
+            <button>Click</button>
+            <button>Click</button>
+          </>
         ),
       });
-    })(args),
-  );
-}
+
+    run(describe('Group', [error('is first'), error('is second')]));
+  });
+
+  await ui.run('Group');
+
+  await ui.screenshot();
+
+  await page.getByLabel('Progress').click();
+
+  // TODO: Add panel scroll test (to verify all errors are being displayed correctly)
+  await ui.screenshot();
+});
+
+test('shows an act error', async ({ ui, page }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        act: () => {
+          throw new Error('Act error');
+        },
+      }),
+    );
+  });
+
+  await ui.run('is a story');
+
+  await ui.screenshot();
+
+  await page.getByLabel('Progress').click();
+
+  await ui.screenshot();
+});
+
+test('shows an arrange error', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        arrange: () => {
+          throw new Error('Arrange error');
+        },
+      }),
+    );
+  });
+
+  await ui.open('is a story');
+
+  await ui.screenshot();
+});

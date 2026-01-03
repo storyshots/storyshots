@@ -1,0 +1,21 @@
+{
+  "name": "@storyshots/exec-preview",
+  "version": "0.0.16",
+  "description": "Exec based preview server",
+  "repository": "https://github.com/storyshots/storyshots.git",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rimraf lib && tsc --noEmit && ts-node build.ts",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@storyshots/core": "0.0.16",
+    "tree-kill": "^1.2.2",
+    "express": "^4.18.2"
+  }
+}

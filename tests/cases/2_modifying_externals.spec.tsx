@@ -1,29 +1,36 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
-import { rw } from './reusables/rw';
+import { test } from '../fixtures/ui';
 
-describe('modifying externals', () => {
-  test(
-    'provides default behaviour',
-    desktop()
-      .externals(rw())
-      .story(() => ({ render: ({ read }) => <h1>{read()}</h1> }))
-      .actor()
-      .open('is a story')
-      .screenshot(),
-  );
+test('allows to define externals using arrange', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({ getName: () => 'Ivan' }),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test(
-    'allows to replace externals behaviour using arrange',
-    desktop()
-      .externals(rw())
-      .story(() => ({
-        arrange: (externals) => ({ ...externals, read: () => 'Vasiliy' }),
-        render: ({ read }) => <h1>{read()}</h1>,
-      }))
-      .actor()
-      .open('is a story')
-      .screenshot(),
-  );
+    run([
+      it('is a story', {
+        render: (externals) => <h1>{externals.getName()}</h1>,
+      }),
+    ]);
+  });
+
+  await ui.open('is a story');
+
+  await ui.screenshot();
+
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({ getName: (): string => 'Ivan' }),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run([
+      it('is a story', {
+        arrange: (externals) => ({ ...externals, getName: () => 'Vasiliy' }),
+        render: (externals) => <h1>{externals.getName()}</h1>,
+      }),
+    ]);
+  });
+
+  await ui.screenshot();
 });

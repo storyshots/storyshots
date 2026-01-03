@@ -2,6 +2,8 @@ import { find, StoryTree } from '@core';
 import { useEffect, useState } from 'react';
 import { ManagerConfig } from '../useManagerConfig';
 import { UserSelection } from '../useUserSelection';
+import { useTypedQSPRoxy } from '../../useTypedQSPRoxy';
+import { assertNotEmpty } from '@lib';
 
 /**
  * Returns preview state as simple tree of stories.
@@ -18,6 +20,7 @@ export function usePreviewStories(
   untrusted: UserSelection,
   manager: ManagerConfig,
 ) {
+  const qs = useTypedQSPRoxy();
   const [stories, setStories] = useState<StoryTree>();
 
   useEffect(() => {
@@ -56,11 +59,14 @@ export function usePreviewStories(
         | undefined;
 
       if (frame) {
-        frame.src = location.origin;
+        const host = qs.get('at');
+
+        assertNotEmpty(host);
+
+        frame.src = host;
       }
     };
   }, [untrusted, manager.preview.resolved]);
 
   return stories;
 }
-

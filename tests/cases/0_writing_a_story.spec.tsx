@@ -1,88 +1,155 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { callback } from '../reusables/preview/pure-function-factory';
-import { CreateStory, StoryConfig } from '../reusables/preview/stories';
-import { describe, test } from '../reusables/test';
-import { desktop } from './reusables/device';
+import { test } from '../fixtures/ui';
 
-describe('writing a story', () => {
-  test(
-    'displays no stories by default',
-    desktop()
-      .stories(() => [])
-      .actor()
-      .screenshot(),
-  );
+test('displays no stories by default', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-  test('allows to define a story', setup().screenshot());
+    run([]);
+  });
 
-  test('allows to open a story', setup().open('is a story').screenshot());
-
-  test(
-    'captures story changes on live',
-    setup()
-      .open('is a story')
-      .preview()
-      .story(render(() => <h1>Changed</h1>))
-      .actor()
-      .screenshot(),
-  );
-
-  test(
-    'allows to generate fresh baseline',
-    setup()
-      .run('is a story')
-      .screenshot()
-      .open('Records')
-      .screenshot()
-      .open('FINAL')
-      .screenshot(),
-  );
-
-  test(
-    'allows to save baseline',
-    setup().run('is a story').accept('is a story').screenshot(),
-  );
-
-  test(
-    'allows to catch visual changes',
-    setup()
-      .run('is a story')
-      .accept('is a story')
-      .preview()
-      .story(render(() => <h1>Hello</h1>))
-      .actor()
-      .run('is a story')
-      .open('FINAL')
-      .screenshot()
-      .do((page) => page.getByText('2-up').click())
-      .screenshot()
-      .do((page) => page.getByText('Diff', { exact: true }).click())
-      .screenshot(),
-  );
-
-  test(
-    'allows to accept new changes',
-    setup()
-      .run('is a story')
-      .accept('is a story')
-      .preview()
-      .story(render(() => <h1>Hello</h1>))
-      .actor()
-      .run('is a story')
-      .accept('is a story')
-      .open('FINAL')
-      .screenshot(),
-  );
+  await ui.screenshot();
 });
 
-function setup() {
-  return desktop()
-    .story(render(() => <h1>Hello, App!</h1>))
-    .actor();
-}
+test('allows to define a story', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
 
-function render(
-  _render: NonNullable<StoryConfig<unknown>['render']>,
-): CreateStory<unknown> {
-  return callback(_render, ([, render]) => ({ render }));
-}
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.screenshot();
+
+  await ui.open('is a story');
+
+  await ui.screenshot();
+});
+
+test('captures story changes live', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.open('is a story');
+
+  await ui.screenshot();
+
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Bye, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.screenshot();
+});
+
+test('allows to generate and accept fresh baseline', async ({ ui }) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.run('is a story');
+
+  await ui.screenshot();
+
+  await ui.open('Records');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL');
+
+  await ui.screenshot();
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
+});
+
+test('allows to catch and accept visual changes', async ({
+  ui,
+  page,
+}) => {
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Hello, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.run('is a story');
+
+  await ui.accept('is a story');
+
+  await ui.change(({ createPreviewApp }) => {
+    const { run, it } = createPreviewApp({
+      createExternals: () => ({}),
+      createJournalExternals: (externals) => externals,
+    });
+
+    run(
+      it('is a story', {
+        render: () => <h1>Bye, app!</h1>,
+      }),
+    );
+  });
+
+  await ui.run('is a story');
+
+  await ui.screenshot();
+
+  await ui.open('FINAL');
+
+  await ui.screenshot();
+
+  await page.getByText('2-up').click();
+
+  await ui.screenshot();
+
+  await page.getByText('Diff', { exact: true }).click();
+
+  await ui.screenshot();
+
+  await ui.accept('is a story');
+
+  await ui.screenshot();
+});

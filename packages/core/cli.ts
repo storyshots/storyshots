@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import {
-  runInBackground,
+  runCI,
   runUI,
   UserDefinedManagerConfig,
 } from '@storyshots/core/manager';
@@ -36,5 +36,5 @@ async function main() {
     path.join(process.cwd(), argv._[0] as string),
   ).default;
 
-  return argv.ui ? runUI(config) : runInBackground(config);
+  return argv.ui ? runUI(config) : runCI(config);
 }

@@ -1,4 +1,4 @@
-import { find } from '@storyshots/core/toolbox';
+import { find } from '@storyshots/core/devkit';
 import { onModeSwitch } from './onModeSwitch';
 import { ExternalsFactory } from './types';
 import { assertNotEmpty } from '@lib';

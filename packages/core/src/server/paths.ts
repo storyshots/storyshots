@@ -1,4 +1,3 @@
-import { toManagerURL } from '../reusables/toManagerURL';
 import { ManagerConfig } from './types';
 
 import { Device, RunnableStoryMeta } from '@core';
@@ -8,13 +7,17 @@ export const createManagerRootURL = (config: ManagerConfig) => {
   const url = new URL('http://localhost:6006');
   const qs = createTypedQSProxy(url.searchParams);
 
+  qs.set('at', config.preview.at);
   qs.set('size', config.runner.size);
   qs.set('devices', config.devices as Device[]);
 
-  return toManagerURL(url);
+  return url;
 };
 
-export const createStoryURL = (meta: RunnableStoryMeta, config: ManagerConfig) => {
+export const createStoryURL = (
+  meta: RunnableStoryMeta,
+  config: ManagerConfig,
+) => {
   const url = createManagerRootURL(config);
   const qs = createTypedQSProxy(url.searchParams);
 
