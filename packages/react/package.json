@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/react",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "React storyshots facade",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -14,7 +14,7 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.16",
+    "@storyshots/core": "0.0.17",
     "react": "*",
     "react-dom": "*"
   },
