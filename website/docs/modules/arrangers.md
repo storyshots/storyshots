@@ -14,14 +14,14 @@ sidebar_position: 5
 import { createArrangers } from '@storyshots/arrangers';
 
 interface IExternals {
-    analytics: {
-        log(event: string): void;
-    };
-    business: {
-        getBalanceAt(date: number): Promise<number>;
-        applyCV(form: unknown): Promise<void>;
-    };
-    route: string;
+  analytics: {
+    log(event: string): void;
+  };
+  business: {
+    getBalanceAt(date: number): Promise<number>;
+    applyCV(form: unknown): Promise<void>;
+  };
+  route: string;
 }
 
 const utils = createArrangers<IExternals>();
@@ -33,8 +33,8 @@ const utils = createArrangers<IExternals>();
 
 ```ts
 it('...', {
-    // Метод getBalanceAt теперь имеет другую реализацию
-    arrange: set('business.getBalanceAt', async () => 100_000),
+  // Метод getBalanceAt теперь имеет другую реализацию
+  arrange: set('business.getBalanceAt', async () => 100_000),
 });
 ```
 
@@ -44,8 +44,8 @@ it('...', {
 
 ```ts
 it('...', {
-    // Вызовы getBalanceAt теперь будут записаны в журнал
-    arrange: record('business.getBalanceAt'),
+  // Вызовы getBalanceAt теперь будут записаны в журнал
+  arrange: record('business.getBalanceAt'),
 });
 ```
 
@@ -53,8 +53,8 @@ it('...', {
 
 ```ts
 it('...', {
-    // Помимо записи, также будет установлено и поведение
-    arrange: record('business.getBalanceAt', async () => 100_000),
+  // Помимо записи, также будет установлено и поведение
+  arrange: record('business.getBalanceAt', async () => 100_000),
 });
 ```
 
@@ -64,7 +64,7 @@ it('...', {
 
 ```ts
 it('...', {
-  arrange: transform('business.getBalanceAt', balance => balance * 2),
+  arrange: transform('business.getBalanceAt', (balance) => balance * 2),
 });
 ```
 
@@ -78,7 +78,7 @@ it('...', {
 
 ```ts
 it('...', {
-    arrange: compose('route', (path) => path === '/login' ? '/' : path),
+  arrange: compose('route', (path) => (path === '/login' ? '/' : path)),
 });
 ```
 
@@ -90,12 +90,12 @@ it('...', {
 import { createArrangers } from '@storyshots/arrangers';
 
 interface IExternals {
-    repositories: {
-        UserRepository: {
-            getUser(): Promise<void>;
-        },
+  repositories: {
+    UserRepository: {
+      getUser(): Promise<void>;
     };
-    route: string;
+  };
+  route: string;
 }
 
 const utils = createArrangers<IExternals>();
@@ -108,8 +108,10 @@ export const repository = utils.focus('repositories');
 
 ```ts
 it('...', {
-    // Путь до свойства теперь сокращён
-    arrange: repository.set('UserRepository.getUser', async () => createAdminUserStub()),
+  // Путь до свойства теперь сокращён
+  arrange: repository.set('UserRepository.getUser', async () =>
+    createAdminUserStub(),
+  ),
 });
 ```
 
@@ -119,10 +121,10 @@ it('...', {
 
 ```ts
 it('...', {
-    arrange: arrange(
-        set('business.getBalanceAt', () => 100_000),
-        record('analytics.log'),
-    ),
+  arrange: arrange(
+    set('business.getBalanceAt', () => 100_000),
+    record('analytics.log'),
+  ),
 });
 ```
 
@@ -130,21 +132,18 @@ it('...', {
 
 ```ts
 it('...', {
-    arrange: arrange(
-        withZeroBalance(),
-        withApplyCVSuccess(),
-    ),
+  arrange: arrange(withZeroBalance(), withApplyCVSuccess()),
 });
 
 function withZeroBalance() {
-    return set('business.getBalanceAt', () => 0);
+  return set('business.getBalanceAt', () => 0);
 }
 
 function withApplyCVSuccess() {
-    return arrange(
-        set('business.applyCV', async () => 'success'),
-        record('business.applyCV')
-    );
+  return arrange(
+    set('business.applyCV', async () => 'success'),
+    record('business.applyCV'),
+  );
 }
 ```
 
@@ -152,15 +151,15 @@ function withApplyCVSuccess() {
 
 ```ts
 it('...', {
-    arrange: arrange(
-        set('business.getBalanceAt', () => 0),
-        // Можно вынести в отдельную функцию
-        (externals) => {
-            clock.set(new Date(/* ... */))
+  arrange: arrange(
+    set('business.getBalanceAt', () => 0),
+    // Можно вынести в отдельную функцию
+    (externals) => {
+      clock.set(new Date(/* ... */));
 
-            return externals;
-        }
-    ),
+      return externals;
+    },
+  ),
 });
 ```
 
@@ -170,19 +169,20 @@ it('...', {
 
 ```ts
 it('...', {
-    arrange: iterated(
-        ['failure #0', 'failure #1', 'success'],
-        (next) => set('business.applyCV', async () => next())
-        // applyCV() -> failure #0;
-        // applyCV() -> failure #1;
-        // applyCV() -> success;
-    ),
+  arrange: set(
+    'business.applyCV',
+    iterated(['failure #0', 'failure #1', 'success']),
+    // applyCV() -> failure #0;
+    // applyCV() -> failure #1;
+    // applyCV() -> success;
+    // applyCV() -> failure #0;
+    // ...
+  ),
 });
 ```
 
 :::warning Важно
-Методы `arrange` и `iterated` являются общими. Arranger утилиты, такие как `set`, `focus`, `record` и так далее, зависят
-от контекста задаваемого `focus`.
+`iterated` хранит состояние в замыкании.
 :::
 
 ## resolves

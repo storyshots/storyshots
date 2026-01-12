@@ -6,16 +6,18 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Externals
 
-Externals - это устоявшийся термин для обозначения методов [внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage).
+Externals - это устоявшийся термин для обозначения объекта управления компонентами: [
+*запросы*](/specification/requirements/query) и [*команды*](/specification/requirements/command).
 
 ## Тривиальные externals
 
 <MetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance]} />
 
-Элементы компонентов [внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage) подменяются в `storyshots`.
+Элементы компонентов [*запросы*](/specification/requirements/query) и [*команды*](/specification/requirements/command)
+подменяются в `storyshots`.
 
-- *[Внешняя среда](/specification/requirements/env)* - подменяется, чтобы исключить не детерминированность.
-- *[Хранилище](/specification/requirements/storage)* - подменяется, чтобы исключить сайд-эффекты.
+- _[*Запросы*](/specification/requirements/query)_ - подменяются, чтобы исключить недетерминированность.
+- _[*Команды*](/specification/requirements/command)_ - подменяются, чтобы исключить сайд-эффекты.
 
 Это означает, что код оригинальных функций не будет протестирован в историях, ведь он будет заменён методами заглушками.
 Поэтому, следует уделить отдельное внимание уровню сложности логики в таких процедурах.
@@ -24,18 +26,20 @@ Externals - это устоявшийся термин для обозначен
 
 ```ts
 const userRepository: UserRepository = {
-    getUser: (id) => {
-        return fetch(`/api/user/${id}`)
-            /* Обработка #1 */
-            .then(parse)
-            .then((user) => {
-                if (user.isAdmin) {
-                    /* Обработка #2 */
-                }
+  getUser: (id) => {
+    return (
+      fetch(`/api/user/${id}`)
+        /* Обработка #1 */
+        .then(parse)
+        .then((user) => {
+          if (user.isAdmin) {
+            /* Обработка #2 */
+          }
 
-                /* Обработка #3 */
-            });
-    },
+          /* Обработка #3 */
+        })
+    );
+  },
 };
 ```
 
@@ -43,81 +47,90 @@ const userRepository: UserRepository = {
 
 ```ts
 const userRepository: UserRepository = {
-    getUser: (id) => fetch(`/api/user/${id}`),
+  getUser: (id) => fetch(`/api/user/${id}`),
 };
 ```
 
-В первом примере `userRepository.getUser` содержал не тривиальную логику, которая была бы не покрыта тестами из-за
-подмены [внешней среды](/specification/requirements/env) заглушками. Для этого, во втором примере подменяемый метод был сделан *скромным*, теперь он
-содержит особой логики и лишь выполняет простое делегирование серверу.
+В первом примере `userRepository.getUser` содержал нетривиальную логику, которая была бы не покрыта тестами из-за
+подмены [*запросов*](/specification/requirements/query) заглушками. Для этого, во втором примере подменяемый метод был
+сделан _скромным_,
+теперь он не содержит особой логики и лишь выполняет простое делегирование серверу.
 
 :::note
-Вырезанная логика поднимается выше по стеку, перемещаясь в [тестируемый слой](/modules/scheme#aut).
+Вырезанная логика поднимается выше по стеку, попадая в [тестируемый слой](/specification/scheme#aut).
 :::
 
 ### Сборка
 
-Важным, и далеко не самым очевидным частным случаем данного правила является порядок сборки приложения. Конфигурация
-бандлера в реальном и тестовом окружениях должна быть настолько идентичной, насколько это возможно.
+Важным, и далеко не самым очевидным частным случаем данного правила является порядок сборки приложения.
+
+[Сервер preview](/specification/scheme#ipreviewserver) должен собирать приложение идентичным целевой конфигурации
+образом.
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts title="manager.ts"
 runUI({
-  preview: createWebpackWatchServer({ /* собственная конфигурация тестирования */ }),
+  preview: createFancyPreviewServer({
+    /* собственная конфигурация сборки приложения внутри */
+  }),
 });
 ```
 
 <p style={{ color: 'green' }}>Делать это:</p>
 
 ```ts title="manager.ts"
-// Повторно используем оригинальную конфигурацию проекта
-import config from './webpack.config.ts';
+import { createExecPreview } from '@storyshots/exec-preview';
 
 runUI({
-  preview: createWebpackWatchServer(withPreviewEntry(config)),
+  preview: createExecPreview({
+    ui: {
+      // Повторно используем стандартные команды для dev окружения
+      command: 'npm start',
+      at: 'http://localhost:8080',
+    },
+    // ... //
+  }),
 });
 ```
 
-В противном случае, логика оригинального сборщика останется не покрытой, что снизит защиту от регресса.
-
-:::tip
-Всегда можно исключить нежелательные свойства оригинального конфига, вместо того чтобы заменять его полностью.
-:::
+Чем сильнее различается порядок сборки и запуска проекта между `storyshots` и целевым окружением тем меньше защиты от
+регресса дают тесты.
 
 ## Модульные externals
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RefactoringAllowance]} />
 
-Методы, подменяющие [внешнюю среду](/specification/requirements/env), в том числе и сами заглушки должны быть модульными. Это в частности означает что
+Методы, подменяющие [*запросы*](/specification/requirements/query), в том числе и сами заглушки должны быть модульными.
+Это в частности означает что
 каждая история может подключить только те поведения, что использует внутри.
 
 Представим что в проекте реализован следующий репозиторий:
 
 ```ts
 type UserRepository = {
-    getUser(): Promise<User>;
+  getUser(): Promise<User>;
 
-    setUser(user: User): Promise<void>;
+  setUser(user: User): Promise<void>;
 
-    getRoles(): Promise<string[]>;
+  getRoles(): Promise<string[]>;
 
-    /* И ещё 20+ методов */
-}
+  /* И ещё 20+ методов */
+};
 ```
 
 Для того чтобы реализовать подмену, нужно будет определить все методы `UserRepository`:
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
-    return {
-        getUser: async () => createUserStub(),
-        setUser: async () => {
-        },
-        getRoles: async () => ['admin', 'user'],
-        /* И ещё 20+ методов */
-    }
-}
+  return {
+    getUser: async () => createUserStub(),
+    setUser: async () => {
+    },
+    getRoles: async () => ['admin', 'user'],
+    /* И ещё 20+ методов */
+  };
+};
 ```
 
 С учётом размеров репозитория, задача представляется не простой. Проблема не только в размере файла, но и в том факте
@@ -126,12 +139,12 @@ const createMockUserRepository = (): UserRepository => {
 
 ```ts
 const stories = [
-    describe('Roles', [
-        it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
-    ]),
-    describe('UserSettings', [
-        it('allows user to change name'), // Использует UserRepository.setUser внутри
-    ]),
+  describe('Roles', [
+    it('allows admin to access panel'), // Использует UserRepository.getRoles внутри
+  ]),
+  describe('UserSettings', [
+    it('allows user to change name'), // Использует UserRepository.setUser внутри
+  ]),
 ];
 ```
 
@@ -139,10 +152,9 @@ const stories = [
 ответственности. Раз ответственности разные, то и тесты будут изменяться в разное время, но во всех взятых случаях всё
 время будет редактироваться одна и та же функция `createMockUserRepository`:
 
-* С одной стороны - она ответсвенная, это значит что её сложно будет изменять, ведь у неё много зависимых клиентов (
-  тестов), которых
-  нужно будет постоянно перепроверять.
-* С другой, у неё много причин для изменений, ведь как было показано раннее, каждый клиент является катализатором
+- С одной стороны - она ответственная, это значит что её сложно будет изменять, ведь у неё много зависимых клиентов,
+  которые нужно будет постоянно перепроверять.
+- С другой, у неё много причин для изменений, ведь как было показано раннее, каждый клиент является катализатором
   изменения.
 
 Это создаёт замкнутый круг где `createMockUserRepository` с каждым разом становится всё больше и сложнее.
@@ -155,24 +167,26 @@ const stories = [
  * По умолчанию реализация либо отстуствует полностью, либо описывает абсолютный минимум методов
  */
 const createMockUserRepository = (): UserRepository => {
-        return {} as UserRepository;
-    }
+    return {} as UserRepository;
+  };
 
 /**
  * Далee описываются функции которые примешивают поведения репозиторию. Это может быть один или несколько методов.
  */
 const withUser = (repository: UserRepository): UserRepository => ({
-    ...repository,
-    getUser: async () => createUserStub(),
-})
+  ...repository,
+  getUser: async () => createUserStub(),
+});
 
 /**
  * Функции легко могут быть параметризированы.
  */
-const withGivenRoles = (roles: string[]) => (repository: UserRepository): UserRepository => ({
-    ...repository,
-    getRoles: async () => roles,
-})
+const withGivenRoles =
+  (roles: string[]) =>
+    (repository: UserRepository): UserRepository => ({
+      ...repository,
+      getRoles: async () => roles,
+    });
 
 /**
  * И закреплены за определённым контекстом
@@ -184,13 +198,12 @@ const withAdminRoles = withGivenRoles(['admin']);
 
 ```ts
 it('allows admin to access panel', {
-    arrange: withAdminRoles, // Необходим только эндпоинт для ролей
+  arrange: withAdminRoles, // Необходим только эндпоинт для ролей
 });
 
 it('allows user to change name', {
-    // Здесь нужны только эти эндпоинты
-    arrange: (repository) =>
-      withUser(withSetUser(repository)), // <- Можно использовать функцию композиции для чистоты
+  // Здесь нужны только эти эндпоинты
+  arrange: (repository) => withUser(withSetUser(repository)), // <- Можно использовать функцию композиции для чистоты
 });
 ```
 
@@ -213,27 +226,27 @@ it('allows user to change name', {
 
 ```ts
 it('allows admin to continue', {
-    arrange: (externals) => ({
-        ...externals,
-        // Добавляем роль администратора
-        getUser: async () => {
-            const user = await externals.getUser();
+  arrange: (externals) => ({
+    ...externals,
+    // Добавляем роль администратора
+    getUser: async () => {
+      const user = await externals.getUser();
 
-            return { ...user, roles: [...user.roles, 'admin'], };
-        }
-    }),
+      return { ...user, roles: [...user.roles, 'admin'] };
+    },
+  }),
 });
 ```
 
 :::tip
 Композиция - это построение нового поведения на базе уже существующих.
-Важной особенностью является то, что такое поведение заключено в *first class* элемент (чаще всего функцию).
+Важной особенностью является то, что такое поведение заключено в _first class_ элемент (например, функцию).
 :::
 
 - **Достоинством** данного способа является его минималистичность, ведь изменяются лишь те данные которые требуются во
   взятом сценарии.
 - **Недостаток** заключается в наличии зависимости от исходного поведения расширяемого элемента, что увеличивает
-  хрупкость тестов.
+  связанность тестов с externals по умолчанию.
 
 ## Подмена externals
 
@@ -243,13 +256,13 @@ it('allows admin to continue', {
 
 ```ts
 it('allows admin to continue', {
-    arrange: (externals) => ({
-        ...externals,
-        // Добавляем роль администратора
-        getUser: async () => {
-            return { ...createUserStub(), roles: [...user.roles, 'admin'], };
-        }
-    }),
+  arrange: (externals) => ({
+    ...externals,
+    // Добавляем роль администратора
+    getUser: async () => {
+      return { ...createUserStub(), roles: [...user.roles, 'admin'] };
+    },
+  }),
 });
 ```
 
@@ -261,32 +274,28 @@ it('allows admin to continue', {
 - **Достоинство** заключается в том что тест не зависит от изначального поведения метода.
 - **Недостаток** же очевиден - данный метод требует написания большего кол-ва кода.
 
-:::note Принцип подстановки
-Вне зависимости от выбранного метода решения, основной задачей функции `arrange` является создание такой `externals`
-которая является валидным подтипом ожидаемого AUT интерфейса внешних данных.
-:::
-
 ## Эмуляция externals
 
 <MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability]} />
 
-`externals` в `storyshots` заключает в себе как методы мутирующие [хранилище](/specification/requirements/storage), так и функции работающие
-с [внешней средой](/specification/requirements/env). Очень часто, данные компоненты формируют пару из *команды* (command) и *запроса* (query):
+`externals` в `storyshots` заключает в себе как методы мутирующие [*команды*](/specification/requirements/command), так
+и функции работающие
+с [*запросами*](/specification/requirements/query). Очень часто, данные компоненты формируют *пару*:
 
 ```ts
 function createUserRepository(): UserRepository {
-    return {
-        // Метод query считывающий список пользователей из БД
-        getUsers: async () => [createVasiliyStub(), createIvanStub()],
-        // Метод command удаляющий пользователя из БД
-        removeUserById: async () => {
-        },
-    };
+  return {
+    // Метод query считывающий список пользователей из БД
+    getUsers: async () => [createVasiliyStub(), createIvanStub()],
+    // Метод command удаляющий пользователя из БД
+    removeUserById: async () => {
+    },
+  };
 }
 ```
 
 :::note
-Метод `removeUserById` относится к компоненту [хранилища](/specification/requirements/storage), в то время как `getUsers` является частью [внешней среды](/specification/requirements/env).
+Метод `removeUserById` относится к компоненту [*запросы*](/specification/requirements/query).
 :::
 
 В большинстве случаев рекомендуется просто фиксировать вызов `removeUserById` в журнале, делая при этом его
@@ -294,12 +303,15 @@ function createUserRepository(): UserRepository {
 
 ```ts
 it('removes user from a list', {
-    arrange: (externals, { journal }) => ({
-        ...externals,
-        removeUserById: journal.asRecordable('removeUserById', externals.removeUserById)
-    }),
-    // Удаляем пользователя в списке по имени
-    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+  arrange: (externals, { journal }) => ({
+    ...externals,
+    removeUserById: journal.asRecordable(
+      'removeUserById',
+      externals.removeUserById,
+    ),
+  }),
+  // Удаляем пользователя в списке по имени
+  act: (actor) => actor.click(finder.get(removeActionByName('Ivan'))),
 });
 ```
 
@@ -313,19 +325,19 @@ it('removes user from a list', {
 
 ```ts
 it('removes user from a list', {
-    arrange: (externals) => {
-        // Локальное состояние. В данном случае это список пользователей 
-        let users = [createVasiliyStub(), createIvanStub()];
+  arrange: (externals) => {
+    // Локальное состояние. В данном случае это список пользователей
+    let users = [createVasiliyStub(), createIvanStub()];
 
-        return {
-            ...externals,
-            getUsers: async () => users,
-            // Удаляем пользователя из списка
-            removeUserById: async (id) => users = without(users, { id }),
-        };
-    },
-    // Удаляем пользователя в списке по имени
-    act: (actor) => actor.click(finder.get(removeActionByName('Ivan')))
+    return {
+      ...externals,
+      getUsers: async () => users,
+      // Удаляем пользователя из списка
+      removeUserById: async (id) => (users = without(users, { id })),
+    };
+  },
+  // Удаляем пользователя в списке по имени
+  act: (actor) => actor.click(finder.get(removeActionByName('Ivan'))),
 });
 ```
 
@@ -344,41 +356,47 @@ it('removes user from a list', {
 Тесты являются кодом который сам по себе не **тестируется**. Поэтому так важно следить за их чистотой и простотой.
 :::
 
+:::tip
+Эмуляцию можно упростить используя [`iterated`](/modules/arrangers#iterated) метод.
+:::
+
 ## Оптимизация arrange
 
-На проектах структура `externals` ([внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage)) очень часто является вложенной:
+На проектах структура `externals` ([*запросы*](/specification/requirements/query) и [
+*команды*](/specification/requirements/command)) очень часто является вложенной:
 
 ```ts
 type Externals = {
-    repositories: {
-        userRepository: UserRepository;
-        /* ... */
-    };
+  repositories: {
+    userRepository: UserRepository;
     /* ... */
+  };
+  /* ... */
 };
 ```
 
-Это делает не тривиальным процесс её обновления. Для того чтобы исправить данную проблему достаточно использовать
+Это делает нетривиальным процесс её обновления. Для того чтобы исправить данную проблему достаточно использовать
 композируемые фабрики:
 
 <p style={{ color: 'red' }}>Вместо этого:</p>
 
 ```ts
 it('...', {
-    arrange: (externals) => ({ // Вложенность высокая из-за чего читаемость сильно страдает
-        ...externals,
-        repositories: {
-            ...externals.repositories,
-            UserRepository: {
-                ...externals.repositories.UserRepository,
-                getUser: (data) =>
-                    externals.repositories.UserRepository.getUser(data).then((user) => ({
-                        ...user,
-                        login: 'test-user',
-                    })),
-            },
-        },
-    }),
+  arrange: (externals) => ({
+    // Вложенность высокая из-за чего читаемость сильно страдает
+    ...externals,
+    repositories: {
+      ...externals.repositories,
+      UserRepository: {
+        ...externals.repositories.UserRepository,
+        getUser: (data) =>
+          externals.repositories.UserRepository.getUser(data).then((user) => ({
+            ...user,
+            login: 'test-user',
+          })),
+      },
+    },
+  }),
 });
 ```
 
@@ -391,10 +409,10 @@ const { transform } = createArrangers<Externals>().focus('repositories');
 
 it('...', {
   // Код делает тоже самое, но читается лучше
-  arrange: transform(
-    'UserRepository.getUser',
-    (user) => ({ ...user, login: 'test-user' })
-  ),
+  arrange: transform('UserRepository.getUser', (user) => ({
+    ...user,
+    login: 'test-user',
+  })),
 });
 ```
 
@@ -404,4 +422,22 @@ it('...', {
 
 :::tip
 Данный паттерн особенно хорошо работает в связке с [модульной внешней средой](/patterns/externals#модульные-externals).
+:::
+
+:::warning внимание
+Состояние историй **автоматически изолируется**, поэтому, строго говоря, `externals` можно мутировать напрямую:
+
+```ts
+it('...', {
+  arrange: (externals) => {
+    externals.repositories.UserRepository.getUser = (data) =>
+      externals.repositories.UserRepository.getUser(data).then((user) => ({
+        ...user,
+        login: 'test-user',
+      }))
+  },
+});
+```
+
+Однако, это не рекомендуется делать в общем случае, так как прямые мутации негативно сказываются на композиционных свойствах функции.
 :::

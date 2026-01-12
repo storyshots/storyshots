@@ -4,16 +4,16 @@ export type JournalRecord = {
 };
 
 /**
- * https://storyshots.github.io/storyshots/API/story-elements/journal
+ * https://storyshots.github.io/storyshots/API/test-components/story-config#journal
  */
 export type Journal = {
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/journal#record
+   * https://storyshots.github.io/storyshots/API/test-components/story-config#record
    */
   record(method: string, ...args: unknown[]): unknown;
 
   /**
-   * https://storyshots.github.io/storyshots/API/story-elements/journal#asrecordable
+   * https://storyshots.github.io/storyshots/API/test-components/story-config#asrecordable
    */
   asRecordable<TArgs extends unknown[], TReturn>(
     method: string,

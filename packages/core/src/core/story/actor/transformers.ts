@@ -4,7 +4,9 @@ import { Finder, FinderMeta } from '../finder/types';
 import { isNil } from '@lib';
 import { ExtendableStoryTree, StoryEnvironment } from '@core';
 
-// TODO: Add docs
+/**
+ * https://storyshots.github.io/storyshots/API/utils/masked
+ */
 export function masked<TArg>(
   options: MaskOptions,
   stories: ExtendableStoryTree<TArg>,
@@ -61,7 +63,9 @@ type MaskOptions = {
   color?: string;
 };
 
-// TODO: Add docs
+/**
+ * https://storyshots.github.io/storyshots/API/utils/resized
+ */
 export function resized<TArg>(
   resize: (config: StoryEnvironment) => ResizeAction['payload'] | undefined,
   stories: ExtendableStoryTree<TArg>,

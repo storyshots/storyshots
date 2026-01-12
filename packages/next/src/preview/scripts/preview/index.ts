@@ -1,7 +1,6 @@
 import { createENVFromKey } from '../../../neutral/safe-env';
 import { fork } from 'node:child_process';
 import { getScriptPath } from '../reusables/getScriptPath';
-import * as process from 'node:process';
 
 export function run({ dev }: { dev: boolean }) {
   const preview = fork(getScriptPath('preview'), {

@@ -6,7 +6,7 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 # Подмена поведений
 
-`storyshots` требует заменить методы [внешней среды](/specification/requirements/env) и [хранилища](/specification/requirements/storage) на функции заглушки,
+`storyshots` требует подмены компонентов: [*запросы*](/specification/requirements/query) и [*команды*](/specification/requirements/command) на функции заглушки,
 для того чтобы сделать эталонное тестирование возможным.
 
 ## Подмена через инверсию
@@ -19,13 +19,13 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
 ```ts
 async function placeAnOrder(order: OrderRepository) {
-    showLoading('Создание заказа');
+  showLoading('Создание заказа');
 
-    await order.createOrder();
+  await order.createOrder();
 
-    hideLoading();
+  hideLoading();
 
-    showMessage('Заказ был успешно создан');
+  showMessage('Заказ был успешно создан');
 }
 ```
 
@@ -44,27 +44,27 @@ placeAnOrder(mockOrderRepository);
 ```
 
 :::note
-Поведение `placeAnOrder` изменится, однако исходный код самой функции будет идентичным. Это и называется *расширением*.
+Поведение `placeAnOrder` изменится, однако исходный код самой функции будет идентичным. Это и называется _расширением_.
 :::
 
 ### Инверсия зависимостей
 
 С помощью интерфейса `OrderRepository` зависимость между `placeAnOrder` и `orderRepository` была инвертирована.
-Репозиторий удалось подменить только потому, что `placeAnOrder` теперь не зависит от `orderRepository`.
+Репозиторий удалось подменить только потому, что `placeAnOrder` теперь не зависит от `orderRepository` напрямую.
 
 В то же время, если реализация `placeAnOrder` изменится:
 
 ```ts
 async function placeAnOrder(order: OrderRepository) {
-    showLoading('Создание заказа');
+  showLoading('Создание заказа');
 
-    await order.createOrder();
-    // Добавился новый метод
-    await order.scheduleDelivery();
+  await order.createOrder();
+  // Добавился новый метод
+  await order.scheduleDelivery();
 
-    hideLoading();
+  hideLoading();
 
-    showMessage('Заказ был успешно создан');
+  showMessage('Заказ был успешно создан');
 }
 ```
 
@@ -80,8 +80,8 @@ async function placeAnOrder(order: OrderRepository) {
 Инверсия зависимостей зачастую сопровождается механизмами внедрение зависимостей (dependency injection). DI
 можно разделить на две стадии:
 
-* Создание зависимостей
-* Внедрение зависимостей
+- Создание зависимостей
+- Внедрение зависимостей
 
 React предоставляет свой аналог DI, так называемый контекст, где `Provider` является компонентом устанавливающим
 зависимости, а `Consumer` позволяет их считывать, сквозь дерево компонентов.
@@ -95,25 +95,31 @@ React предоставляет свой аналог DI, так называе
 
 ```tsx
 type Externals = {
-    repositories: { /* методы обращения к серверу */ }
-    env: { /* методы работы с webapi */ }
-    /* и другие */
+  repositories: {
+    /* методы обращения к серверу */
+  };
+  env: {
+    /* методы работы с Web API */
+  };
+  /* и другие */
 };
 
 const Context = createContext<Externals | undefined>();
 
-export const Externals: React.FC<React.PropsWithChildren<{ externals: Externals }>> = ({ externals, children }) => {
-    return <Context.Provider externals={externals}>{children}</Context.Provider>
+export const Externals: React.FC<
+  React.PropsWithChildren<{ externals: Externals }>
+> = ({ externals, children }) => {
+  return <Context.Provider externals={externals}>{children}</Context.Provider>;
 };
 
 export const useExternals = () => {
-    const externals = useContext(Context);
+  const externals = useContext(Context);
 
-    if (externals === undefined) {
-        throw new Error('Externals dependency is missing');
-    }
+  if (externals === undefined) {
+    throw new Error('Externals dependency is missing');
+  }
 
-    return externals;
+  return externals;
 };
 ```
 
@@ -133,10 +139,10 @@ declare function createMockExternals(): Externals;
 
 ```tsx
 export const Main: React.FC = () => (
-    // В реальном окружении используются реальные externals.
-    <Externals externals={createExternals()}>
-        <App />
-    </Externals>
+  // В реальном окружении используются реальные externals.
+  <Externals externals={createExternals()}>
+    <App />
+  </Externals>
 );
 ```
 
@@ -144,22 +150,22 @@ export const Main: React.FC = () => (
 
 ```ts title="preview.ts"
 export const { run, it } = createPreviewApp({
-    createExternals: createMockExternals,
-    createJournalExternals: createJournalExternals,
+  createExternals: createMockExternals,
+  createJournalExternals: createJournalExternals,
 });
 ```
 
 ```tsx title="run.tsx"
 run(
-    map(stories, (story) => ({
-        render: (externals) => (
-            // В окружении storyshots внедряются тестовые зависимости
-            <Externals externals={externals}>
-                <App />
-            </Externals>
-        ),
-        ...story,
-    })),
+  map(stories, (story) => ({
+    render: (externals) => (
+      // В окружении storyshots внедряются тестовые зависимости
+      <Externals externals={externals}>
+        <App />
+      </Externals>
+    ),
+    ...story,
+  })),
 );
 ```
 
@@ -197,18 +203,18 @@ run(
 
 ```ts
 const orderRepository = {
-    // Обращение к серверу
-    createOrder: () => fetch('...'),
+  // Обращение к серверу
+  createOrder: () => fetch('...'),
 };
 
 async function placeAnOrder() {
-    showLoading('Создание заказа');
+  showLoading('Создание заказа');
 
-    await orderRepository.createOrder();
+  await orderRepository.createOrder();
 
-    hideLoading();
+  hideLoading();
 
-    showMessage('Заказ был успешно создан');
+  showMessage('Заказ был успешно создан');
 }
 ```
 
@@ -217,7 +223,8 @@ async function placeAnOrder() {
 
 ```ts
 // Подменяем метод `createOrder` на заглушку на прямую.
-orderRepository.createOrder = () => { /* ... */
+orderRepository.createOrder = () => {
+  /* ... */
 };
 
 placeAnOrder();
@@ -228,16 +235,22 @@ placeAnOrder();
 на другие тесты исключается.
 :::
 
-### Сайд-эффект подмена в React
+### Monkey-patching в React
 
 При данном типе подмены, рекомендуется использовать репозитории как глобальные singleton объекты:
 
 ```ts title="repositories.ts"
-export const orderRepository = { /* ... */ };
+export const orderRepository = {
+  /* ... */
+};
 
-export const userRepository = { /* ... */ };
+export const userRepository = {
+  /* ... */
+};
 
-export const productRepository = { /* ... */ };
+export const productRepository = {
+  /* ... */
+};
 
 /* И другие репозитории */
 ```
@@ -246,10 +259,10 @@ export const productRepository = { /* ... */ };
 
 ```ts
 export const UserPage: React.FC = () => {
-    const response = useQuery(userRepository.getUser);
+  const response = useQuery(userRepository.getUser);
 
-    /* ... */
-}
+  /* ... */
+};
 ```
 
 В тестах, следует объявить фабрику заглушек на основе глобальных репозиториев:
@@ -257,9 +270,9 @@ export const UserPage: React.FC = () => {
 ```ts
 // Реестр используемых в приложении репозиторев
 const registry = {
-    orderRepository,
-    userRepository,
-    productRepository,
+  orderRepository,
+  userRepository,
+  productRepository,
 };
 
 // Фабрика по созданию заглушек для каждого из репозиториев
@@ -277,28 +290,28 @@ declare function createMockRepositories(): typeof registry;
 type Props = React.PropsWithChildren<{ repositories: typeof registry }>;
 
 const RepositoryReplacer: React.FC<Props> = ({ repositories, children }) => {
-    useMemo(() => {
-      /**
-       * *Опционально* можно помечать не замоканные методы как не реализованные по умолчанию.
-       * Это упростит отладку и исключит нежелательные сайд-эффекты.
-       */
-      markAllAsNotImplemented();
-      
-      injectImplementations(repositories);
-    }, []);
+  useMemo(() => {
+    /**
+     * *Опционально* можно помечать не замоканные методы как не реализованные по умолчанию.
+     * Это упростит отладку и исключит нежелательные сайд-эффекты.
+     */
+    markAllAsNotImplemented();
 
-    return children;
+    injectImplementations(repositories);
+  }, []);
+
+  return children;
 };
 
 function markAllAsNotImplemented() {
-  forEveryMethod(registry).forEach((repository, method) =>
-    registry[repository][method] = notImplemented
+  forEveryMethod(registry).forEach(
+    (repository, method) => (registry[repository][method] = notImplemented),
   );
 }
 
 function injectImplementations(overrides: Props['repositories']) {
-  forEveryMethod(overrides).forEach((repository, method, impl) =>
-    registry[repository][method] = impl
+  forEveryMethod(overrides).forEach(
+    (repository, method, impl) => (registry[repository][method] = impl),
   );
 }
 ```
@@ -307,22 +320,22 @@ function injectImplementations(overrides: Props['repositories']) {
 
 ```ts title="preview.ts"
 export const { run, it } = createPreviewApp({
-    createExternals: createMockExternals,
-    createJournalExternals: createJournalExternals,
+  createExternals: createMockExternals,
+  createJournalExternals: createJournalExternals,
 });
 ```
 
 ```tsx title="run.tsx"
 run(
-    map(stories, (story) => ({
-        render: (repositories) => (
-            // В окружении storyshots внедряются тестовые зависимости
-            <RepositoryReplacer repositories={repositories}>
-                <App />
-            </RepositoryReplacer>
-        ),
-        ...story,
-    })),
+  map(stories, (story) => ({
+    render: (repositories) => (
+      // В окружении storyshots внедряются тестовые зависимости
+      <RepositoryReplacer repositories={repositories}>
+        <App />
+      </RepositoryReplacer>
+    ),
+    ...story,
+  })),
 );
 ```
 
@@ -334,7 +347,8 @@ run(
 // getVersion не будет подменён так выполнится раньше чем сработает подмена в RepositoryReplacer.
 const version = manifestRepository.getVersion();
 
-export const App = () => { /* ... */
+export const App = () => {
+  /* ... */
 };
 ```
 
@@ -357,11 +371,10 @@ export const App = () => { /* ... */
 - **Не безопасность** - корректность сайд-эффектов нельзя в полной мере проверить с помощью статических типов.
 
 :::tip
-Подмены через инверсию и сайд-эффекты во многом друг другу противоположны, но данные методы можно комбинировать друг с
-другом:
+Подмены через инверсию и сайд-эффекты можно комбинировать:
 
-* Репозитории можно подменять методом инверсии, так как они являются частью приложения и находятся под полным контролем
+- Репозитории можно подменять методом инверсии, так как они являются частью приложения и находятся под полным контролем
   разработчиков
-* Web-API следует заменять через сайд-эффекты, так как он является глобальным и общедоступным. Библиотека
-  [`@storyshots/web-api-externals`](/modules/web-api) как раз это и выполняет.
+- Web-API следует заменять через сайд-эффекты, так как он является глобальным и общедоступным. Библиотека
+  [`@storyshots/web-api-mocks`](/modules/web-api) как раз это и выполняет.
   :::

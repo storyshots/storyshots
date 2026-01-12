@@ -1,4 +1,4 @@
-import { install } from '@storyshots/web-api-externals';
+import { install } from '@storyshots/web-api-mocks';
 
 // 13.01.2024 12:00
 export const clock = install({

@@ -17,8 +17,8 @@ import { MetricsTip, Metric } from '@site/src/MetricsTip';
 границей между приложением и тестами.
 
 :::tip
-Тесты могут и должны влиять на кодовую базу, но только в строго определённых аспектах, а именно в *архитектуре*.
-Приложение должно быть достаточно расширяемым, особенно в аспекте [внешней среды](/specification/requirements/env) для того чтобы
+Тесты могут и должны влиять на кодовую базу, но только в строго определённых аспектах, а именно в _архитектуре_.
+Приложение должно быть достаточно расширяемым, особенно в аспекте [*запросов*](/specification/requirements/query) и [*команд*](/specification/requirements/command), для того чтобы
 быть тестируемым.
 :::
 
@@ -61,6 +61,7 @@ project/
 ├── storyshots
 └── package.json
 ```
+
 :::
 
 ## Виды компонентов
@@ -132,12 +133,12 @@ function unauthorized() {
 describe('User', [
   it('allows to login', {
     arrange: arrange(setup(), unauthorized()),
-    act: (actor) => actor.do(enterCredentials()).do(submit())
+    act: (actor) => actor.do(enterCredentials()).do(submit()),
     /* ... */
   }),
   it('allows to logout', {
     arrange: arrange(setup(), authorized()),
-    act: (actor) => actor.click(finder.get(button('Выйти')))
+    act: (actor) => actor.click(finder.get(button('Выйти'))),
     /* ... */
   }),
   it('allows to change password', {
@@ -205,6 +206,7 @@ stubs/
 ├── createRoleStub.ts
 └── index.ts // Файл реекспорта
 ```
+
 :::
 
 ## Расположение компонентов

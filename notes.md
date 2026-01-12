@@ -9,7 +9,8 @@
 * Recorder (especially for mouse related events with coordinates)
 * Allow to show only actual screenshot (add Actual switch)
 * Memo screenshot mode selection between stories
-* Manager must react on Preview changes even when screenshot or record is selected
+* Implement IPreviewClient explicitly
+* Fix naming for preview (like IPreviewClient). It is not preview, it is adapted AUT
 
 # Low priority
 

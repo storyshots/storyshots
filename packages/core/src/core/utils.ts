@@ -2,7 +2,7 @@ import { map } from './story';
 import { ExtendableStoryTree } from './story';
 
 /**
- * https://storyshots.github.io/storyshots/API/operators/only
+ * https://storyshots.github.io/storyshots/API/utils/only
  */
 export function only<TArg>(
   devices: string[],
