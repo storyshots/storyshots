@@ -163,28 +163,6 @@ it('...', {
 });
 ```
 
-## iterated
-
-Позволяет реализовать локальное состояние:
-
-```ts
-it('...', {
-  arrange: set(
-    'business.applyCV',
-    iterated(['failure #0', 'failure #1', 'success']),
-    // applyCV() -> failure #0;
-    // applyCV() -> failure #1;
-    // applyCV() -> success;
-    // applyCV() -> failure #0;
-    // ...
-  ),
-});
-```
-
-:::warning Важно
-`iterated` хранит состояние в замыкании.
-:::
-
 ## resolves
 
 Создаёт функцию возвращающую `Promise.resolve` с переданным значением:

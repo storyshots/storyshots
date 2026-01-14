@@ -13,11 +13,9 @@
 * Fix naming for preview (like IPreviewClient). It is not preview, it is adapted AUT
 * Add more details to resized docs (stories should be defined explicitly)
 * Add labels for actual and expected images
-* Resized leaves agent resized for the rest of a process (or cache is wrong?)
 * On failures panel transitions should be working onClick
 * Menu must be resizable
 * stop prevents final screenshot to be taken. It is useful when testing page transitions (update docs and tests)
-* Remove iterated, it is too concrete to be a part of a solution
 
 # Low priority
 

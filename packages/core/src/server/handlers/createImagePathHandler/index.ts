@@ -8,6 +8,19 @@ export function createImagePathHandler(router: Router) {
 
     assert(typeof file === 'string');
 
-    return send(request, file, { dotfiles: 'allow' }).pipe(response);
+    response.setHeader('Surrogate-Control', 'no-store');
+
+    response.setHeader(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate',
+    );
+
+    response.setHeader('Expires', '0');
+
+    return send(request, file, {
+      dotfiles: 'allow',
+      cacheControl: false,
+      etag: false,
+    }).pipe(response);
   });
 }

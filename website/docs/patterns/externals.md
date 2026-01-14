@@ -356,10 +356,6 @@ it('removes user from a list', {
 Тесты являются кодом который сам по себе не **тестируется**. Поэтому так важно следить за их чистотой и простотой.
 :::
 
-:::tip
-Эмуляцию можно упростить используя [`iterated`](/modules/arrangers#iterated) метод.
-:::
-
 ## Оптимизация arrange
 
 На проектах структура `externals` ([*запросы*](/specification/requirements/query) и [
