@@ -1,4 +1,4 @@
-import { assertNotEmpty } from '@lib';
+import { assertNotEmpty, isDefined } from '@lib';
 import { chromium } from 'playwright';
 import { UserDefinedManagerConfig } from '../../types';
 import {
@@ -10,12 +10,16 @@ import { run } from '../../../reusables/runner/run';
 import { driver } from '../../../reusables/driver';
 import { RunnableStoryMeta } from '@core';
 import { Duration } from '../../../reusables/duration';
-import { createResults } from './createResults';
+import { createResults, Results } from './createResults';
+import { globSync, unlinkSync } from 'node:fs';
+import path from 'path';
 
 /**
  * https://storyshots.github.io/storyshots/API/run-modes/runCI
  */
-export async function runCI(config: UserDefinedManagerConfig) {
+export async function runCI(
+  config: UserDefinedManagerConfig & { cleanupObsolete?: boolean },
+) {
   const server = await createStoryshotsServer({
     ...config,
     preview:
@@ -24,10 +28,16 @@ export async function runCI(config: UserDefinedManagerConfig) {
         : config.preview,
   });
 
-  return initializeAndRunAllStories(server).finally(server.cleanup);
+  return initializeAndRunAllStories(
+    server,
+    config.cleanupObsolete ?? true,
+  ).finally(server.cleanup);
 }
 
-async function initializeAndRunAllStories(server: StoryshotsServer) {
+async function initializeAndRunAllStories(
+  server: StoryshotsServer,
+  cleanupObsolete: boolean,
+) {
   const reporter = createReporter(server);
 
   reporter.onInitialize();
@@ -56,6 +66,10 @@ async function initializeAndRunAllStories(server: StoryshotsServer) {
     reporter.onFinish({ building, running });
 
     throw Error('Script failed.');
+  }
+
+  if (cleanupObsolete) {
+    await removeObsoleteScreenshots(server, results);
   }
 
   for (const [story, changes] of results.changes()) {
@@ -126,4 +140,38 @@ async function runAllStories(
   }
 
   return results;
+}
+
+// TODO: Obsolete records must be removed as well
+async function removeObsoleteScreenshots(
+  server: StoryshotsServer,
+  results: Results,
+) {
+  const expected = results
+    .done()
+    .flatMap(([_, result]) =>
+      result.screenshots
+        .map((it) =>
+          it.type === 'fresh' ? undefined : (it.expected as string),
+        )
+        .filter(isDefined),
+    );
+
+  const storage = path.join(server.config.paths.screenshots, '**/*.png');
+
+  const obsolete = globSync(storage).filter(
+    (actual) => !expected.includes(actual),
+  );
+
+  if (obsolete.length === 0) {
+    return;
+  }
+
+  for (const path of obsolete) {
+    unlinkSync(path);
+  }
+
+  console.log('\n');
+
+  console.log(obsolete.length, 'obsolete screenshots were removed');
 }
