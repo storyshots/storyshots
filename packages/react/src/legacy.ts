@@ -2,7 +2,7 @@ import { createBindStoryFactories } from '@storyshots/core/devkit';
 import { ExternalsFactory } from './types';
 import { createStoryView } from './App';
 import { StoryTree } from '@storyshots/core';
-import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { createRootElement } from './createRootElement';
 
 import './extend-story';
@@ -24,5 +24,9 @@ export function createPreviewApp<TExternals>(
 }
 
 function render(view: ReturnType<typeof createStoryView>) {
-  return createRoot(createRootElement()).render(view);
+  if (view === undefined) {
+    return;
+  }
+
+  return ReactDOM.render(view, createRootElement());
 }

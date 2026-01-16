@@ -1,4 +1,0 @@
-{
-  "main": "../lib/preview.js",
-  "types": "../lib/preview.d.ts"
-}

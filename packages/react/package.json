@@ -4,10 +4,23 @@
   "description": "React storyshots facade",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "default": "./lib/index.js"
+    },
+    "./legacy": {
+      "types": "./lib/legacy.d.ts",
+      "require": "./lib/legacy.js",
+      "default": "./lib/legacy.js"
+    }
+  },
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "legacy"
   ],
   "scripts": {
     "build": "rimraf ./lib && tsc --noEmit && ts-node build.ts",
