@@ -16,8 +16,15 @@ function agent(prompt: UserPrompt): void {
   const llm = createGPT();
   const state = createInitialState(prompt);
 
-  const answer = llm(state);
-  const decision = createDecision(answer);
+  const decision = createDecision(llm(state));
+
+  if (isDoneDecision(decision)) {
+    return;
+  }
+
+  const result = execute(decision);
+
+  const next = createNextState(state, decision, result);
 }
 
 /// --- LLM ---
@@ -38,8 +45,21 @@ type Answer = Brand<'Answer'>;
 // AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
 
+// Creates state based upon current state, LLM decision and decision result
+declare function createNextState(
+  curr: AgentState,
+  decision: LLMDecision,
+  result: DecisionResult,
+): AgentState;
+
 // LLMDecision is derived from LLM Answer
 declare function createDecision(answer: Answer): LLMDecision;
+
+declare function execute(decision: LLMDecision): DecisionResult;
+
+declare function isDoneDecision(decision: LLMDecision): boolean;
+
+type DecisionResult = Brand<'DecisionResult'>;
 
 type AgentState = Brand<'AgentState'> & Prompt;
 
