@@ -14,7 +14,7 @@ declare function llm(prompt: string): string;
 // Main function is effect-full
 function main(prompt: UserPrompt): void {
   const llm = createGPT();
-  const agent = createAgent();
+  const agent = createAgent(prompt);
 
   llm(agent.state);
 }
@@ -23,17 +23,18 @@ type LLM = (prompt: string) => string;
 
 declare function createGPT(): LLM;
 
+type Agent = {
+  state: AgentState;
+};
+
 function createAgent(prompt: UserPrompt): Agent {
   return {
     state: createInitialState(prompt),
   };
 }
 
+// AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
-
-type Agent = {
-  state: AgentState;
-};
 
 type AgentState = Brand<'AgentState'>;
 
