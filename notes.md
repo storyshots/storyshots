@@ -22,8 +22,11 @@ Perform requested actions on UI-mode printing act implementation as a result
   If element not found it prints playwright\src\mcp\browser\tab.ts:302
   Playwright probably does page snapshots before every action
 
+Define locator for a given element
+
 Define screenshots
   Query "На снимке должна быть видна заполненная форма". Snapshot including action?
+  Playwright allows to take screenshots and send them via 'image' type playwright\src\mcp\browser\response.ts:190
 
 Define journal
   Query "Метод создания должен журналироваться". How to adapt specific arrange implementation pattern? (use arrange?)
@@ -39,6 +42,12 @@ Option to handle error when running? It must see error text and be able to corre
 
 Set emulation mode
 Set device run mode
+
+Example of mainly code generation capabilities playwright\src\mcp\browser\tools\verify.ts
+
+# QUESTIONS
+How to assert element waitFor state if it is not appeared yet? Snapshot can not be taken coz there is no such element
+Why playwright uses different type of element queries? playwright\src\mcp\browser\tools\verify.ts:36 (by role) 
 
 # High priority
 
