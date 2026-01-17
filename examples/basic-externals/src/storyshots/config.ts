@@ -4,6 +4,11 @@
 // what is a token
 // planning phase
 // sub agents
+// temperature
+// Greedy decoding
+// Top-k / top-p with tight bounds
+// Chain-of-Thought or ReAct
+// Prompt engineering
 
 // This is what these tools do
 // ReAct
@@ -11,6 +16,37 @@
 // LangGraph
 // OpenAI tool calling
 // Claude tool use
+
+// Vector database = enhance prompt with additional info.
+  // P(token | [retrieved_docs] + previous_tokens)
+  // Example:
+  // Model context window: 4K tokens
+  //
+  // Your knowledge base: 1 million tokens (way too large)
+  //
+  // Vector DB retrieves top 3 most relevant chunks (~1K tokens total)
+  //
+  // Prompt becomes: "[Retrieved chunks] + User question"
+  //
+  // Total ≤ 4K tokens ✅
+
+// # Simplified RAG flow
+// query = "What did the CEO say about Q4 earnings?"
+//
+// # 1. Retrieve from vector DB (separate system)
+// retrieved_chunks = vector_db.search(query, top_k=3)  # Returns text chunks
+//
+// # 2. Augment prompt
+// augmented_prompt = f"""
+// Based on these documents:
+// {retrieved_chunks}
+//
+// Answer: {query}
+// """
+//
+// # 3. Call LLM with augmented prompt
+// # The LLM's P function now sees retrieved docs as context
+// response = llm.generate(augmented_prompt)
 
 // agent function is effect-full
 function agent(prompt: UserPrompt): void {
