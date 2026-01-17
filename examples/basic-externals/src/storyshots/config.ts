@@ -17,6 +17,7 @@ function agent(prompt: UserPrompt): void {
   const state = createInitialState(prompt);
 
   const answer = llm(state);
+  const decision = createDecision(answer);
 }
 
 /// --- LLM ---
@@ -37,7 +38,12 @@ type Answer = Brand<'Answer'>;
 // AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
 
+// LLMDecision is derived from LLM Answer
+declare function createDecision(answer: Answer): LLMDecision;
+
 type AgentState = Brand<'AgentState'> & Prompt;
+
+type LLMDecision = Brand<'LLMDecision'> & Answer;
 
 type UserPrompt = Brand<'UserPrompt'> & Prompt;
 
