@@ -33,6 +33,7 @@ export type FailedScreenshot = {
 export type PassScreenshot = {
   type: 'pass';
   actual: ScreenshotPath;
+  expected: ScreenshotPath;
   name: ScreenshotName;
 };
 

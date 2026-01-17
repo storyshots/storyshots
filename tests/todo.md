@@ -1,3 +1,7 @@
+* Add tests for obsolete mode
+* Add tests for failures click mode
+* Add tests for resizing
+
 * Animations and testing mode
     * dynamic arrange (based on testing)
     * dynamic render (based on testing)

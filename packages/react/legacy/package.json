@@ -1,0 +1,4 @@
+{
+  "main": "../lib/legacy.js",
+  "types": "../lib/legacy.d.ts"
+}

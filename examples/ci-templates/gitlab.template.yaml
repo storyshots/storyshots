@@ -3,20 +3,20 @@
 # VISUAL_REGRESSION_BOT_TOKEN = PAC (project access token), создаётся отдельно для данного бота. Права на запись в репозиторий являются обязательными.
 stage: storyshots
 # Используется официальный образ playwright
-image: mcr.microsoft.com/playwright
+image: mcr.microsoft.com/playwright:v1.57.0
 script:
   - echo "Installing dependencies"
   # В примере используется npm. Можно заменить на тот менеджер, что используется в проекте
-  - npm i
+  - npm ci
   - echo "Running tests"
   # Запуск тестов в фоновом режиме. На данном этапе формируются изменения в эталоне.
   - npm run storyshots:ci
   - echo "Installing git"
-  - apt-get install -y git
+  - apt-get update && apt-get install -y git
   - git config --global user.name "Storyshots Bot"
   - git config --global user.email "storyshots@bot.com"
   # Аутентификация в репозитории
-  - git remote set-url origin "https://oauth2:${VISUAL_REGRESSION_BOT_TOKEN}@gitlab.host.com/project.git"
+  - git remote set-url origin "https://oauth2:${VISUAL_REGRESSION_BOT_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
   # Коммит изменений в эталоне. Если изменений не обнаружено - коммит не выполняется и функция завершается с успехом
   - git add .
   - |

@@ -1,7 +1,7 @@
 import { build } from 'tsup';
 
 void build({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/legacy.ts'],
   outDir: 'lib',
   platform: 'browser',
   target: 'node18',

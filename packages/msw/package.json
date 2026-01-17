@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/msw-externals",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Direct fetch middleware",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -23,8 +23,8 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.18",
-    "@storyshots/arrangers": "0.0.18",
+    "@storyshots/core": "0.0.19",
+    "@storyshots/arrangers": "0.0.19",
     "msw": "^2.6.8"
   }
 }
