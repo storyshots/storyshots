@@ -11,14 +11,33 @@ declare function llm(prompt: string): string;
 
 // How Predictability is controlled
 
-declare function llm(prompt: string): string;
-
-type UserPrompt = Brand<'UserPrompt'>;
-
 // Main function is effect-full
 function main(prompt: UserPrompt): void {
-  while (0) {}
+  const llm = createGPT();
+  const agent = createAgent();
+
+  llm(agent.state);
 }
+
+type LLM = (prompt: string) => string;
+
+declare function createGPT(): LLM;
+
+function createAgent(prompt: UserPrompt): Agent {
+  return {
+    state: createInitialState(prompt),
+  };
+}
+
+declare function createInitialState(prompt: UserPrompt): AgentState;
+
+type Agent = {
+  state: AgentState;
+};
+
+type AgentState = Brand<'AgentState'>;
+
+type UserPrompt = Brand<'UserPrompt'>;
 
 // Concrete type is irrelevant for a model
 type Brand<T extends string> = { [TKey in T]: T };
