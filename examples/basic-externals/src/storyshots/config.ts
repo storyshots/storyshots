@@ -11,12 +11,12 @@ declare function llm(prompt: string): string;
 
 // How Predictability is controlled
 
-// Main function is effect-full
-function main(prompt: UserPrompt): void {
+// agent function is effect-full
+function agent(prompt: UserPrompt): void {
   const llm = createGPT();
-  const agent = createAgent(prompt);
+  const state = createInitialState(prompt);
 
-  const answer = llm(agent.state);
+  const answer = llm(state);
 }
 
 /// --- LLM ---
@@ -33,16 +33,6 @@ type Prompt = Brand<'Prompt'>;
 type Answer = Brand<'Answer'>;
 
 /// --- AGENT ---
-
-type Agent = {
-  state: AgentState;
-};
-
-function createAgent(prompt: UserPrompt): Agent {
-  return {
-    state: createInitialState(prompt),
-  };
-}
 
 // AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
