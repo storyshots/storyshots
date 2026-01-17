@@ -1,4 +1,9 @@
 // How Predictability is controlled
+// The LLM is trained / instructed to emit valid shapes
+// controllable
+// what is a token
+// planning phase
+// sub agents
 
 // This is what these tools do
 // ReAct
@@ -15,7 +20,7 @@ function agent(prompt: UserPrompt): void {
   return work(state);
 
   function work(state: AgentState): void {
-    const decision = createDecision(llm(state));
+    const decision = createDecision(llm(createPromptFromState(state)));
 
     if (isDoneDecision(decision)) {
       return;
@@ -50,6 +55,8 @@ declare function createNextState(
   result: DecisionResult,
 ): AgentState;
 
+declare function createPromptFromState(state: AgentState): Prompt;
+
 // LLMDecision is derived from LLM Answer
 declare function createDecision(answer: Answer): LLMDecision;
 
@@ -61,7 +68,7 @@ type DecisionResult = Brand<'DecisionResult'>;
 
 // Structure of a state is based upon selected implementation: prompt accumulation, summaries, vector stores
 // State dislocation is also an implementation details (for example usage of external state objects)
-type AgentState = Brand<'AgentState'> & Prompt;
+type AgentState = Brand<'AgentState'>;
 
 type LLMDecision = Brand<'LLMDecision'> & Answer;
 
