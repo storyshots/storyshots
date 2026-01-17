@@ -1,8 +1,5 @@
 // planning phase
 // sub agents
-// Greedy decoding - just pick token with max probability
-// temperature
-// Top-k / top-p with tight bounds
 // Chain-of-Thought or ReAct
 // Prompt engineering
 
