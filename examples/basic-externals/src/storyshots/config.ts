@@ -16,12 +16,23 @@ function main(prompt: UserPrompt): void {
   const llm = createGPT();
   const agent = createAgent(prompt);
 
-  llm(agent.state);
+  const answer = llm(agent.state);
 }
 
-type LLM = (prompt: string) => string;
+/// --- LLM ---
 
+type LLM = (prompt: Prompt) => Answer;
+
+// Example LLM
 declare function createGPT(): LLM;
+
+// Any prompt suitable for LLM
+type Prompt = Brand<'Prompt'>;
+
+// Any answer given by LLM
+type Answer = Brand<'Answer'>;
+
+/// --- AGENT ---
 
 type Agent = {
   state: AgentState;
@@ -36,9 +47,9 @@ function createAgent(prompt: UserPrompt): Agent {
 // AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
 
-type AgentState = Brand<'AgentState'>;
+type AgentState = Brand<'AgentState'> & Prompt;
 
-type UserPrompt = Brand<'UserPrompt'>;
+type UserPrompt = Brand<'UserPrompt'> & Prompt;
 
 // Concrete type is irrelevant for a model
 type Brand<T extends string> = { [TKey in T]: T };
