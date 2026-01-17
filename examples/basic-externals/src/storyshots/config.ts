@@ -1,14 +1,3 @@
-declare function llm(prompt: string): string;
-
-// what is agent runtime
-// prompts accumulation = memory
-// summary = memory
-// vector stores = memory
-
-// memory = model & location
-
-// LLM emits proposals for commands; the runtime decides whether to execute them
-
 // How Predictability is controlled
 
 // agent function is effect-full
@@ -16,19 +5,22 @@ function agent(prompt: UserPrompt): void {
   const llm = createGPT();
   const state = createInitialState(prompt);
 
-  const decision = createDecision(llm(state));
+  return work(state);
 
-  if (isDoneDecision(decision)) {
-    return;
+  function work(state: AgentState): void {
+    const decision = createDecision(llm(state));
+
+    if (isDoneDecision(decision)) {
+      return;
+    }
+
+    const result = execute(decision);
+
+    return work(createNextState(state, decision, result));
   }
-
-  const result = execute(decision);
-
-  const next = createNextState(state, decision, result);
 }
 
 /// --- LLM ---
-
 type LLM = (prompt: Prompt) => Answer;
 
 // Example LLM
@@ -41,7 +33,6 @@ type Prompt = Brand<'Prompt'>;
 type Answer = Brand<'Answer'>;
 
 /// --- AGENT ---
-
 // AgentState is derived initially from UserPrompt
 declare function createInitialState(prompt: UserPrompt): AgentState;
 
@@ -61,6 +52,8 @@ declare function isDoneDecision(decision: LLMDecision): boolean;
 
 type DecisionResult = Brand<'DecisionResult'>;
 
+// Structure of a state is based upon selected implementation: prompt accumulation, summaries, vector stores
+// State dislocation is also an implementation details (for example usage of external state objects)
 type AgentState = Brand<'AgentState'> & Prompt;
 
 type LLMDecision = Brand<'LLMDecision'> & Answer;
