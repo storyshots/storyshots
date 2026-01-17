@@ -1,5 +1,12 @@
 // How Predictability is controlled
 
+// This is what these tools do
+// ReAct
+// AutoGPT
+// LangGraph
+// OpenAI tool calling
+// Claude tool use
+
 // agent function is effect-full
 function agent(prompt: UserPrompt): void {
   const llm = createGPT();
