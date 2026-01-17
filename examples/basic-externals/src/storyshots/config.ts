@@ -1,11 +1,7 @@
-// How Predictability is controlled
-// The LLM is trained / instructed to emit valid shapes
-// controllable
-// what is a token
 // planning phase
 // sub agents
+// Greedy decoding - just pick token with max probability
 // temperature
-// Greedy decoding
 // Top-k / top-p with tight bounds
 // Chain-of-Thought or ReAct
 // Prompt engineering
