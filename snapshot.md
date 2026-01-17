@@ -1,0 +1,111 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - link [ref=e4] [cursor=pointer]:
+        - /url: https://about.google/?fg=1&utm_source=google-NL&utm_medium=referral&utm_campaign=hp-header
+        - text: Over
+      - link [ref=e5] [cursor=pointer]:
+        - /url: https://store.google.com/NL?utm_source=hp_header&utm_medium=google_ooo&utm_campaign=GS100042&hl=nl-NL
+        - text: Store
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - link [ref=e10] [cursor=pointer]:
+            - /url: https://mail.google.com/mail/&ogbl
+            - text: Gmail
+          - link [ref=e12] [cursor=pointer]:
+            - /url: https://www.google.com/imghp?hl=nl&ogbl
+            - text: Afbeeldingen
+        - button [ref=e15] [cursor=pointer]:
+          - img [ref=e16]
+        - link [ref=e20] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=nl&passive=true&continue=https://www.google.com/&ec=futura_exp_og_so_72776762_e
+          - text: Inloggen
+    - img [ref=e23]
+    - search [ref=e31]:
+      - generic [ref=e33]:
+        - generic [ref=e35]:
+          - img [ref=e39]
+          - combobox [ref=e42]
+          - generic [ref=e44]:
+            - button [ref=e45] [cursor=pointer]:
+              - img [ref=e46]
+            - button [ref=e48] [cursor=pointer]:
+              - img [ref=e49]
+        - generic [ref=e52]:
+          - button [ref=e53] [cursor=pointer]: Google Zoeken
+          - button [ref=e54] [cursor=pointer]: Ik doe een gok
+    - generic [ref=e57]:
+      - text: "Google aangeboden in:"
+      - link [ref=e58] [cursor=pointer]:
+        - /url: https://www.google.com/setprefs?sig=0_vaGBXhToaCmzNm-cWpLtD8c0sKU%3D&hl=fy&source=homepage&sa=X&ved=0ahUKEwivu_q2oJKSAxVOHxAIHbjBDn0Q2ZgBCBc
+        - text: Frysk
+    - contentinfo [ref=e60]:
+      - generic [ref=e61]: Nederland
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - link [ref=e64] [cursor=pointer]:
+            - /url: https://www.google.com/intl/nl_nl/ads/?subid=ww-ww-et-g-awa-a-g_hpafoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpafooter&fg=1
+            - text: Adverteren
+          - link [ref=e65] [cursor=pointer]:
+            - /url: https://www.google.com/services/?subid=ww-ww-et-g-awa-a-g_hpbfoot1_1!o2&utm_source=google.com&utm_medium=referral&utm_campaign=google_hpbfooter&fg=1
+            - text: Bedrijf
+          - link [ref=e66] [cursor=pointer]:
+            - /url: https://google.com/search/howsearchworks/?fg=1
+            - text: Hoe Google Zoeken werkt
+        - link [ref=e68] [cursor=pointer]:
+          - /url: https://sustainability.google/?utm_source=googlehpfooter&utm_medium=housepromos&utm_campaign=bottom-footer&utm_content=
+          - text: "Ons derde decennium van klimaatactie: dit is wat we doen"
+        - generic [ref=e69]:
+          - link [ref=e70] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=nl&fg=1
+            - text: Privacy
+          - link [ref=e71] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=nl&fg=1
+            - text: Voorwaarden
+          - button [ref=e75] [cursor=pointer]:
+            - generic [ref=e76]: Instellingen
+  - generic:
+    - dialog "Voordat je verdergaat naar Google Zoeken":
+      - generic [ref=e83]:
+        - generic [ref=e85]:
+          - img "Google" [ref=e86]
+          - generic [ref=e87]:
+            - 'button "Taal: ‪Nederlands‬" [active] [ref=e89] [cursor=pointer]':
+              - generic [ref=e90]:
+                - img
+                - generic [ref=e91]: nl
+            - link "Inloggen" [ref=e92] [cursor=pointer]
+        - generic [ref=e93]:
+          - heading "Voordat je verdergaat naar Google" [level=1] [ref=e94]
+          - generic [ref=e95]:
+            - generic [ref=e96]:
+              - text: We gebruiken
+              - link "cookies" [ref=e97] [cursor=pointer]:
+                - /url: https://policies.google.com/technologies/cookies?utm_source=ucbs&hl=nl
+              - text: "en gegevens voor het volgende:"
+              - list [ref=e98]:
+                - listitem [ref=e99]: Google-services leveren en onderhouden
+                - listitem [ref=e100]: Uitval bijhouden en bescherming bieden tegen spam, fraude en misbruik
+                - listitem [ref=e101]: Doelgroepbetrokkenheid en sitestatistieken meten om inzicht te krijgen in hoe onze services worden gebruikt en de kwaliteit van die services te verbeteren
+            - generic [ref=e102]:
+              - text: "Als je Alles accepteren kiest, gebruiken we cookies en gegevens ook voor het volgende:"
+              - list [ref=e103]:
+                - listitem [ref=e104]: Nieuwe services ontwikkelen en verbeteren
+                - listitem [ref=e105]: Advertenties laten zien en de effectiviteit ervan meten
+                - listitem [ref=e106]: Gepersonaliseerde content laten zien (afhankelijk van je instellingen)
+                - listitem [ref=e107]: Gepersonaliseerde advertenties laten zien (afhankelijk van je instellingen)
+              - generic [ref=e108]: Als je Alles afwijzen kiest, gebruiken we cookies niet voor deze aanvullende doeleinden.
+            - generic [ref=e109]: Niet-gepersonaliseerde content wordt beïnvloed door factoren zoals de content die je op dat moment bekijkt, activiteit in je actieve zoeksessie en je locatie. Niet-gepersonaliseerde advertenties worden beïnvloed door de content die je op dat moment bekijkt en je algemene locatie. Gepersonaliseerde content en advertenties kunnen ook relevantere resultaten, aanbevelingen en op jou toegespitste advertenties omvatten die zijn gebaseerd op eerdere activiteit van deze browser, zoals uitgevoerde Google-zoekopdrachten. We gebruiken cookies en gegevens ook om te zorgen dat de functionaliteit geschikt is voor je leeftijd, als dit relevant is.
+            - generic [ref=e110]: Selecteer Meer opties om meer informatie te bekijken, waaronder over hoe je je privacyinstellingen beheert. Je kunt ook altijd naar g.co/privacytools gaan.
+        - generic [ref=e111]:
+          - generic [ref=e112]:
+            - button "Alles afwijzen" [ref=e113] [cursor=pointer]
+            - button "Alles accepteren" [ref=e114] [cursor=pointer]
+          - link "Meer opties voor personalisatie-instellingen en cookies" [ref=e116] [cursor=pointer]:
+            - generic "Meer opties voor personalisatie-instellingen en cookies" [ref=e117]: Meer opties
+        - generic [ref=e118]:
+          - link "Privacy" [ref=e119] [cursor=pointer]:
+            - /url: https://policies.google.com/privacy?hl=nl&fg=1&utm_source=ucbs
+          - generic [ref=e120]: ·
+          - link "Voorwaarden" [ref=e121] [cursor=pointer]:
+            - /url: https://policies.google.com/terms?hl=nl&fg=1&utm_source=ucbs

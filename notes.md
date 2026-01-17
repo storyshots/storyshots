@@ -1,3 +1,45 @@
+# MCP
+
+UI mode must be in sync with MCP CLI
+
+Write empty test with description
+
+Define arrange
+  Query "Мы на странице списка справочников. Нужные данные со списком элементов справочника. Пусть их будет 3 штуки". It must follow recommended stub patterns
+
+Open test in preview
+
+Define act
+  Query "Сделай снимок страницы. И перейди в детали справочника"
+
+Perform requested actions on UI-mode printing act implementation as a result
+  Playwright generates page snapshot (example ./snapshot.md) using playwright-core\src\client\page.ts:870
+  Tool playwright\src\mcp\browser\tools\snapshot.ts:24
+  Snapshot list all elements including refs (indexes)
+  Playwright accepts element index for a locator (locator('aria-ref=e5'))
+  Then it is able to convert it to plain JS selector using playwright\src\mcp\browser\tab.ts:299
+  Code is sent to agent and locator and given action is executed in the browser
+  If element not found it prints playwright\src\mcp\browser\tab.ts:302
+  Playwright probably does page snapshots before every action
+
+Define screenshots
+  Query "На снимке должна быть видна заполненная форма". Snapshot including action?
+
+Define journal
+  Query "Метод создания должен журналироваться". How to adapt specific arrange implementation pattern? (use arrange?)
+
+Run specified tests (result must be provided for agent)
+
+Option to recognize success baseline
+Option to accept/review fresh baseline
+Option to accept/review failed baseline
+
+Option to handle error when running? It must see error text and be able to correctly interpret it to fix it by itself
+  It must have access to console messages of preview
+
+Set emulation mode
+Set device run mode
+
 # High priority
 
 * Integrate react-devtools
