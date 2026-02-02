@@ -6,6 +6,11 @@ export {
   masked,
   resized,
   finder,
+  // All types which are part of public API must be exported
+  type Actor,
+  type Finder,
+  type FinderMeta,
+  type ActionMeta,
   type ActorTransformer,
   type FinderTransformer,
   type ExtendableStoryTree as StoryTree,
