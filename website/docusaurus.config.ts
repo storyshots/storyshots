@@ -6,10 +6,11 @@ const config: Config = {
   url: 'https://storyshots.github.io',
   baseUrl: '/storyshots',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenMarkdownLinks: 'throw',
+  onBrokenAnchors: 'throw',
   i18n: {
-    defaultLocale: 'ru',
-    locales: ['ru'],
+    defaultLocale: 'en',
+    locales: ['en', 'ru'],
   },
   presets: [
     [
@@ -33,6 +34,10 @@ const config: Config = {
       title: 'storyshots',
       items: [
         {
+          type: 'localeDropdown',
+          position: 'right',
+        },
+        {
           href: 'https://github.com/storyshots/storyshots',
           label: 'GitHub',
           position: 'right',
@@ -43,7 +48,14 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
+    mermaid: {
+      theme: { light: 'neutral', dark: 'dark' },
+    },
   },
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 };
 
 export default config;

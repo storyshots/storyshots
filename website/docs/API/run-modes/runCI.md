@@ -2,18 +2,12 @@
 sidebar_position: 2
 ---
 
-# runCI
+# runCI {#runci}
 
-Запускает тесты в фоновом режиме, основной сценарий
-использования - [CI/CD процессы](/patterns/application#разделение-эталонов). Принимает в качестве
-аргумента [ManagerConfig](/API/run-modes/manager-config).
+Runs tests in the background, the main use case is [CI/CD processes](/patterns/application#baseline-separation). Accepts [ManagerConfig](/API/run-modes/manager-config) as an argument.
 
-## Особенности режима
+## Features {#features}
 
-- **Автоматическое обновление эталона** - `storyshots` будет сам обновлять эталон в случае если поведение приложения для
-  существующих тестов изменилось или добавились новые истории. Разработчику нужно будет определить факт регресса
-  **самостоятельно** путём анализа этих изменений.
-- **Передача исключений** - в случае, если не удалось выполнить один или несколько тестов (например элемент не был
-  найден), `runCI` выбросит исключение по завершению выполнения всех историй и отобразит список всех ошибок.
-- **Определение хрупких тестов** - если во время запуска какой-то тест не смог выполниться с первой попытки, то он будет
-  обозначен в итоговом отчёте тестирования.
+- **Automatic baseline update** - `storyshots` will automatically update the baseline if the application behavior for existing tests has changed or new stories have been added. The developer must independently determine the presence of regressions by analyzing these changes.
+- **Exception propagation** - if one or more tests fail to execute (e.g., an element was not found), `runCI` will throw an exception after completing all stories and display a list of all errors.
+- **Flaky test detection** - if any test fails on the first attempt during execution, it will be marked in the final test report.

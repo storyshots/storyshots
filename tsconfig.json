@@ -1,20 +1,13 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "ESNext",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "removeComments": false,
-    "jsx": "react"
-  },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "CommonJS"
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./utils"
+    },
+    {
+      "path": "./packages/core"
     }
-  }
+  ]
 }

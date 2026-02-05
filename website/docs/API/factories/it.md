@@ -2,73 +2,71 @@
 sidebar_position: 1
 ---
 
-# it
+# it {#it}
 
-Создаёт пользовательскую историю, позволяя описать стадию взаимодействия с интерфейсом и задать параметры теста.
+Creates a custom story, allowing you to describe a stage of interaction with the UI and set test parameters.
 
 :::tip
-Поддерживаются также и другие [мета-аттрибуты](/modules/react#расширения) специфичные для
-конкретного [клиента preview](/specification/scheme#ipreviewclient).
+Also supported are other [meta-attributes](/modules/react#extensions) specific to a particular [preview client](/specification/arch#ipreviewclient).
 :::
 
 ---
 
-## retries
+# retries {#retries}
 
-Определяет количество повторных попыток при неудаче для отдельно взятой истории. Принимает [устройство](/API/test-components/story-config#device).
+Defines the number of retry attempts in case of failure for an individual story. Accepts a [device](/API/test-components/story-config#device).
 
 ```ts
 it('...', {
-  // Повторить тест до 3-х раз в случае неудачи. Только на мобильных устройствах.
+  // Retry the test up to 3 times on failure. Only on mobile devices.
   retries: (device) => (device.name === 'mobile' ? 3 : 0),
 });
 ```
 
-## act
+## act {#act}
 
-Описывает действия, выполняемые в истории с помощью [актора](/API/test-components/actor). Данная функция эмулирует действия пользователя, такие
-как нажатие на кнопки, отправка форм и так далее.
+Describes actions performed in the story using an [actor](/API/test-components/actor). This function emulates user actions such as button clicks, form submissions, and so on.
 
 ```ts
 it('...', {
-  act: (actor) => actor.click(finder.getByText('Войти')),
+  act: (actor) => actor.click(finder.getByText('Sign In')),
 });
 ```
 
-Принимает [окружение истории](/API/test-components/story-config) как второй аргумент.
+Accepts [story environment](/API/test-components/story-config) as a second argument.
 
 ```ts
 it('...', {
-  // На мобильном устройстве интерфейс может отличаться
+  // The interface may differ on mobile devices
   act: (actor, { device }) =>
     device.name === 'mobile'
-      ? // На телефоне выполнится свайп
+      ? // On phones, a swipe will be performed
         actor.do(swipeProduct())
-      : // На ПК обычное нажатие кнопки
+      : // On desktop, a regular button click
         actor.do(clickOnTrash()),
 });
 ```
 
-## StoryAttributes
+## StoryAttributes {#storyattributes}
 
-Публичный интерфейс для внешних расширений фабрики тестов:
+Public interface for external extensions of the test factory:
 
 ```ts
-// Объявляем интерфейс в пространстве имён @storyshots/core
+// Declare the interface in the @storyshots/core namespace
 declare module '@storyshots/core' {
-  // TArg это generic параметр, обычно содержащий в себе структуру externals
+  // TArg is a generic parameter, typically containing the structure of externals
   interface StoryAttributes<TArg> {
-    // Можно использовать любые структуры, даже функции.
+    // Any structures can be used, even functions.
     prop: string;
   }
 }
 
-// Конфигурация теперь поддерживает новое свойство.
+// Configuration now supports the new property.
 it('...', {
   prop: 'property value',
 });
 ```
 
 :::tip
-`StoryAttributes` совместно с функциями над историями позволяет реализовывать большое количество [полезных поведений](/patterns/stories#приоритеты-историй).
+`StoryAttributes` combined with story functions enables implementing a wide range of [useful behaviors](/patterns/stories#story-priorities).
 :::

@@ -1,72 +1,93 @@
 {
   "name": "@storyshots/core",
-  "version": "0.0.18",
-  "description": "Reusable entities across all projects",
-  "repository": "https://github.com/storyshots/storyshots.git",
-  "license": "MIT",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/neutral/public.cjs",
+  "module": "./dist/neutral/public.js",
+  "types": "./dist/neutral/public.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "types": "./lib/index.d.ts",
-      "require": "./lib/index.js",
-      "default": "./lib/index.js"
+      "types": "./dist/neutral/public.d.ts",
+      "import": "./dist/neutral/public.js",
+      "require": "./dist/neutral/public.cjs",
+      "default": "./dist/neutral/public.js"
     },
-    "./manager": {
-      "types": "./lib/manager.d.ts",
-      "require": "./lib/manager.js",
-      "default": "./lib/manager.js"
+    "./node": {
+      "types": "./dist/node/public.d.ts",
+      "import": "./dist/node/public.js",
+      "require": "./dist/node/public.cjs",
+      "default": "./dist/node/public.js"
     },
-    "./devkit": {
-      "types": "./lib/devkit/index.d.ts",
-      "require": "./lib/devkit/index.js",
-      "default": "./lib/devkit/index.js"
-    },
-    "./devkit/manager": {
-      "types": "./lib/devkit/manager.d.ts",
-      "require": "./lib/devkit/manager.js",
-      "default": "./lib/devkit/manager.js"
-    },
-    "./package.json": "./package.json"
+    "./browser": {
+      "types": "./dist/browser/public.d.ts",
+      "import": "./dist/browser/public.js",
+      "require": "./dist/browser/public.cjs",
+      "default": "./dist/browser/public.js"
+    }
   },
-  "files": [
-    "lib",
-    "manager",
-    "devkit",
-    "postinstall.js"
-  ],
-  "bin": {
-    "storyshots": "./cli.js"
-  },
-  "scripts": {
-    "build": "rimraf ./lib && ts-node ./build.ts && tsc -b tsconfig.cli.json && tsc --noEmit",
-    "lint": "eslint ./src",
-    "compile": "tsc --noEmit",
-    "postinstall": "node ./postinstall.js"
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/core/dist",
+          "main": "packages/core/src/neutral/public.ts",
+          "additionalEntryPoints": [
+            "packages/core/src/node/public.ts",
+            "packages/core/src/browser/public.ts"
+          ],
+          "tsConfig": "packages/core/tsconfig.lib.json",
+          "format": [
+            "esm",
+            "cjs"
+          ],
+          "declarationRootDir": "packages/core/src"
+        }
+      },
+      "check": {
+        "executor": "nx:run-commands",
+        "options": {
+          "commands": [
+            "npx nx run core:typecheck",
+            "npx nx run core:build",
+            "npx tsx --test packages/core/src/**/*.spec.ts"
+          ],
+          "parallel": false
+        }
+      },
+      "update-snapshots": {
+        "executor": "nx:run-commands",
+        "options": {
+          "commands": [
+            "npx tsx --test --test-update-snapshots packages/core/src/**/*.spec.ts"
+          ],
+          "parallel": false
+        }
+      }
+    }
   },
   "dependencies": {
-    "colors": "^1.4.0",
-    "express": "^4.18.2",
-    "looks-same": "^10.0.1",
-    "playwright": "^1.57.0",
-    "send": "^1.2.0",
-    "ts-node": "^10.9.2",
-    "yargs": "^17.7.2"
+    "filenamify": "^7.0.1",
+    "playwright": "^1.58.2",
+    "playwright-core": "^1.58.2",
+    "slugify": "^1.6.9"
+  },
+  "peerDependencies": {
+    "looks-same": "^10.0.1"
+  },
+  "peerDependenciesMeta": {
+    "looks-same": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@ant-design/icons": "^5.2.6",
-    "@types/express": "^4.17.21",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
-    "@types/yargs": "^17.0.33",
-    "ansi-to-html": "^0.7.2",
-    "antd": "^5.11.4",
-    "esbuild": "^0.25.1",
-    "react": "*",
-    "react-compare-slider": "^3.1.0",
-    "react-diff-viewer-continued": "^3.3.1",
-    "react-dom": "*",
-    "styled-components": "^6.1.1",
-    "wouter": "^3.6.0"
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1",
+    "looks-same": "^10.0.1"
   }
 }

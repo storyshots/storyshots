@@ -1,9 +1,0 @@
-{
-  "name": "next-app",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "ui": "ts-node storyshots/ui.ts",
-    "ci": "ts-node storyshots/ci.ts"
-  }
-}

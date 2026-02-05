@@ -2,6 +2,6 @@
 sidebar_position: 5
 ---
 
-# Модули
+# Modules {#modules}
 
-В данном разделе описываются сторонние модули, рекомендуемые к использованию со `storyshots`.
+This section describes third-party modules recommended for use with `storyshots`.

@@ -4,63 +4,58 @@ sidebar_position: 8
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Адаптивность
+# Adaptivity {#adaptivity}
 
-Современный UI зачастую является адаптивным. `storyshots` учитывает данный факт, предоставляя соответствующий API.
+Modern UI is often adaptive. `storyshots` accounts for this fact by providing the appropriate API.
 
-## Одной историей все устройства
+## One story for all devices {#one-story-for-all-devices}
 
-<MetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]}
-degrades={[Metric.Speed]} />
+<MetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]} degrades={[Metric.Speed]} />
 
-Это в частности означает что интерфейс может отличаться
-в зависимости от того, на каком устройстве запущено приложение:
+This means that the interface may differ depending on the device on which the application is running:
 
 ```ts
 it('shows dismissible user removal notice', {
   act: (actor, config) =>
     actor.screenshot('Notice').click(
       /**
-       * config содержит информацию об устройстве на котором сейчас исполняется тест
+       * config contains information about the device on which the test is currently running
        */
       config.device.name === 'desktop'
-        ? // На десктоп это иконка крестика
+        ? // On desktop this is a close icon
           finder.getByRole('image', { name: 'close-note' })
-        : // На мобилке это просто текст "Закрыть"
-          finder.getByRole('button', { name: 'Закрыть' }),
+        : // On mobile it's just the text "Close"
+          finder.getByRole('button', { name: 'Close' }),
     ),
 });
 ```
 
 :::note
-Функции `arrange` и `render` также ссылаются на текущее эмулируемое устройство.
+Functions `arrange` and `render` also refer to the currently emulated device.
 :::
 
-Чтобы избавиться от условия можно сделать верстку более семантической, тем самым закрыв истории от лишних деталей
-реализации:
+To avoid conditionals, you can make the markup more semantic, thereby making stories less dependent on implementation details:
 
 ```ts
 it('shows dismissible user removal notice', {
   act: (actor) =>
     actor
       .screenshot('Notice')
-      .click(finder.getByRole('button', { name: 'Закрыть уведомление' })),
+      .click(finder.getByRole('button', { name: 'Close notification' })),
 });
 ```
 
 :::note
-Одинаковая роль будет назначена разным по своей реализации элементам, тем самым истории будут более совместимы с
-рефакторингом.
+The same role will be assigned to different implementation elements, making stories more compatible with refactoring.
 :::
 
-## По истории на устройство
+## One story per device {#one-story-per-device}
 
 <MetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability]} />
 
-Интерфейс в приложении может отличаться в зависимости от устройства настолько, что простых условий и семантической
-верстки может оказаться недостаточно.
+The interface in the application may differ so significantly between devices that simple conditionals and semantic markup may not be enough.
 
-Вместо этого такие сценарии можно селективно устанавливать лишь для определённых устройств:
+In such cases, you can selectively enable stories only for specific devices:
 
 ```ts
 const usersStories = describe('Users', [
@@ -72,7 +67,7 @@ const usersStories = describe('Users', [
   }),
   only(
     ['mobile'],
-    // В мобильной версии доступны новые действия
+    // In the mobile version, new actions are available
     it('allows to swipe users to delete them', {
       /* ... */
     }),
@@ -81,25 +76,23 @@ const usersStories = describe('Users', [
 ```
 
 :::tip
-Метод [`only`](/API/utils/only) используется для включения истории только для определённых устройств. Это может быть полезно во время
-активной разработки, когда функционал был разработан только для одной версии устройств.
+The [`only`](/API/utils/only) method is used to include a story only for specific devices. This can be helpful during active development when functionality is implemented only for one device type.
 :::
 
-:::warning Внимание
-Если разница в интерфейсе слишком велика, в таком случае рекомендуется создавать разные точки входа `storyshots` для
-разных устройств:
+:::warning Attention
+If the interface differences are too large, it is recommended to create separate `storyshots` entry points for different devices:
 
 ```ts title="preview/desktop.ts"
-// desktopStories это отдельный узел историй, описанных отдельно для desktop
+// desktopStories is a separate story tree defined specifically for desktop
 run(desktopStories);
 ```
 
 ```ts title="preview/mobile.ts"
-// mobileStories это отдельный узел историй, описанных отдельно для mobile
+// mobileStories is a separate story tree defined specifically for mobile
 run(mobileStories);
 ```
 
-Менеджер для каждого из превью будет запускаться отдельно с установленным устройством, например для desktop:
+Each preview manager will run separately with the device set accordingly, for example for desktop:
 
 ```ts title="manager/desktop-ui.ts"
 runUI({
@@ -116,16 +109,15 @@ runUI({
 
 :::
 
-## Сокращение устройств
+## Device reduction {#device-reduction}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RegressionProtection]} />
 
-Требования для UI интерфейсов растут, ровно также растет и разнообразие устройств на которых этот интерфейс может
-отображаться.
+UI requirements are growing, just as the variety of devices on which the interface may be displayed is increasing.
 
-Данное обстоятельство может привести к желанию тестировать приложение на трёх и более устройствах:
+This can lead to the desire to test the application on three or more devices:
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 const config = {
@@ -141,10 +133,9 @@ const config = {
 };
 ```
 
-Такое большое количество устройств хоть и увеличит общее покрытие приложения, но взамен, потребует существенных
-временных и ресурсных затрат. Вместо этого, можно выделить лишь пару основных устройств.
+While this large number of devices increases overall application coverage, it also requires significant time and resource costs. Instead, you can focus on just a few core devices.
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this instead:</p>
 
 ```ts
 const config = {
@@ -158,23 +149,23 @@ const config = {
 ```
 
 :::tip
-Не рекомендуется использовать более двух устройств в `storyshots`.
+It is not recommended to use more than two devices in `storyshots`.
 :::
 
-Ещё одним вариантом будет использование разных режимов выполнения:
+Another option is to use different execution modes:
 
-**Быстрый, но поверхностный** - в нём выполняются истории исключительно в рамках пары устройств:
+**Fast, but shallow** – in this mode, stories run only on a pair of devices:
 
 ```ts
 run(only(['desktop', 'mobile'], stories));
 ```
 
-**Полный, но медленный** - выполняются все тестовые сценарии для всех из устройств:
+**Complete, but slow** – all test scenarios are executed for all devices:
 
 ```ts
 run(stories);
 ```
 
 :::tip
-Быстрые тесты можно выполнять в рамках рабочего процесса, в то время как медленные запускать ночью.
+Run fast tests as part of your workflow, while running slow ones overnight.
 :::

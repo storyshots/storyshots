@@ -2,49 +2,46 @@
 sidebar_position: 1
 ---
 
-# Задача
+# Task {#task}
 
-Современные приложения могут обладать сложной внутренней архитектурой и зачастую реализуют комплексные сценарии поведения.
+Modern applications can have complex internal architectures and often implement intricate behavior scenarios.
 
-Более того, такая система **постоянно развивается**. С каждым новым коммитом исправляются дефекты, добавляются новые
-функциональности, вследствие чего **увеличивается сложность** исходного кода.
+Moreover, such systems are **constantly evolving**. With each new commit, defects are fixed and new features are added, thereby **increasing the complexity** of the source code.
 
-## Сложность
+## Complexity {#complexity}
 
-Проще говоря, сложность можно описать как фактор, влияющий на время выполнения задач в проекте. Чем сложней проект, тем
-больше времени будет уходить на выполнение задач.
+Simply put, complexity can be described as a factor affecting the time required to complete tasks in a project. The more complex the project, the more time will be spent on task execution.
 
 :::note
-Не редко, растёт время выполнение только определённых задач.
+It is not uncommon for the execution time of only certain tasks to increase.
 
-Например, в проекте с большим количеством дублирования будет просто **нарастить** функционал. Однако, **изменить**
-существующий будет гораздо **сложней**.
+For example, in a project with a large amount of duplication, it is easy to **add** new functionality. However, **changing** existing functionality will be much **more difficult**.
 
-Данное распределение напрямую зависит от выбранной архитектуры приложения.
+This distribution is directly dependent on the chosen application architecture.
 :::
 
-## Рефакторинг
+## Refactoring {#refactoring}
 
-Разработчики, осознавая данную тенденцию предпринимают меры по контролю сложности ПО.
+Developers, recognizing this trend, take measures to control software complexity.
 
-Одна из таких мер — это *рефакторинг*.
+One such measure is *refactoring*.
 
 :::note
-**Рефакторинг** — это процесс изменения исходного кода программы без изменения её наблюдаемого поведения.
+**Refactoring** is the process of changing a program's source code without altering its observable behavior.
 :::
 
-## Тесты
+## Tests {#tests}
 
-Нюанс заключается в том, чтобы упростить систему не вызывая при этом *регресса*.
+The challenge lies in simplifying the system without causing *regression*.
 
 :::note
-**Регресс** — это явление при котором система теряет в своём ожидаемом наблюдаемом поведении.
+**Regression** is a phenomenon in which the system loses its expected observable behavior.
 :::
 
-Здесь на помощь приходят *тесты*. Их основная задача — **защита от регресса**, но она не является единственной.
+Here, *tests* come to the rescue. Their primary purpose is to **protect against regression**, but this is not their only role.
 
 :::note
-**Тесты** — это программа, которая проверяет свойства/поведения другой программы.
+**Tests** are programs that verify the properties and behaviors of another program.
 :::
 
-Рассмотрим проблемы, возникающие при тестировании приложений.
+Let's examine the problems that arise when testing applications.

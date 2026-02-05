@@ -1,50 +1,44 @@
-import eslint from '@eslint/js';
-import { defineConfig } from 'eslint/config';
-import tseslint from 'typescript-eslint';
-import reactPlugin from 'eslint-plugin-react';
+import nx from '@nx/eslint-plugin';
 
-export default defineConfig(
-  eslint.configs.recommended,
-  tseslint.configs.recommended,
-  tseslint.configs.recommendedTypeChecked,
-  reactPlugin.configs.flat.recommended,
+export default [
+  ...nx.configs['flat/base'],
+  ...nx.configs['flat/typescript'],
+  ...nx.configs['flat/javascript'],
   {
-    settings: {
-      react: {
-        version: 'detect'
-      }
-    },
+    ignores: ['**/dist', '**/out-tsc']
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
-      'react/prop-types': 0,
-      '@typescript-eslint/no-unnecessary-type-constraint': 0,
-      '@typescript-eslint/no-unsafe-assignment': 1,
-      '@typescript-eslint/no-misused-promises': 0,
-      '@typescript-eslint/require-await': 0,
-      '@typescript-eslint/unbound-method': 0,
-      '@typescript-eslint/no-unsafe-return': 1,
-      '@typescript-eslint/no-floating-promises': 1,
-      '@typescript-eslint/no-unsafe-argument': 1,
-      '@typescript-eslint/no-unsafe-call': 0,
-      '@typescript-eslint/no-unsafe-member-access': 0,
-      'no-constant-condition': 0,
-      '@typescript-eslint/no-unused-vars': [
+      '@nx/enforce-module-boundaries': [
         'error',
         {
-          'caughtErrorsIgnorePattern': '_',
-          'argsIgnorePattern': '^_'
+          enforceBuildableLibDependency: true,
+          allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
+          depConstraints: [
+            {
+              sourceTag: '*',
+              onlyDependOnLibsWithTags: ['*']
+            }
+          ]
         }
-      ],
-      '@typescript-eslint/prefer-promise-reject-errors': 0,
-      '@typescript-eslint/only-throw-error': 0,
-      'react/jsx-key': 0,
-      '@typescript-eslint/restrict-template-expressions': 0,
-      'require-yield': 0
-    },
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname
-      }
+      ]
+    }
+  },
+  {
+    files: [
+      '**/*.ts',
+      '**/*.tsx',
+      '**/*.cts',
+      '**/*.mts',
+      '**/*.js',
+      '**/*.jsx',
+      '**/*.cjs',
+      '**/*.mjs'
+    ],
+    // Override or add rules here
+    rules: {
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type']
     }
   }
-);
+];

@@ -4,17 +4,15 @@ sidebar_position: 6
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Внешняя среда
+# External Environment {#external-environment}
 
-[*Запросы*](/specification/requirements/query) - это один из ключевых компонентов `storyshots`, работа с которым бывает не простой и требует особого
-внимания для сохранения качества тестирования.
+[*Queries*](/specification/requirements/query) are one of the key components of `storyshots`, and working with them can be tricky, requiring special attention to maintain testing quality.
 
-## Игнорирование query
+## Ignoring query {#ignoring-query}
 
 <MetricsTip improves={[Metric.RefactoringAllowance, Metric.Maintainability]} degrades={[Metric.RegressionProtection]} />
 
-`storyshots` предоставляет методы для отслеживания вызовов функций, а именно [журнал](/specification/requirements/command#способ-верификации). Записывать можно абсолютно
-любой метод и тут зачастую возникает путаница. Рассмотрим пример:
+`storyshots` provides methods for tracking function calls, specifically the [journal](/specification/requirements/command#verification-method). You can record any method, and this often leads to confusion. Consider the following example:
 
 ```ts
 const createMockUserRepository = (): UserRepository => {
@@ -24,11 +22,9 @@ const createMockUserRepository = (): UserRepository => {
 };
 ```
 
-`UserRepository` содержит метод `getUser` который не выполняет никаких сайд-эффектов в БД, но является
-недетерминированным. `getUser` относится к компоненту [*запросы*](/specification/requirements/query) - а значит данная
-функция [не должна проверяться](/specification/requirements/borders).
+`UserRepository` contains the `getUser` method, which performs no side effects on the database but is nondeterministic. Since `getUser` belongs to the [*queries*](/specification/requirements/query) component, this function [should not be verified](/specification/requirements/borders).
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 it('shows user', {
@@ -39,27 +35,25 @@ it('shows user', {
 });
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
-// Не маркировать метод getUser
+// Do not mark the getUser method
 it('shows user');
 ```
 
-Отслеживание `getUser` является бессмысленным так как метод не выполняет сайд-эффект.
+Tracking `getUser` is meaningless because the method does not perform side effects.
 
 :::tip
-[Cайд-эффект](/specification/requirements/command#сайд-эффект) - это не просто результат работы выходящий за пределы функции, в рамках спецификации это ещё и
-_видимые_ сторонними клиентами данные:
+[Side effects](/specification/requirements/command#side-effects) are not just results that go beyond the function’s scope; within the specification, they also include _visible_ data to external clients:
 
-- Для сервера - это команды модифицирующие БД
-- Для пользователя - это функции рисующие интерфейс на экране
+- For the server: commands modifying the database
+- For the user: functions rendering UI on the screen
 
-Такие внешние эффекты и фиксируются `storyshots` в эталоне.
+These external effects are captured in the baseline by `storyshots`.
 :::
 
-Взаимодействие с `getUser` проверяется транзитивно, через отображение компонента в котором используются данные из
-метода:
+Interaction with `getUser` is verified transitively, through the component’s rendering, which uses data from the method:
 
 ```tsx
 const User: React.FC = () => {
@@ -73,59 +67,54 @@ const User: React.FC = () => {
 };
 ```
 
-:::warning Важно
-У данного правила есть одно очень важное исключение - запросы, такие как `getUser`, хоть и не выполняют сайд-эффектов,
-однако могут реализовывать нетривиальную логику, опирающуюся на то, с какими _аргументами_ был вызван метод.
+:::warning Important
+This rule has one critical exception — queries like `getUser`, although they do not perform side effects, may implement non-trivial logic based on the _arguments_ passed to the method.
 
-Рекомендуется фиксировать в журнал взаимодействия с подобного рода запросами.
+It is recommended to record interactions with such queries in the journal.
 :::
 
-## Нестабильные представления
+## Unstable Views {#unstable-views}
 
 <MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability, Metric.Speed]} />
 
-К сожалению, далеко не всегда существует возможность полного контроля над [*запросами*](/specification/requirements/query) приложения. Вследствие
-чего появляется вероятность получения нестабильного эталона.
+Unfortunately, it is not always possible to fully control the [*queries*](/specification/requirements/query) in an application. As a result, there is a risk of obtaining an unstable baseline.
 
 :::tip
-Примером может служить компонент сторонней библиотеки - нотификация, итоговая позиция которой при появлении не всегда
-одинаковая и из-за этого страдают снимки экрана.
+An example is a third-party library component — a notification — whose final position upon appearing is not always the same, thus affecting screenshot stability.
 :::
 
-В данного рода проблемой поможет справиться функция `retries`:
+To address this issue, use the `retries` function:
 
 ```ts
 it('shows read notification', {
-  // У теста будет три попытки на успешное прохождение
+  // The test will have three attempts to pass successfully
   retries: (config) => 3,
 });
 ```
 
-:::warning Внимание
-Данный метод не рекомендуется использовать в общем случае. Следует либо [подменить](/patterns/replace) функцию виновника, либо целую
-библиотеку. Также можно исключить сам тестовый сценарий.
+:::warning Attention
+This method is not recommended in general. It is better to either [replace](/patterns/replace) the problematic function or the entire library, or exclude the test scenario altogether.
 :::
 
-## Таймеры
+## Timers {#timers}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
-UI интерфейсы полны асинхронных взаимодействий, частью которых являются таймеры.
+UI interfaces are full of asynchronous interactions, some of which involve timers.
 
-Рассмотрим следующий пример:
+Consider the following example:
 
 ```ts
-// Показать уведомление
-const notification = showMessage('Сообщение прочитано');
+// Show a notification
+const notification = showMessage('Message read');
 
-// Закрыть через 5 секунд
+// Close after 5 seconds
 setTimeout(() => notification.close(), 5_000);
 ```
 
-Функция выше, показывает пользователю уведомление, после чего ожидает 5 секунд и закрывает его. При тестировании данного
-поведения, необходимо помнить о запрете использования [*запросов*](/specification/requirements/query) в историях.
+The above function shows a notification to the user, waits 5 seconds, and then closes it. When testing this behavior, remember that [*queries*](/specification/requirements/query) must not be used in stories.
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 it('shows message to a user', {
@@ -133,28 +122,25 @@ it('shows message to a user', {
 });
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 it('shows message to a user', {
   act: (actor) =>
     actor
       .screenshot('Message')
-      // Отправить таймеры в будущее на 5 секунд вперёд
+      // Advance timers forward by 5 seconds
       .exec(() => window.clock.tick(5_000))
       .screenshot('Hidden'),
 });
 ```
 
-Функция `wait` из примера будет ожидать 5 секунд после чего продолжит выполнение теста. Это непозволительно, так как
-время выполнения теста - это крайне важная величина. Поэтому во втором примере используются ложные таймеры.
+The `wait` function in the example waits 5 seconds before continuing test execution. This is unacceptable because test execution time is a critical metric. Therefore, in the second example, fake timers are used.
 
 :::note
-В данном примере используется библиотека [`@storyshots/web-api-mocks`](/modules/web-api) которая
-выполняет [подмену через сайд-эффекты](/patterns/replace#подмена-через-сайд-эффекты).
+In this example, the [`@storyshots/web-api-mocks`](/modules/web-api) library is used, which performs [replacement via side effects](/patterns/replace#mocking-through-side-effects).
 :::
 
-:::warning Внимание
-Существует также альтернатива ввиде подмены API через [инверсию зависимостей](/patterns/replace#подмена-через-инверсию), однако данный метод не является
-рекомендуемым для таймеров.
+:::warning Attention
+There is an alternative using dependency inversion to mock the API, but this method is not recommended for timers.
 :::

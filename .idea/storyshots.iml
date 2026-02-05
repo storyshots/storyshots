@@ -39,6 +39,9 @@
       <excludeFolder url="file://$MODULE_DIR$/packages/msw/lib" />
       <excludeFolder url="file://$MODULE_DIR$/packages/web-api/faker" />
       <excludeFolder url="file://$MODULE_DIR$/packages/web-api/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/.nx" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/core/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/utils/dist" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -1,4 +1,0 @@
-{
-  "main": "../lib/manager.js",
-  "types": "../lib/manager.d.ts"
-}

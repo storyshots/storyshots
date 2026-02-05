@@ -1,14 +1,10 @@
 {
-  "extends": "../../tsconfig",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@core": [
-        "./src/core/index.ts"
-      ],
-      "@lib": [
-        "../../lib/utils.ts"
-      ]
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
     }
-  }
+  ]
 }

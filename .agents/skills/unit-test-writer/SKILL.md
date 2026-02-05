@@ -1,0 +1,70 @@
+---
+name: unit-test-writer
+description: Write or update unit tests. Use when user asks to write tests or extend test coverage for existing code.
+---
+
+# Unit Test Writer
+
+- Write tests with `describe`/`it` pattern.
+- Name test files as `<entity_under_test>.spec.ts`. Here is small example:
+
+File tests `ID` object and named as `id.spec.ts`:
+
+```typescript
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { ID } from './index.js';
+
+describe('ID defines utilities for url/filename safe identifiers', () => {
+  it('createStoryID creates kebab case for basic phrase', () => {
+    assert.strictEqual(
+      ID.createStoryID('Basic Story Name'),
+      'basic-story-name'
+    );
+  });
+});
+```
+
+- Place test files next to the testing entity:
+
+```text
+project/
+├── src/
+│   ├── id.ts
+└── └── id.spec.ts <-- Tests are placed next to the code they test
+```
+
+- When placing a test, create scope dir for unscoped files:
+
+```text
+project/
+├── src/
+│   ├── id.ts <-- This file is unscoped
+└── └── id.spec.ts
+```
+
+```text
+project/
+├── src/
+└── └── id/ <-- Create scope dir with a name of a root file
+        ├── index.ts <-- Rename file to index so that client import paths are preserved
+        ├── id.spec.ts <-- Place related tests and artefacts inside scoped dir
+```
+
+- Prefer strict comparison to property testing by default.
+- Use snapshots for compound values.
+
+When value to compare with is complex enough (e.g. compound objects), use snapshots:
+
+```typescript
+import { describe, it } from 'node:test';
+import { createStoryFactories } from './index.js';
+
+describe('createStoryFactories creates parent-aware story trees', () => {
+  it('snapshots a single it node', (t) => {
+    const tree = createStoryFactories().it('single story', {});
+
+    t.assert.snapshot(tree); // <- Large compound object is verified automatically by a snapshot
+  });
+});
+```

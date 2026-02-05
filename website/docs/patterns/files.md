@@ -4,45 +4,41 @@ sidebar_position: 7
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Структура файлов
+# File Structure {#file-structure}
 
-Тесты - это тоже код, соответственно они также требуют к себе не меньшего внимания начиная с внутренним строением
-функций, заканчивая внешней структурой файлов.
+Tests are code too, so they require just as much attention to detail — from internal function design to external file structure.
 
-## Дислокация тестов
+## Test Location {#test-location}
 
 <MetricsTip improves={[Metric.RefactoringAllowance]} />
 
-Истории и всю связанную с ними инфраструктуру лучше располагать подальше от основного кода. Это будет служить явной
-границей между приложением и тестами.
+It's better to place stories and their associated infrastructure away from the main codebase. This creates a clear boundary between the application and its tests.
 
 :::tip
-Тесты могут и должны влиять на кодовую базу, но только в строго определённых аспектах, а именно в _архитектуре_.
-Приложение должно быть достаточно расширяемым, особенно в аспекте [*запросов*](/specification/requirements/query) и [*команд*](/specification/requirements/command), для того чтобы
-быть тестируемым.
+Tests can and should influence the codebase, but only in strictly defined aspects — specifically in _architecture_. The application must be sufficiently extensible, especially in terms of [*queries*](/specification/requirements/query) and [*commands*](/specification/requirements/command), to be testable.
 :::
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```plaintext
 project/
 ├── src/
 │   ├── User/
 │   │   ├── index.tsx
-│   │   └── stories.tsx <-- Тесты располагаются рядом с тестируемым функционалом
+│   │   └── stories.tsx <-- Tests are placed next to the code they test
 │   ├── api/
 │   │   ├── userRepository.ts
-│   │   └── mockUserRepository.ts <-- И моки в том числе
+│   │   └── mockUserRepository.ts <-- Mocks included here too
 │   └── index.ts
 └── package.json
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```plaintext
 project/
-├── src <-- Код основного приложения
-├── storyshots/ <-- Тесты и связанная с ними инфраструктура
+├── src <-- Main application code
+├── storyshots/ <-- Tests and associated infrastructure
 │   ├── userStories.ts
 │   ├── mockUserRepository.ts
 │   └── index.ts
@@ -50,27 +46,25 @@ project/
 ```
 
 :::tip
-Артефакты эталона: журналы и снимки можно располагать в корне репозитория, так как они часто используются как источник
-документации:
+Baseline artifacts — logs and snapshots — can be placed in the root of the repository, as they are often used as documentation sources:
 
 ```plaintext
 project/
-├── screenshots <-- Снимки
-├── records <-- Журналы
+├── screenshots <-- Snapshots
+├── records <-- Logs
 ├── src
 ├── storyshots
 └── package.json
 ```
-
 :::
 
-## Виды компонентов
+## Component Types {#component-types}
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-В тестах достаточно выделять следующие компоненты:
+In tests, it's sufficient to distinguish the following components:
 
-Компонент общей настройки окружения:
+Environment setup component:
 
 ```ts
 describe('User', [
@@ -88,13 +82,13 @@ describe('User', [
   }),
 ]);
 
-// Все истории готовят окружение одинаковым образом, следовательно, функция setup является таким компонентом
+// All stories set up the environment identically, so the setup function is such a component
 function setup() {
   /* ... */
 }
 ```
 
-Функции частичного изменения окружения:
+Partial environment modification functions:
 
 ```ts
 describe('User', [
@@ -113,8 +107,8 @@ describe('User', [
 ]);
 
 /**
- * Не смотря на общую логику инициализации, историям могут потребоваться частичные корректировки.
- * В эту категорию попадают функции отвечающие как раз за это.
+ * Despite shared initialization logic, stories may require partial adjustments.
+ * These functions belong to this category.
  */
 function authorized() {
   /* ... */
@@ -127,7 +121,7 @@ function unauthorized() {
 /* ... */
 ```
 
-Функции взаимодействия с интерфейсом и работы с актором:
+Interface interaction and actor-related functions:
 
 ```ts
 describe('User', [
@@ -138,7 +132,7 @@ describe('User', [
   }),
   it('allows to logout', {
     arrange: arrange(setup(), authorized()),
-    act: (actor) => actor.click(finder.get(button('Выйти'))),
+    act: (actor) => actor.click(finder.get(button('Logout'))),
     /* ... */
   }),
   it('allows to change password', {
@@ -147,7 +141,7 @@ describe('User', [
   }),
 ]);
 
-// Функции работающие с актором и селекторами принадлежат данной категории компонентов
+// Functions working with actors and selectors belong to this component category
 function button() {
   /* ... */
 }
@@ -163,18 +157,18 @@ function submit() {
 /* ... */
 ```
 
-Заглушки:
+Stubs:
 
 ```ts
 function authorized() {
-  /* использует createUserStub */
+  /* uses createUserStub */
 }
 
 function unauthorized() {
-  /* использует create401ErrorStub */
+  /* uses create401ErrorStub */
 }
 
-// Фабрики POJO относятся к категории заглушек
+// POJO factories belong to the stubs category
 function createUserStub() {
   /* ... */
 }
@@ -186,75 +180,69 @@ function create401ErrorStub() {
 /* ... */
 ```
 
-При вопросе разделения декомпозиция истории может выглядеть следующим образом:
+When decomposing a story, the structure may look like this:
 
 ```plaintext
 productsStories.ts
-utils // Локальные компоненты
-├── arrangers.ts // Локальная установка окружения
-├── setup.ts // Общая установка окружения
-├── stubs.ts // Заглушки
-└── actors.ts // Взаимодействие с интерфейсом
+utils // Local components
+├── arrangers.ts // Local environment setup
+├── setup.ts // Common environment setup
+├── stubs.ts // Stubs
+└── actors.ts // Interface interaction
 ```
 
 :::tip
-Если требуется дополнительное разделение на уровне взятого компонента, можно агрегировать файлы под одноименной папкой:
+If further decomposition is needed at the component level, files can be aggregated under a folder with the same name:
 
 ```plaintext
 stubs/
 ├── createUserStub.ts
 ├── createRoleStub.ts
-└── index.ts // Файл реекспорта
+└── index.ts // Re-export file
 ```
-
 :::
 
-## Расположение компонентов
+## Component Placement {#component-placement}
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-Расположение элементов в историях (и в целом в инфраструктуре `storyshots`) должна быть таковой, чтобы расстояние между
-связанными сущностями было как можно меньшим:
+The placement of elements within stories (and generally within the `storyshots` infrastructure) should minimize the distance between related entities:
 
-**Один файл** - если элемент, например заглушка, используется в одной истории, значит они должны храниться в одном
-файле.
+**Single file** — if an element, such as a stub, is used in only one story, then they should be stored in the same file.
 
 :::tip
-Если размер файла превышает порог читаемости, то разделению стоит отдать приоритет.
+If a file exceeds readability thresholds, prioritization should be given to splitting it.
 :::
 
-**Общий файл** - если элемент используется в связанных по домену, но разных по файлам историях, значит его нужно
-расположить в отдельном файле, который будет располагаться на равном расстоянии между тестами.
+**Shared file** — if an element is used across related but different story files (same domain), it should be placed in a separate file located equidistant from the tests.
 
-Такой файл обычно располагается в уровне ближайшей общей папки:
+This file is typically placed at the nearest common folder level:
 
 ```plaintext
 stories/
-├── userStories.ts // Клиент #1
+├── userStories.ts // Client #1
 ├── producStories/
-│   └── removeProductsStories.ts // Клиент #2
+│   └── removeProductsStories.ts // Client #2
 ├── utils/
-│   └── stubs.ts // <-- Общая часть
+│   └── stubs.ts // <-- Shared component
 └── index.ts
 ```
 
-**Глобальный файл** - если сущность используется в нескольких не связанных между собой историях, то в таком случае она
-выносится на самый высокий уровень в `storyshots`.
+**Global file** — if a component is used across multiple unrelated stories, it should be moved to the highest level within `storyshots`.
 
 ```plaintext
 storyshots/
 ├── utils/
-│   ..... // Глобальные компоненты, используются в не связанных историях.
+│   ..... // Global components used across unrelated stories.
 └── stories/
     ├── userStories.ts
     └── producStories/
-        ├── utils // Локальные компоненты
-        │   ..... // Используются только в папке producStories
+        ├── utils // Local components
+        │   ..... // Used only within producStories folder
         ├── productRemoveStories.ts
         └── productsStories.ts
 ```
 
 :::tip
-Таким образом, следуя данной методологии можно легко понять насколько ответственным является компонент - чем он выше по
-дереву, тем больше у него зависимых клиентов и тем сложнее его будет изменять напрямую.
+Following this methodology makes it easy to understand a component’s responsibility — the higher it appears in the tree, the more clients depend on it, and the harder it becomes to modify directly.
 :::

@@ -4,27 +4,23 @@ sidebar_position: 1
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Истории
+# Stories {#stories}
 
-История это базовый элемент `storyshots`. Она фиксирует приложение в определённом состоянии, описывая параметры
-внешнего окружения и действия пользователя.
+A story is the basic unit of `storyshots`. It captures the application in a specific state, describing the external environment and user actions.
 
-## Разделение историй
+## Story Splitting {#story-splitting}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
-`storyshots` реализует множество инструментов направленных на разделение тестовых сценариев. Один из них - это
-использование семантических групп `describe`.
+`storyshots` provides multiple tools for splitting test scenarios. One of them is the use of semantic `describe` groups.
 
-Большое кол-во сценариев, объединённых вместе не только увеличивают размер файла, но и усложняют свою поддержку ввиду
-разности их ответственностей.
+A large number of scenarios grouped together not only increases file size but also complicates maintenance due to differing responsibilities.
 
 :::note
-Ответственность - это причина по которой код может быть изменён. Если две разные функции меняются в одно и то же время и
-по одной и той же причине, то тогда, и только тогда их ответственности считаются **равными**.
+Responsibility is the reason why code might be changed. If two different functions are changed at the same time and for the same reason, then and only then are their responsibilities considered **equal**.
 :::
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 const stories = [
@@ -34,7 +30,7 @@ const stories = [
 ];
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 const stories = [
@@ -47,13 +43,11 @@ const stories = [
 ```
 
 :::tip
-Истории должны быть декомпозированы таким образом, чтобы при их последующем редактировании (или чтении) в них было как
-можно меньше избыточных элементов.
+Stories should be decomposed so that when they are later edited (or read), they contain as few redundant elements as possible.
 :::
 
-- `describe` блоки - это чаще всего наименование домена, подфункции или отвественности. Рекомендуется именовать коротким
-  словосочетанием в CamelCase (с заглавной буквы).
-- `it` блоки - это конкретная история, читается как - "Это приложение (it) текст истории".
+- `describe` blocks are usually domain names, subfunctions, or responsibilities. It is recommended to name them with a short CamelCase phrase (starting with a capital letter).
+- `it` blocks are specific stories, read as "This application (it) [story text]".
 
 :::tip
 
@@ -61,74 +55,66 @@ const stories = [
 it('allows for user to logout');
 ```
 
-Читается как - "Это приложение позволяет пользователью выйти из учётной записи".
+Reads as: "This application allows the user to log out.".
 :::
 
-[//]: # 'TODO: Move from here END'
-
-## Слияние историй
+## Story Merging {#story-merging}
 
 <MetricsTip improves={[Metric.Speed]} degrades={[Metric.Maintainability]} />
 
-`storyshots` позволяет в рамках одной истории сделать не один снимок экрана, а сразу несколько:
+`storyshots` allows making multiple screenshots within a single story instead of one per story:
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 describe('Login', [
-  it('shows disabled password initially'), // Тест просто делает снимок изначального состояния формы
+  it('shows disabled password initially'), // Test simply takes a screenshot of the initial form state
   it('allows to fill login field', {
-    // Проверяет возможность заполнения поля
-    act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Логин'),
+    // Checks the ability to fill the field
+    act: (actor) => actor.fill(finder.getByPlaceholder('Login'), 'Login'),
   }),
   it('allows to enter credentials', {
-    // Проверяет возможность заполнения всей формы
+    // Checks the ability to fill the entire form
     act: (actor) =>
       actor
-        .fill(finder.getByPlaceholder('Login'), 'Логин')
+        .fill(finder.getByPlaceholder('Login'), 'Login')
         .fill(finder.getByPlaceholder('Password'), '1235'),
   }),
 ]);
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 it('allows to enter credentials', {
-  // История проверяет все состояния сразу
+  // Story checks all states at once
   act: (actor) =>
     actor
       .screenshot('Initial')
-      .fill(finder.getByPlaceholder('Login'), 'Логин')
+      .fill(finder.getByPlaceholder('Login'), 'Login')
       .screenshot('PasswordEnabled')
       .fill(finder.getByPlaceholder('Password'), '1235'),
 });
 ```
 
-Изначально, существовало 3 разных истории каждая из которых проверяла отдельное состояние формы. Благодаря
-промежуточным снимкам, удалось сократить общее количество тестов и следовательно снизить общее время их выполнения. При
-этом, показатель защиты от регресса не постардал.
+Initially, there were three separate stories, each checking a different form state. Thanks to intermediate screenshots, the total number of tests was reduced, thus lowering the overall execution time. Meanwhile, regression protection remained unaffected.
 
 :::note
-Вопрос декомпозиции тестов является достаточно комплексным:
+The question of test decomposition is quite complex:
 
-- С одной стороны, тестов должно быть как можно меньше, ведь в противном случае растет кол-во кода, увеличивается время
-  выполнения и сами проверки также могут дублировать части друг друга.
-- С другой стороны, чем больше тест, тем сложнее контролировать уровень покрытия сценариев работы приложения, к тому же
-  растёт риск смешивания ответственностей с которым борется пункт [декомпозиция историй](/patterns/stories#разделение-историй).
+- On one hand, there should be as few tests as possible, because otherwise the codebase grows, execution time increases, and checks may duplicate each other.
+- On the other hand, the larger the test, the harder it is to control scenario coverage, and the greater the risk of mixing responsibilities—precisely what the [story splitting](/patterns/stories#story-splitting) section aims to prevent.
 
-Другими словами, дело в _балансе_.
+In other words, it's about _balance_.
 
-Общая рекомендация - начинать с самого простого, в большинстве случаев это написание одной крупной истории. Далее, при
-возникновении проблем с поддержкой её следует разбивать на более атомарные и независимые элементы.
+General recommendation: start simple. In most cases, this means writing one large story. Later, if maintenance becomes difficult, break it into smaller, atomic, and independent units.
 :::
 
-## Приоритеты историй
+## Story Priorities {#story-priorities}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RegressionProtection]} />
 
-Со временем количество историй в проекте будет расти, вместе с этим будет увеличиваться и время их выполнения. Для того
-чтобы смягчить влияние данной проблемы, можно объявить приоритет с помощью [мета-аттрибутов](/API/factories/it#storyattributes):
+Over time, the number of stories in a project will grow, along with their execution time. To mitigate this issue, you can declare priorities using [story attributes](/API/factories/it#storyattributes):
 
 ```ts title="extend-module.ts"
 declare module '@storyshots/core' {
@@ -138,51 +124,49 @@ declare module '@storyshots/core' {
 }
 ```
 
-После, разметить тесты по приоритетам:
+Then, mark tests by priority:
 
 ```ts
 const stories = [
-  // Важно чтобы в приложении работал вход
+  // It's critical that login works in the app
   it('allows to login'),
-  // При этом, выбор темы относится к второстепенным сценариям
+  // Meanwhile, theme selection is secondary
   it('allows to set dark theme', {
     secondary: true,
   }),
 ];
 ```
 
-Далее, установить отдельный режим при котором будут запускаться только важные истории:
+Next, set a separate mode to run only high-priority stories:
 
 ```ts
 run(filter(stories, (story) => not(story.secondary)));
 ```
 
 :::tip
-Для того чтобы случайно не исключить лишнего, рекомендуется по умолчанию устанавливать высокий приоритет у историй.
+To avoid accidentally excluding necessary tests, it's recommended to set high priority as the default for stories.
 :::
 
-## Универсальный render
+## Universal Render {#universal-render}
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-`@storyshots/react` предоставляет возможность описывать функцию `render` у каждой истории по отдельности, что может подойти для
-тестирования UI библиотеки:
+`@storyshots/react` allows defining a `render` function per story, which may suit testing UI libraries:
 
 ```tsx
 const renders = it;
 
 const buttonStories = [
   renders('primary button', {
-    render: () => <Button type="primary" />,
+    render: () => <Button type="primary" />, 
   }),
   renders('primary disabled button', {
-    render: () => <Button type="primary" disabled />,
+    render: () => <Button type="primary" disabled />, 
   }),
 ];
 ```
 
-Однако, для тестирования конечного приложения данный вариант является мало практичным. Вместо этого рекомендуется описывать
-`render` по умолчанию:
+However, for testing end-user applications, this approach is impractical. Instead, it's recommended to define a default `render`:
 
 ```tsx title="preview.tsx"
 export const { run, it } = createPreviewApp(/* ... */);
@@ -191,8 +175,8 @@ export const { run, it } = createPreviewApp(/* ... */);
 ```tsx title="index.tsx"
 run(
   map(stories, (story) => ({
-    // По умолчанию будет отрисовываться корневой компонент приложения
-    render: (externals) => <App externals={externals} />,
+    // By default, the app's root component will be rendered
+    render: (externals) => <App externals={externals} />, 
     ...story,
   })),
 );
@@ -202,7 +186,7 @@ run(
 export const stories = [
   it('...', {
     /**
-     * Описывать render в истории теперь не обязательно.
+     * Defining render in the story is no longer necessary.
      */
   }),
 ];

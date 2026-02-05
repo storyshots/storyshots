@@ -1,0 +1,50 @@
+exports[`createTestRunner.getAll > handles single story from preview 1`] = `
+{
+  "type": "right",
+  "value": [
+    {
+      "type": "story",
+      "id": "single-story",
+      "title": "single story",
+      "parents": [],
+      "retries": 0,
+      "actions": [
+        {
+          "action": "screenshot",
+          "payload": {
+            "name": "FINAL"
+          }
+        }
+      ],
+      "device": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 720
+      }
+    }
+  ]
+}
+`;
+
+exports[`createTestRunner.getAll > propagates failure 1`] = `
+{
+  "type": "left",
+  "value": {
+    "kind": "MaterializeFailure",
+    "body": {
+      "story": {
+        "type": "story",
+        "id": "single-failed-story",
+        "title": "single failed story",
+        "parents": []
+      },
+      "device": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 720
+      },
+      "cause": "{\\"message\\":\\"SOMETHING_WENT_WRONG\\"}"
+    }
+  }
+}
+`;

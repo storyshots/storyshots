@@ -4,11 +4,11 @@ sidebar_position: 5
 
 # @storyshots/arrangers
 
-Функции и утилиты для работы с `externals` в `arrange` фазе истории.
+Functions and utilities for working with `externals` during the `arrange` phase of stories.
 
-## createArrangers
+## createArrangers {#create-arrangers}
 
-Создаёт основные утилиты и привязывает их к базовому типу `externals`:
+Creates core utilities and binds them to the base `externals` type:
 
 ```ts
 import { createArrangers } from '@storyshots/arrangers';
@@ -27,40 +27,40 @@ interface IExternals {
 const utils = createArrangers<IExternals>();
 ```
 
-## set
+## set {#set}
 
-Устанавливает значение для описанного ключа:
+Sets a value for the specified key:
 
 ```ts
 it('...', {
-  // Метод getBalanceAt теперь имеет другую реализацию
+  // The getBalanceAt method now has a different implementation
   arrange: set('business.getBalanceAt', async () => 100_000),
 });
 ```
 
-## record
+## record {#record}
 
-Делает переданные методы отслеживаемыми:
+Makes the provided methods trackable:
 
 ```ts
 it('...', {
-  // Вызовы getBalanceAt теперь будут записаны в журнал
+  // Calls to getBalanceAt are now recorded in the log
   arrange: record('business.getBalanceAt'),
 });
 ```
 
-Также может принимать реализацию:
+Also accepts an implementation:
 
 ```ts
 it('...', {
-  // Помимо записи, также будет установлено и поведение
+  // In addition to recording, the behavior is also set
   arrange: record('business.getBalanceAt', async () => 100_000),
 });
 ```
 
-## transform
+## transform {#transform}
 
-Преобразует возвращаемое значение метода:
+Transforms the return value of a method:
 
 ```ts
 it('...', {
@@ -69,12 +69,12 @@ it('...', {
 ```
 
 :::note
-Работает только с асинхронными функциями. Для всех других, рекомендуется [compose](/modules/arrangers#compose)
+Works only with async functions. For all others, use [compose](/modules/arrangers#compose)
 :::
 
-## compose
+## compose {#compose}
 
-Устанавливает новое значение на базе текущего:
+Sets a new value based on the current one:
 
 ```ts
 it('...', {
@@ -82,9 +82,9 @@ it('...', {
 });
 ```
 
-## focus
+## focus {#focus}
 
-Фокусирует `arrangers` на вложенном свойстве:
+Focuses `arrangers` on a nested property:
 
 ```ts
 import { createArrangers } from '@storyshots/arrangers';
@@ -100,24 +100,24 @@ interface IExternals {
 
 const utils = createArrangers<IExternals>();
 
-// Создаём arrangers сфокусированные на repositories.
+// Create arrangers focused on repositories.
 export const repository = utils.focus('repositories');
 ```
 
-Далее созданные утилиты можно использовать в историях следующим образом:
+The created utilities can then be used in stories as follows:
 
 ```ts
 it('...', {
-  // Путь до свойства теперь сокращён
+  // The property path is now shortened
   arrange: repository.set('UserRepository.getUser', async () =>
     createAdminUserStub(),
   ),
 });
 ```
 
-## arrange
+## arrange {#arrange}
 
-Функция объединяющая несколько `arrangers` в один:
+Function that combines multiple `arrangers` into one:
 
 ```ts
 it('...', {
@@ -128,7 +128,7 @@ it('...', {
 });
 ```
 
-`arrange` можно вкладывать один в другой:
+`arrange` can be nested within each other:
 
 ```ts
 it('...', {
@@ -147,13 +147,13 @@ function withApplyCVSuccess() {
 }
 ```
 
-Можно описывать inline arrange:
+Inline `arrange` can also be defined:
 
 ```ts
 it('...', {
   arrange: arrange(
     set('business.getBalanceAt', () => 0),
-    // Можно вынести в отдельную функцию
+    // Can be extracted into a separate function
     (externals) => {
       clock.set(new Date(/* ... */));
 
@@ -163,9 +163,9 @@ it('...', {
 });
 ```
 
-## resolves
+## resolves {#resolves}
 
-Создаёт функцию возвращающую `Promise.resolve` с переданным значением:
+Creates a function that returns `Promise.resolve` with the provided value:
 
 ```ts
 it('...', {
@@ -173,9 +173,9 @@ it('...', {
 });
 ```
 
-## rejects
+## rejects {#rejects}
 
-Создаёт функцию возвращающую `Promise.reject` с переданным значением:
+Creates a function that returns `Promise.reject` with the provided value:
 
 ```ts
 it('...', {

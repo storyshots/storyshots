@@ -2,17 +2,17 @@
 sidebar_position: 2
 ---
 
-# StoryConfig
+# StoryConfig {#storyconfig}
 
-Настройки для текущей истории.
+Settings for the current story.
 
 ---
 
-## device
+## device {#device}
 
-Устройство, в рамках которого запускается тест.
+The device on which the test is running.
 
-Пример `desktop` устройства:
+Example of a `desktop` device:
 
 ```ts
 const desktop: Device = {
@@ -22,7 +22,7 @@ const desktop: Device = {
 };
 ```
 
-Пример `mobile` устройства:
+Example of a `mobile` device:
 
 ```ts
 const mobile: Device = {
@@ -35,16 +35,16 @@ const mobile: Device = {
 ```
 
 :::tip
-Список возможных устройств можно найти [здесь](https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json).
+The list of available devices can be found [here](https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json).
 :::
 
-## journal
+## journal {#journal}
 
-Представляет собой экземпляр [журнала](/specification/requirements/command#способ-верификации).
+Represents an instance of a [journal](/specification/requirements/command#verification-method).
 
-### record
+### record {#record}
 
-Записывает вызов метода, сохраняя его имя и аргументы.
+Records a method call, preserving its name and arguments.
 
 ```ts
 it('...', {
@@ -59,12 +59,12 @@ it('...', {
 ```
 
 :::note
-Реализация зависит от [клиента preview](/specification/scheme#ipreviewclient). Например, в [`@storyshots/next`](/modules/next) метод является **асинхронным**.
+Implementation depends on the [preview client](/specification/arch#ipreviewclient). For example, in [`@storyshots/next`](/modules/next), the method is **asynchronous**.
 :::
 
-### asRecordable
+### asRecordable {#asrecordable}
 
-Оборачивает функцию для логирования её вызовов.
+Wraps a function to log its calls.
 
 ```ts
 it('...', {
@@ -73,16 +73,3 @@ it('...', {
   }),
 });
 ```
-
-## previewing
-
-Указывает режим, в котором запущена история.
-
-- `true`: История запущена в режиме [preview](/ui/#превью).
-- `false`: История выполняется как тест в фоновом агенте.
-
-:::note
-Данное свойство полезно для контроля [внешней среды](/specification/requirements/query). Например, анимации должны быть
-активны в режиме предпросмотра (для более наглядной разработки), но быть выключенными в режиме запуска тестов для
-исключения недетерминированного поведения.
-:::

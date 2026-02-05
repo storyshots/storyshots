@@ -4,55 +4,51 @@ sidebar_position: 3
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Актор
+# Actor {#actor}
 
-Описание актора - это важная сторона историй в `storyshots`. При правильном подходе, можно значительным образом
-упросить тесты и рефакторинг на проекте.
+Describing an actor is an important aspect of stories in `storyshots`. With the right approach, you can significantly simplify tests and refactoring across the project.
 
-## Семантические селекторы
+## Semantic Selectors {#semantic-selectors}
 
 <MetricsTip improves={[Metric.RefactoringAllowance, Metric.Maintainability]} />
 
-Вторым узким местом после заглушек является функция `act`. Описывая инструкции взаимодействия с интерфейсом можно легко
-увеличить связанность историй с деталями реализации программы, сделав тесты при этом более хрупкими:
+The second bottleneck after stubs is the `act` function. Describing interface interaction instructions can easily increase the coupling of stories to implementation details, making tests more fragile:
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```tsx
 it('allows to delete product', {
   act: (actor) =>
     actor.click(
-      finder.locator('div.user-card div.button').getByText('Удалить'),
+      finder.locator('div.user-card div.button').getByText('Delete'),
     ),
 });
 ```
 
-Тест в данном случае "знает" о внутренней структуре `DOM`.
+In this case, the test "knows" about the internal `DOM` structure.
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this instead:</p>
 
 ```tsx
 it('allows to delete product', {
-  act: (actor) => actor.click(finder.getByRole('button', { name: 'Удалить' })),
+  act: (actor) => actor.click(finder.getByRole('button', { name: 'Delete' })),
 });
 ```
 
-Семантическая маркировка интерфейса помогает инкапсулировать детали реализации интерфейса от историй.
+Semantic interface labeling helps encapsulate implementation details of the interface from the stories.
 
 :::note
-Исключение составляют компоненты из сторонних библиотек, которые не всегда поддаются достаточному расширению.
+Exceptions are components from third-party libraries that are not always amenable to sufficient extension.
 :::
 
-Рекомендуется предпочитать селекторы, оперирующие видимыми пользователем атрибутами. В основном это отображаемый
-текст и роли.
+It is recommended to prefer selectors that operate on user-visible attributes. Mostly, these are visible text and roles.
 
-## data-testid селекторы
+## data-testid Selectors {#data-testid-selectors}
 
-Существуют методики, которые предполагают несколько иной подход к абстракции, а именно использование специальных
-тестовых индикаторов:
+There are techniques that assume a different abstraction approach—namely, using special test indicators:
 
 ```tsx
-<button data-testid="delete-user-button">Удалить</button>
+<button data-testid="delete-user-button">Delete</button>
 ```
 
 ```tsx
@@ -61,23 +57,19 @@ it('allows to delete product', {
 });
 ```
 
-### Достоинства
+### Advantages {#advantages}
 
-К достоинствам данного подхода можно отнести тот факт, что истории ещё сильнее абстрагируются от конкретных деталей
-реализации интерфейса. И даже от части его _наблюдаемого поведения_.
+The advantages of this approach include the fact that stories become even more abstracted from specific interface implementation details—and even from parts of its _observable behavior_.
 
 :::tip
-Проще всего это понять на примере:
+The easiest way to understand this is through an example:
 
-`getByRole('button', { name: 'Удалить' })` напрямую завязан на текст кнопки. Если он изменится, то селектор
-нужно будет корректировать вручную. То же самое можно сказать и про роль.
+`getByRole('button', { name: 'Delete' })` is directly tied to the button's text. If the text changes, the selector must be manually adjusted. The same applies to the role.
 
-`data-testid` не чувствителен к подобному роду изменений и селектор останется прежним. Тем самым, делая тест более
-устойчивым к изменениям тестируемого приложения.
+`data-testid` is insensitive to such changes, and the selector remains unchanged. This makes the test more resilient to changes in the application under test.
 :::
 
-Также, за счёт своей управляемости, data-testid позволяет проще использовать техники TDD. Все идентификаторы и
-взаимодействия можно продумать и прописать заранее, до разработки самого интерфейса страницы:
+Also, due to its manageability, `data-testid` makes TDD techniques easier to apply. All identifiers and interactions can be thought through and written in advance, before the page interface is even developed:
 
 ```typescript
 it('allows to delete multiple products', {
@@ -91,69 +83,64 @@ it('allows to delete multiple products', {
 ```
 
 :::note
-Сложно предугадать семантику элементов на странице, до их непосредственного появления. С data-testid всё проще, т. к. их
-содержание и значение определяется самим разработчиком, а не системой.
+It's hard to predict the semantics of page elements before they appear. With `data-testid`, it's simpler because their content and value are defined by the developer, not the system.
 :::
 
 :::tip
-data-testid также может использоваться сторонними командами, например инженерами по авто-тестам.
+`data-testid` can also be used by external teams, such as automation engineers.
 :::
 
-### Недостатки
+### Disadvantages {#disadvantages}
 
-Можно отметить следующие недостатки:
+The following drawbacks can be noted:
 
-- Данная техника, хоть и делает тесты более устойчивыми, но при неосторожном использовании может снижать защиту от
-  регресса, т. к. уходит часть верификаций семантической стороны интерфейса.
-- data-testid засоряет основной код приложения и требует дополнительного времени разработчика.
-- В среднем тесты с data-testid читать сложнее чем аналогичные сценарии с семантическими селекторами.
+- Although this technique makes tests more resilient, careless use can reduce regression protection because part of the semantic verification of the interface is lost.
+- `data-testid` pollutes the main application code and requires additional developer time.
+- On average, tests using `data-testid` are harder to read than similar scenarios using semantic selectors.
 
-## Компонентный подход
+## Component-Based Approach {#component-based-approach}
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-Любой UI интерфейс можно разбить на компоненты.
+Any UI interface can be broken down into components.
 
 :::tip
-Компонент - это элемент страницы реализующий в себе представление, поведение и модель взаимодействия.
+A component is a page element that encapsulates presentation, behavior, and interaction model.
 :::
 
-Такие элементы являются особенно полезными в контексте программирования, ведь их можно повторно использовать на разных
-страницах, не повышая при этом сложность проекта. `storyshots` дополнительно эксплуатирует данный факт предоставляя
-методы расширения для [`actor`](/API/test-components/actor) и [`finder`](/API/test-components/finder):
+Such elements are especially useful in programming, as they can be reused across different pages without increasing project complexity. `storyshots` further leverages this by providing extension methods for [`actor`](/API/test-components/actor) and [`finder`](/API/test-components/finder):
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```tsx
 const stories = [
   it('allows to delete user', {
     /**
-     * В UserPage используется обычная кнопка удаления <button>Удалить</button>
+     * UserPage uses a standard delete button <button>Delete</button>
      */
     act: (actor) =>
-      actor.click(finder.getByRole('button', { name: 'Удалить' })),
-    render: () => <UserPage />,
+      actor.click(finder.getByRole('button', { name: 'Delete' })),
+    render: () => <UserPage />, 
   }),
   it('allows to delete product', {
     /**
-     * В ProductsPage используется та же кнопка, но разработчики реализовали её иначе,
-     * по какой-то причине: <div className="button">Удалить</div>
+     * ProductsPage uses the same button, but developers implemented it differently,
+     * for some reason: <div className="button">Delete</div>
      */
     act: (actor) =>
-      actor.click(finder.locator('div.button').getByText('Удалить')),
-    render: () => <ProductsPage />,
+      actor.click(finder.locator('div.button').getByText('Delete')),
+    render: () => <ProductsPage />, 
   }),
 ];
 ```
 
-Из-за того что одинаковые для пользователя элементы реализованы по-разному, сами инструкции взаимодействия в историях
-также отличаются.
+Because the same user-facing elements are implemented differently, the interaction instructions in the stories also differ.
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this instead:</p>
 
 ```tsx
 /**
- * За счёт использования компонентного подхода, селекторы между тестами также могут быть унифицированы
+ * By using the component-based approach, selectors can also be unified across tests
  */
 const button =
   (name: string): FinderTransformer =>
@@ -162,38 +149,37 @@ const button =
 
 const stories = [
   it('allows to delete user', {
-    act: (actor) => actor.click(finder.get(button('Удалить'))),
-    render: () => <UserPage />,
+    act: (actor) => actor.click(finder.get(button('Delete'))),
+    render: () => <UserPage />, 
   }),
   it('allows to delete product', {
-    act: (actor) => actor.click(finder.get(button('Удалить'))),
-    render: () => <ProductsPage />,
+    act: (actor) => actor.click(finder.get(button('Delete'))),
+    render: () => <ProductsPage />, 
   }),
 ];
 ```
 
-Можно пойти дальше и реализовать отдельный объект с селекторами, основываясь на компонентной системе используемой в
-приложении:
+You can go further and implement a separate object with selectors based on the component system used in the application:
 
 ```ts title="selectors.ts"
 declare const button: FinderTransformer;
 
 declare const modal: FinderTransformer;
 
-/* и другие */
+/* and others */
 ```
 
-Расширять можно не только сами селекторы, но и целые действия:
+You can extend not only selectors, but entire actions as well:
 
 ```ts title="actions.ts"
 declare const upload: ActorTransformer;
 
 declare const dismiss: ActorTransformer;
 
-/* и другие */
+/* and others */
 ```
 
-При следовании компонентному подходу и использовании методов расширения, можно существенным образом упростить истории:
+By following the component-based approach and using extension methods, you can significantly simplify stories:
 
 ```ts
 it('allows to remove a user from list', {
