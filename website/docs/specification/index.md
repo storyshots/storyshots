@@ -12,7 +12,7 @@ sidebar_position: 6
 :::
 
 :::tip tl;dr
-В данном [видео](https://www.youtube.com/watch?v=2qyVwG1rL9I) представлен краткий обзор концепции.
+В данном [видео](https://youtu.be/2q9WMLWd5BM?si=ige9qvRXbE-pghrt) представлен краткий обзор концепции.
 :::
 
 :::note
