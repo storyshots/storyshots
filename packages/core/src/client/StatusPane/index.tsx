@@ -1,9 +1,9 @@
-import { Device, flat, Story, StoryTree } from '@core';
+import { Device, flat, Story, StoryID, StoryTree } from '@core';
 import { assertNotEmpty, isDefined } from '@lib';
 import convert from 'ansi-to-html';
 import { Segmented } from 'antd';
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { UseBehaviourProps } from '../behaviour/types';
 
 import { UIStoryRunState } from '../behaviour/useRun/types';
@@ -76,16 +76,24 @@ export const StatusPaneArea: React.FC<UseBehaviourProps> = (props) => {
       ) : (
         <StatusEntries aria-label="Failures">
           {failures.map(({ story, failure }, index) => (
-            <StatusEntry key={index}>
+            <ClickableStatusEntry
+              key={index}
+              active$={isSelected(story.id)}
+              onClick={() => props.setStory(story.id)}
+            >
               <span style={{ fontWeight: 'bold' }}>
                 {toReadableName(story, failure.device)}
               </span>
-            </StatusEntry>
+            </ClickableStatusEntry>
           ))}
         </StatusEntries>
       )}
     </Pane>
   );
+
+  function isSelected(id: StoryID) {
+    return selection.type === 'story' && id === selection.story.id;
+  }
 };
 
 function toErrors(
@@ -187,4 +195,22 @@ const StatusEntries = styled.ul`
 
 const StatusEntry = styled.li`
   padding: 10px;
+`;
+
+const ClickableStatusEntry = styled(StatusEntry)<{ active$: boolean }>`
+  ${(props) =>
+    props.active$ &&
+    css`
+      background-color: #e6f4ff;
+    `}
+
+  ${(props) =>
+    !props.active$ &&
+    css`
+      cursor: pointer;
+
+      &:hover {
+        background-color: #fafafa;
+      }
+    `}
 `;

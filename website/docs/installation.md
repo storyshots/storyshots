@@ -44,9 +44,9 @@ npm run build && npm run pack
 project/
 ├── src/
 ├── offline/
-│   ├── @storyshots-core-0.0.18.tgz
-│   ├── @storyshots-react-0.0.18.tgz
-│   └── @storyshots-exec-preview-0.0.18.tgz
+│   ├── @storyshots-core-0.0.20.tgz
+│   ├── @storyshots-react-0.0.20.tgz
+│   └── @storyshots-exec-preview-0.0.20.tgz
 └── package.json
 ```
 
@@ -55,9 +55,9 @@ project/
 ```json title="package.json"
 {
   "devDependencies": {
-    "@storyshots/core": "file:offline/storyshots-core-0.0.18.tgz",
-    "@storyshots/react": "file:offline/storyshots-react-0.0.18.tgz",
-    "@storyshots/exec-preview": "file:offline/storyshots-exec-preview-0.0.18.tgz"
+    "@storyshots/core": "file:offline/storyshots-core-0.0.20.tgz",
+    "@storyshots/react": "file:offline/storyshots-react-0.0.20.tgz",
+    "@storyshots/exec-preview": "file:offline/storyshots-exec-preview-0.0.20.tgz"
   }
 }
 ```

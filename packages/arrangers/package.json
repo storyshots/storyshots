@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/arrangers",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "Composable external arrangers",
   "repository": "https://github.com/storyshots/storyshots.git",
   "license": "MIT",
@@ -14,6 +14,6 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.18"
+    "@storyshots/core": "0.0.20"
   }
 }

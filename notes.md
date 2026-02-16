@@ -13,8 +13,6 @@
 * Fix naming for preview (like IPreviewClient). It is not preview, it is adapted AUT
 * Add more details to resized docs (stories should be defined explicitly)
 * Add labels for actual and expected images
-* On failures panel transitions should be working onClick
-* Menu must be resizable
 * stop prevents final screenshot to be taken. It is useful when testing page transitions (update docs and tests)
 
 # Low priority
@@ -35,6 +33,8 @@
 * Main models in @core must be simplified
     * Avoid usage of complex nexted types and structures (remove visitors and simplify duration type)
     * Try to rewrite state container using functional and side effect-less structures (streams)
+* Configure prettier (format scripts) and linter (for imports, unused vars, private deps)
+* Add cleanupObsolete docs
 
 # Opened questions
 

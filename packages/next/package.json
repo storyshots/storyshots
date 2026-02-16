@@ -1,6 +1,6 @@
 {
   "name": "@storyshots/next",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "description": "Next storyshots facade",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -39,7 +39,7 @@
     "lint": "eslint ./src"
   },
   "dependencies": {
-    "@storyshots/core": "0.0.18",
+    "@storyshots/core": "0.0.20",
     "react": "*",
     "react-dom": "*",
     "next": "^15",
