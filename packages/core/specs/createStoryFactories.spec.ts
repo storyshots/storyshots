@@ -1,5 +1,5 @@
 import { describe, it } from 'node:test';
-import { createStoryFactories } from './index';
+import { createStoryFactories } from '../src/neutral/createStoryFactories';
 
 describe('createStoryFactories creates parent-aware story trees', () => {
   it('handles single it node', (t) => {

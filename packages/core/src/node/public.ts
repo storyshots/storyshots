@@ -9,6 +9,6 @@ export type {
   NotEqualComparison,
 } from './Compare/types';
 
-/* Manager Config */
-export type { ManagerConfig } from './ManagerConfig';
+/* Runner Config */
+export type { RunnerConfig } from './RunnerConfig';
 export type { AppServerFactory } from './AppServerFactory';

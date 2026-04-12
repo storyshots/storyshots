@@ -1,7 +1,7 @@
-import { Story, StoryAttributes, StoryMeta, StoryTree } from '../StoryTree';
-import { ActionMeta } from '../createActor/types';
-import { Device } from '../config';
-import { createActor } from '../createActor';
+import { Story, StoryAttributes, StoryMeta, StoryTree } from './StoryTree';
+import { ActionMeta } from './createActor/types';
+import { Device } from './config';
+import { createActor } from './createActor';
 import { Either, Failure } from '@storyshots/utils';
 
 /**
@@ -25,7 +25,7 @@ export type MaterializationResult = Either<
   MaterializedStory[]
 >;
 
-type MaterializeFailure = Failure<
+export type MaterializeFailure = Failure<
   'MaterializeFailure',
   {
     story: StoryMeta;

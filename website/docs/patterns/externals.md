@@ -68,7 +68,7 @@ An important, and far from obvious, special case of this rule is the application
 
 ```ts title="manager.ts"
 runUI({
-  preview: createFancyPreviewServer({
+  createServer: createFancyPreviewServer({
     /* custom build configuration inside */
   }),
 });
@@ -80,7 +80,7 @@ runUI({
 import { createExecPreview } from '@storyshots/exec-preview';
 
 runUI({
-  preview: createExecPreview({
+  createServer: createExecPreview({
     ui: {
       // Reuse standard dev environment commands
       command: 'npm start',

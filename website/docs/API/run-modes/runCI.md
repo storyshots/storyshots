@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # runCI {#runci}
 
-Runs tests in the background, the main use case is [CI/CD processes](/patterns/application#baseline-separation). Accepts [ManagerConfig](/API/run-modes/manager-config) as an argument.
+Runs tests in the background, the main use case is [CI/CD processes](/patterns/application#baseline-separation). Accepts [RunnerConfig](/API/run-modes/runner-config) as an argument.
 
 ## Features {#features}
 

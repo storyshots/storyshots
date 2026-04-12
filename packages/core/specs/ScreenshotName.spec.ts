@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
-import { ScreenshotName } from './index';
+import { ScreenshotName } from '../src/neutral/ScreenshotName';
 
 describe('ScreenshotName validates screenshot names', () => {
   it('throws for invalid name', () => {

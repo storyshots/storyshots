@@ -1,5 +1,5 @@
 import { assert, Brand, isNil } from '@storyshots/utils';
-import { ActionMeta } from '../createActor/types';
+import { ActionMeta } from './createActor/types';
 
 /**
  * Unique (up to story) screenshot name in UpperCamelCase format

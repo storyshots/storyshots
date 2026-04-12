@@ -55,7 +55,7 @@
           "commands": [
             "npx nx run core:typecheck",
             "npx nx run core:build",
-            "npx tsx --test packages/core/src/**/*.spec.ts"
+            "npx tsx --test packages/core/specs/**/*.spec.ts"
           ],
           "parallel": false
         }
@@ -64,7 +64,7 @@
         "executor": "nx:run-commands",
         "options": {
           "commands": [
-            "npx tsx --test --test-update-snapshots packages/core/src/**/*.spec.ts"
+            "npx tsx --test --test-update-snapshots packages/core/specs/**/*.spec.ts"
           ],
           "parallel": false
         }

@@ -1,4 +1,4 @@
-exports[`createTestRunner.getAll > handles single story from preview 1`] = `
+exports[`stories retrieval process > handles single story from preview 1`] = `
 {
   "type": "right",
   "value": [
@@ -26,7 +26,7 @@ exports[`createTestRunner.getAll > handles single story from preview 1`] = `
 }
 `;
 
-exports[`createTestRunner.getAll > propagates failure 1`] = `
+exports[`stories retrieval process > propagates failure 1`] = `
 {
   "type": "left",
   "value": {

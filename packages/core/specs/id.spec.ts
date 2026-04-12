@@ -1,6 +1,6 @@
 ﻿import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { ID } from './index.js';
+import { ID } from '../src/neutral/id';
 
 describe('ID defines utilities for url/filename safe identifiers', () => {
   it('createStoryID creates kebab case for basic phrase', () => {

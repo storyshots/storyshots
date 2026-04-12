@@ -1,9 +1,9 @@
 import express from 'express';
 import { build } from 'esbuild';
 import { Server } from 'node:http';
-import * as browser from '../browser/public';
-import * as neutral from '../neutral/public';
-import { ManagerConfig } from '../node/ManagerConfig';
+import * as browser from '../../src/browser/public';
+import * as neutral from '../../src/neutral/public';
+import { RunnerConfig } from '../../src/node/RunnerConfig';
 
 type Main = (context: typeof browser & typeof neutral) => void;
 
@@ -15,7 +15,7 @@ type Main = (context: typeof browser & typeof neutral) => void;
  * @param main Preview client implementation
  */
 export const createPreviewServer =
-  (main: Main): ManagerConfig['server'] =>
+  (main: Main): RunnerConfig['createServer'] =>
   async () => {
     const bundle = await createBundle(main);
     const app = express();

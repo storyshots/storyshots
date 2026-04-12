@@ -1,4 +1,4 @@
-﻿---
+---
 sidebar_position: 2
 ---
 
@@ -179,7 +179,7 @@ More details about `@storyshots/exec-preview` can be found in [this section](/mo
 After defining the server, define the general testing configuration:
 
 ```ts title="/src/storyshots/manager/config.ts"
-import { ManagerConfig } from '@storyshots/core/manager';
+import { RunnerConfig } from '@storyshots/core/manager';
 
 import { createAppServer } from './createAppServer';
 
@@ -198,12 +198,12 @@ export default {
     records: path.join(process.cwd(), 'records'),
   },
   // App server configuration
-  preview: createAppServer(),
-} satisfies ManagerConfig;
+  createServer: createAppServer(),
+} satisfies RunnerConfig;
 ```
 
 :::tip
-A full list of available settings is available in [this section](/API/run-modes/manager-config).
+A full list of available settings is available in [this section](/API/run-modes/runner-config).
 :::
 
 Then, start the UI mode using:
@@ -222,7 +222,7 @@ storyshots /src/storyshots/manager/config.ts
 
 ## Examples {#examples}
 
-- [**Example #1**](https://github.com/storyshots/storyshots/tree/master/examples/basic-externals) вЂ“ `react` + `webpack` + standard `fetch` queries.
-- [**Example #2**](https://github.com/storyshots/storyshots/tree/master/examples/msw-externals) вЂ“ `react` + `webpack` + `rtk-query`.
-- [**Example #3**](https://github.com/storyshots/storyshots/tree/master/examples/next-app) вЂ“ `next.js`.
+- [**Example #1**](https://github.com/storyshots/storyshots/tree/master/examples/basic-externals) – `react` + `webpack` + standard `fetch` queries.
+- [**Example #2**](https://github.com/storyshots/storyshots/tree/master/examples/msw-externals) – `react` + `webpack` + `rtk-query`.
+- [**Example #3**](https://github.com/storyshots/storyshots/tree/master/examples/next-app) – `next.js`.
 

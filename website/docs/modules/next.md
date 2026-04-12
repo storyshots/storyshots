@@ -125,13 +125,13 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 Next, connect the app server:
 
 ```ts
-import { ManagerConfig } from '@storyshots/core/manager';
+import { RunnerConfig } from '@storyshots/core/manager';
 import { createNextPreview } from '@storyshots/next/preview';
 
 export default {
-  preview: createNextPreview(),
+  createServer: createNextPreview(),
   /* ... */
-} satisfies ManagerConfig;
+} satisfies RunnerConfig;
 ```
 
 ## extendNextConfig {#extendnextconfig}

@@ -5,8 +5,8 @@ import {
   StoryAttributes,
   StoryPayload,
   StoryTree,
-} from '../StoryTree';
-import { ID } from '../id';
+} from './StoryTree';
+import { ID } from './id';
 
 /**
  * Binds story factories to provided generic arg.

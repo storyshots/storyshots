@@ -15,11 +15,11 @@ sidebar_position: 7
 Creates an app server based on the provided development modes:
 
 ```ts
-import { ManagerConfig } from '@storyshots/core/manager';
+import { RunnerConfig } from '@storyshots/core/manager';
 import { createExecPreview } from '@storyshots/exec-preview';
 
 export default {
-  preview: createExecPreview({
+  createServer: createExecPreview({
     ui: {
       command: 'npx webpack-cli serve', // <- Script to start the app in dev mode
       at: 'http://localhost:8080', // <- Dev server address
@@ -30,7 +30,7 @@ export default {
     },
   }),
   /* ... */
-} satisfies ManagerConfig;
+} satisfies RunnerConfig;
 ```
 
 `createExecPreview` runs the commands by setting `process.env.STORYSHOTS` to `true`:

@@ -153,7 +153,7 @@ Each snapshot contains the difference. Example:
 Left — reference snapshot (red outline), right — current snapshot (green outline).
 
 :::tip
-The text below indicates the number of pixels that differ. This can be useful for fine-tuning the [comparison algorithm](/API/run-modes/manager-config#compare).
+The text below indicates the number of pixels that differ. This can be useful for fine-tuning the [comparison algorithm](/API/run-modes/runner-config#compare).
 :::
 
 For a more explicit highlighting of differences, the change map is also available:

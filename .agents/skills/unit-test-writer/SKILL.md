@@ -25,30 +25,14 @@ describe('ID defines utilities for url/filename safe identifiers', () => {
 });
 ```
 
-- Place test files next to the testing entity:
+- Place test files inside <project>/specs:
 
 ```text
 project/
+├── specs/
+├── └── id.spec.ts <-- Tests are placed here
 ├── src/
-│   ├── id.ts
-└── └── id.spec.ts <-- Tests are placed next to the code they test
-```
-
-- When placing a test, create scope dir for unscoped files:
-
-```text
-project/
-├── src/
-│   ├── id.ts <-- This file is unscoped
-└── └── id.spec.ts
-```
-
-```text
-project/
-├── src/
-└── └── id/ <-- Create scope dir with a name of a root file
-        ├── index.ts <-- Rename file to index so that client import paths are preserved
-        ├── id.spec.ts <-- Place related tests and artefacts inside scoped dir
+└── └── id.ts
 ```
 
 - Prefer strict comparison to property testing by default.

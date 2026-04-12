@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
-import { createStoryFactories } from '../createStoryFactories';
-import { MaterializedStory } from './index';
-import { Device } from '../config';
+import { createStoryFactories } from '../src/neutral/createStoryFactories';
+import { MaterializedStory } from '../src/neutral/MaterializedStory';
+import { Device } from '../src/neutral/config';
 
 describe('MaterializedStory', () => {
   it('handles positive materialization result', (t) => {

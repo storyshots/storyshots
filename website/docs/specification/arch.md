@@ -61,6 +61,15 @@ All the responsibilities of `IPreviewClient` are implemented with consideration 
 
 `AppServerFactory` is a factory that runs the AUT server.
 
+It accepts `AppArgs`:
+
+```ts
+type AppArgs = {
+  devices: Device[];
+  mode: Exploration | Emulation;
+};
+```
+
 `storyshots` runs AUT in two modes:
 
 1. `exploration` - runs an app just to retrieve a list of all available stories from a client.

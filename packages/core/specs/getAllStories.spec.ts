@@ -1,11 +1,11 @@
 import { describe, it } from 'node:test';
-import { createTestRunner } from '../node/createTestRunner';
-import { createPreviewServer } from './createPreviewServer';
-import type { ManagerConfig } from '../node/ManagerConfig';
+import { createTestRunner } from '../src/node/createTestRunner';
+import { createPreviewServer } from './utils/createPreviewServer';
+import type { RunnerConfig } from '../src/node/RunnerConfig';
 
-describe('createTestRunner.getAll', () => {
+describe('stories retrieval process', () => {
   it('handles single story from preview', async (t) => {
-    const config: ManagerConfig = {
+    const config: RunnerConfig = {
       paths: {
         records: 'records',
         screenshots: 'screenshots',
@@ -17,9 +17,9 @@ describe('createTestRunner.getAll', () => {
           height: 720,
         },
       ],
-      server: createPreviewServer(
-        ({ createStoryFactories, createPreviewClientConnection }) =>
-          createPreviewClientConnection(
+      createServer: createPreviewServer(
+        ({ createStoryFactories, createNativeAppArgsConnectRunner }) =>
+          createNativeAppArgsConnectRunner(
             createStoryFactories().it('single story', {}),
           ),
       ),
@@ -31,7 +31,7 @@ describe('createTestRunner.getAll', () => {
   });
 
   it('propagates failure', async (t) => {
-    const config: ManagerConfig = {
+    const config: RunnerConfig = {
       paths: {
         records: 'records',
         screenshots: 'screenshots',
@@ -43,9 +43,9 @@ describe('createTestRunner.getAll', () => {
           height: 720,
         },
       ],
-      server: createPreviewServer(
-        ({ createStoryFactories, createPreviewClientConnection }) =>
-          createPreviewClientConnection(
+      createServer: createPreviewServer(
+        ({ createStoryFactories, createNativeAppArgsConnectRunner }) =>
+          createNativeAppArgsConnectRunner(
             createStoryFactories().it('single failed story', {
               act() {
                 throw { message: 'SOMETHING_WENT_WRONG' };

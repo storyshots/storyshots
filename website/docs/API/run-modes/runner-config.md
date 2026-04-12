@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# ManagerConfig {#managerconfig}
+# RunnerConfig {#runnerconfig}
 
-Configuration for the `storyshots` manager. Used when running in [UI](/API/run-modes/runUI) and [CI](/API/run-modes/runCI) modes.
+Configuration for the `storyshots` runner. Used when running in [UI](/API/run-modes/runUI) and [CI](/API/run-modes/runCI) modes.
 
 ---
 
@@ -36,15 +36,20 @@ export default {
 };
 ```
 
-## preview {#preview}
+## createServer {#createserver}
 
 Accepts an [app server](/specification/arch#appserverfactory).
+
+`createServer` receives `AppArgs` where:
+
+- `devices` is the current list of configured devices
+- `mode` is either `exploration` or `emulation`
 
 ```ts
 import { createAppServer } from '../manager/createAppServer';
 
 export default {
-  preview: createAppServer(),
+  createServer: createAppServer(),
   /* ... */
 };
 ```
