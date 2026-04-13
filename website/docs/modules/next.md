@@ -1,10 +1,10 @@
----
+﻿---
 sidebar_position: 8
 ---
 
 # @storyshots/next
 
-Implements the [`client`](/specification/arch#ipreviewclient) preview and [`app server`](/specification/arch#appserverfactory) for Next.js applications.
+Implements the [`app client`](/specification/arch#appclient) and [`app server`](/specification/arch#appserverfactory) for Next.js applications.
 
 To integrate, follow these steps:
 
@@ -125,13 +125,13 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 Next, connect the app server:
 
 ```ts
-import { RunnerConfig } from '@storyshots/core/manager';
+import { StoryshotsConfig } from '@storyshots/core/manager';
 import { createNextPreview } from '@storyshots/next/preview';
 
 export default {
   createServer: createNextPreview(),
   /* ... */
-} satisfies RunnerConfig;
+} satisfies StoryshotsConfig;
 ```
 
 ## extendNextConfig {#extendnextconfig}
@@ -262,3 +262,4 @@ it('...', {
   },
 });
 ```
+

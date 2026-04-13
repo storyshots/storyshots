@@ -1,4 +1,4 @@
-import { MaterializationResult } from './MaterializedStory';
+import { MaterializationResult } from './story/MaterializedStory';
 import { AppArgs } from './AppArgs';
 
 declare global {

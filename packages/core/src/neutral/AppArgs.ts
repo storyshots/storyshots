@@ -1,6 +1,6 @@
-import { StoryID } from './id';
-import { Device, StoryEnvironment } from './config';
-import { Story, StoryTree } from './StoryTree';
+import { StoryID } from './story/id';
+import { Device, StoryEnvironment } from './story/config';
+import { Story, StoryTree } from './story/StoryTree';
 import { isNil } from '@storyshots/utils';
 
 export type AppArgs = {

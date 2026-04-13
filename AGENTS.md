@@ -8,7 +8,7 @@ utilities, and supporting tooling for running and observing story-based tests.
 ## Packages
 
 - `./website` — docs package, more details in [documentation](#documentation) section
-- `./utils` — utils package, consult each time implementing a feature
+- `./utils` — utils package, MUST consult each time implementing a feature
 - `./packages/core` — core package exposing the main API for running an app and testing stories
 - `./packages/ui` (WIP) — UI mode for Storyshots; connects to core through an Express server
 - `./packages/mcp` (WIP) — MCP package that provides tools to run stories and fetch actual docs

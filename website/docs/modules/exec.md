@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 7
 ---
 
@@ -15,7 +15,7 @@ sidebar_position: 7
 Creates an app server based on the provided development modes:
 
 ```ts
-import { RunnerConfig } from '@storyshots/core/manager';
+import { StoryshotsConfig } from '@storyshots/core/manager';
 import { createExecPreview } from '@storyshots/exec-preview';
 
 export default {
@@ -30,7 +30,7 @@ export default {
     },
   }),
   /* ... */
-} satisfies RunnerConfig;
+} satisfies StoryshotsConfig;
 ```
 
 `createExecPreview` runs the commands by setting `process.env.STORYSHOTS` to `true`:
@@ -44,3 +44,4 @@ export default {
   // ... ///
 };
 ```
+

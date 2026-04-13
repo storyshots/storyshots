@@ -59,7 +59,7 @@ it('...', {
 ```
 
 :::note
-Implementation depends on the [preview client](/specification/arch#ipreviewclient). For example, in [`@storyshots/next`](/modules/next), the method is **asynchronous**.
+Implementation depends on the [app client](/specification/arch#appclient). For example, in [`@storyshots/next`](/modules/next), the method is **asynchronous**.
 :::
 
 ### asRecordable {#asrecordable}

@@ -37,10 +37,10 @@ The core layer of `storyshots`, consisting of a single package `@storyshots/core
 - **Testing** — implements everything related to testing: handling baselines, updating baselines, error processing, determining passed scenarios.
 
 :::note
-It is fully independent of the stack used in the project thanks to the `IPreviewClient` and `AppServerFactory` interfaces.
+It is fully independent of the stack used in the project thanks to the `AppClient` and `AppServerFactory` interfaces.
 :::
 
-### IPreviewClient {#ipreviewclient}
+### AppClient {#appclient}
 
 The client-side part of the AUT, integrating the stories manager with the application under test.
 
@@ -51,7 +51,7 @@ Responsibilities:
 * Integrating the AUT state and test lifecycle: setting up the state and performing a full reset.
 
 :::note
-All the responsibilities of `IPreviewClient` are implemented with consideration for the actual stack of the application under test:
+All the responsibilities of `AppClient` are implemented with consideration for the actual stack of the application under test:
 - Simplifies `storyshots` integration.
 - Increases regression protection.
 - Simplifies reuse of system components.
@@ -81,7 +81,7 @@ The host of the web application, typically the root address of the dev server:
 
 ```ts
 const server = {
-  // The address where the dev server serving IPreviewClient is deployed
+  // The address where the dev server serving AppClient is deployed
   at: 'http://localhost:3000',
   /* ... */
 }
@@ -103,14 +103,14 @@ const config = {
 
 ## AUT Clients {#aut-clients}
 
-A layer containing components that adapt the AUT to the `IPreviewClient` interface.
+A layer containing components that adapt the AUT to the `AppClient` interface.
 
 :::tip
 The package [`@storyshots/react`](/modules/react) adapts React applications for the `storyshots` manager.
 :::
 
 :::note
-To use `storyshots` in, for example, a Vue application, all that’s needed is to implement the `IPreviewClient` interface.
+To use `storyshots` in, for example, a Vue application, all that’s needed is to implement the `AppClient` interface.
 :::
 
 ## AUT Servers {#aut-servers}
@@ -122,7 +122,7 @@ A layer containing adapters for build tools and servers of the AUT, implemented 
 :::
 
 :::note
-[`@storyshots/next`](/modules/next) is an example of a module that implements both `IPreviewClient` and `AppServerFactory`.
+[`@storyshots/next`](/modules/next) is an example of a module that implements both `AppClient` and `AppServerFactory`.
 :::
 
 ## External Environment Adapters {#external-environment-adapters}

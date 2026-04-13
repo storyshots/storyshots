@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # @storyshots/react
 
-Implements the [`preview client`](/specification/arch#ipreviewclient) for `react` applications:
+Implements the [`app client`](/specification/arch#appclient) for `react` applications:
 
 ```ts
 import { createPreviewApp } from '@storyshots/react';
@@ -20,7 +20,7 @@ export const { it, describe, each, run } = createPreviewApp({
 // Describe stories
 const stories = [describe('...', it('...'))];
 
-// Run the preview client
+// Run the app client
 run(stories);
 ```
 

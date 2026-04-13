@@ -7,7 +7,7 @@ sidebar_position: 1
 Creates a custom story, allowing you to describe a stage of interaction with the UI and set test parameters.
 
 :::tip
-Also supported are other [meta-attributes](/modules/react#extensions) specific to a particular [preview client](/specification/arch#ipreviewclient).
+Also supported are other [meta-attributes](/modules/react#extensions) specific to a particular [app client](/specification/arch#appclient).
 :::
 
 ---

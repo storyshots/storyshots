@@ -1,61 +1,80 @@
-import { describe, it } from 'node:test';
-import { createTestRunner } from '../src/node/createTestRunner';
-import { createPreviewServer } from './utils/createPreviewServer';
-import type { RunnerConfig } from '../src/node/RunnerConfig';
+﻿import { describe, it } from 'node:test';
+import { getAllStories } from '../src/node/getAllStories';
+import { Journal } from '../src/neutral/Journal';
+import { createTestableStoryshotsConfig } from './utils/createTestableStoryshotsConfig';
 
-describe('stories retrieval process', () => {
-  it('handles single story from preview', async (t) => {
-    const config: RunnerConfig = {
-      paths: {
-        records: 'records',
-        screenshots: 'screenshots',
+describe('getAllStories retrieves stories from app client', () => {
+  it('handles single it node', async (t) => {
+    const config = createTestableStoryshotsConfig(
+      ({ createStoryFactories, createNativeAppArgsConnectRunner }) => {
+        const { it } = createStoryFactories();
+
+        return createNativeAppArgsConnectRunner(
+          it('single story', {}),
+          async () => Journal.create(null),
+        );
       },
-      devices: [
-        {
-          name: 'desktop',
-          width: 1280,
-          height: 720,
-        },
-      ],
-      createServer: createPreviewServer(
-        ({ createStoryFactories, createNativeAppArgsConnectRunner }) =>
-          createNativeAppArgsConnectRunner(
-            createStoryFactories().it('single story', {}),
-          ),
-      ),
-    };
+    );
 
-    const stories = await createTestRunner(config).getAll();
+    const stories = await getAllStories(config);
+
+    t.assert.snapshot(stories);
+  });
+
+  it('handles it node wrapped in describe', async (t) => {
+    const config = createTestableStoryshotsConfig(
+      ({ createStoryFactories, createNativeAppArgsConnectRunner }) => {
+        const { it, describe } = createStoryFactories();
+
+        return createNativeAppArgsConnectRunner(
+          describe('auth', it('logins successfully', {})),
+          async () => Journal.create(null),
+        );
+      },
+    );
+
+    const stories = await getAllStories(config);
+
+    t.assert.snapshot(stories);
+  });
+
+  it('handles it node wrapped in describe wrapped in describe', async (t) => {
+    const config = createTestableStoryshotsConfig(
+      ({ createStoryFactories, createNativeAppArgsConnectRunner }) => {
+        const { it, describe } = createStoryFactories();
+
+        return createNativeAppArgsConnectRunner(
+          describe(
+            'auth',
+            describe('login form', it('shows submit button', {})),
+          ),
+          async () => Journal.create(null),
+        );
+      },
+    );
+
+    const stories = await getAllStories(config);
 
     t.assert.snapshot(stories);
   });
 
   it('propagates failure', async (t) => {
-    const config: RunnerConfig = {
-      paths: {
-        records: 'records',
-        screenshots: 'screenshots',
-      },
-      devices: [
-        {
-          name: 'desktop',
-          width: 1280,
-          height: 720,
-        },
-      ],
-      createServer: createPreviewServer(
-        ({ createStoryFactories, createNativeAppArgsConnectRunner }) =>
-          createNativeAppArgsConnectRunner(
-            createStoryFactories().it('single failed story', {
-              act() {
-                throw { message: 'SOMETHING_WENT_WRONG' };
-              },
-            }),
-          ),
-      ),
-    };
+    const config = createTestableStoryshotsConfig(
+      ({ createStoryFactories, createNativeAppArgsConnectRunner }) => {
+        const { it } = createStoryFactories();
 
-    const stories = await createTestRunner(config).getAll();
+        return createNativeAppArgsConnectRunner(
+          it('single failed story', {
+            act() {
+              throw { message: 'SOMETHING_WENT_WRONG' };
+            },
+          }),
+          async () => Journal.create(null),
+        );
+      },
+    );
+
+    const stories = await getAllStories(config);
 
     t.assert.snapshot(stories);
   });

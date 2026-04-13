@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 2
 ---
 
@@ -33,7 +33,7 @@ As a result, `.tar` artifacts will be generated. Descriptions of these component
 For a standard [CSR](https://developer.mozilla.org/en-US/docs/Glossary/CSR) project using `react`, the following set will be sufficient:
 
 - `@storyshots/core` – the core of `storyshots`.
-- `@storyshots/react` – the client preview for `react` applications.
+- `@storyshots/react` – the app client for `react` applications.
 - `@storyshots/exec-preview` – the preview server.
 :::
 
@@ -73,7 +73,7 @@ npm i
 Files related to `storyshots` in this guide are located in `src/storyshots` (see [test location](/patterns/files#test-location)).
 :::
 
-After installation, you're ready to define the [preview client](/specification/arch#ipreviewclient) and your first stories. Let's start with the preview:
+After installation, you're ready to define the [app client](/specification/arch#appclient) and your first stories. Let's start with the preview:
 
 ```ts title="/src/storyshots/preview/config.ts"
 import { createPreviewApp } from '@storyshots/react';
@@ -179,7 +179,7 @@ More details about `@storyshots/exec-preview` can be found in [this section](/mo
 After defining the server, define the general testing configuration:
 
 ```ts title="/src/storyshots/manager/config.ts"
-import { RunnerConfig } from '@storyshots/core/manager';
+import { StoryshotsConfig } from '@storyshots/core/manager';
 
 import { createAppServer } from './createAppServer';
 
@@ -192,18 +192,18 @@ export default {
       height: 920,
     },
   ],
-  // Paths to main artifacts: screenshots and records
+  // Paths to main artifacts: screenshots and journal
   paths: {
     screenshots: path.join(process.cwd(), 'screenshots'),
-    records: path.join(process.cwd(), 'records'),
+    journal: path.join(process.cwd(), 'journal'),
   },
   // App server configuration
   createServer: createAppServer(),
-} satisfies RunnerConfig;
+} satisfies StoryshotsConfig;
 ```
 
 :::tip
-A full list of available settings is available in [this section](/API/run-modes/runner-config).
+A full list of available settings is available in [this section](/API/run-modes/storyshots-config).
 :::
 
 Then, start the UI mode using:

@@ -1,4 +1,74 @@
-exports[`stories retrieval process > handles single story from preview 1`] = `
+exports[`getAllStories retrieves stories from app client > handles it node wrapped in describe 1`] = `
+{
+  "type": "right",
+  "value": [
+    {
+      "type": "story",
+      "id": "auth__logins-successfully",
+      "title": "logins successfully",
+      "parents": [
+        {
+          "id": "auth",
+          "title": "auth"
+        }
+      ],
+      "retries": 0,
+      "actions": [
+        {
+          "action": "screenshot",
+          "payload": {
+            "name": "FINAL"
+          }
+        }
+      ],
+      "device": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 720
+      }
+    }
+  ]
+}
+`;
+
+exports[`getAllStories retrieves stories from app client > handles it node wrapped in describe wrapped in describe 1`] = `
+{
+  "type": "right",
+  "value": [
+    {
+      "type": "story",
+      "id": "auth__login-form__shows-submit-button",
+      "title": "shows submit button",
+      "parents": [
+        {
+          "id": "auth",
+          "title": "auth"
+        },
+        {
+          "id": "login-form",
+          "title": "login form"
+        }
+      ],
+      "retries": 0,
+      "actions": [
+        {
+          "action": "screenshot",
+          "payload": {
+            "name": "FINAL"
+          }
+        }
+      ],
+      "device": {
+        "name": "desktop",
+        "width": 1280,
+        "height": 720
+      }
+    }
+  ]
+}
+`;
+
+exports[`getAllStories retrieves stories from app client > handles single it node 1`] = `
 {
   "type": "right",
   "value": [
@@ -26,7 +96,7 @@ exports[`stories retrieval process > handles single story from preview 1`] = `
 }
 `;
 
-exports[`stories retrieval process > propagates failure 1`] = `
+exports[`getAllStories retrieves stories from app client > propagates failure 1`] = `
 {
   "type": "left",
   "value": {

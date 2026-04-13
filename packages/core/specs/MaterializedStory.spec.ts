@@ -1,57 +1,29 @@
 import { describe, it } from 'node:test';
-import { createStoryFactories } from '../src/neutral/createStoryFactories';
-import { MaterializedStory } from '../src/neutral/MaterializedStory';
-import { Device } from '../src/neutral/config';
+import { createStoryFactories } from '../src/neutral/story/createStoryFactories';
+import { MaterializedStory } from '../src/neutral/story/MaterializedStory';
+import { Device } from '../src/neutral/story/config';
 
-describe('MaterializedStory', () => {
-  it('handles positive materialization result', (t) => {
-    const stories = createStoryFactories().it('single materialized story', {
-      act: (actor) => actor.wait(1_000),
-    });
-
-    const materialized = MaterializedStory.materialize(
-      stories,
-      createDevices()
-    );
-
-    t.assert.snapshot(materialized);
-  });
-
+describe('MaterializedStory converts stories to serializable objects', () => {
   it('does fail-fast materialization error', (t) => {
-    const stories = createStoryFactories().it('single failed story', {
-      act: () => {
-        throw { message: 'SOMETHING_WENT_WRONG' };
-      },
-    });
+    const { it } = createStoryFactories();
 
-    const materialized = MaterializedStory.materialize(
-      stories,
-      createDevices()
-    );
+    const stories = [
+      it('failing story', {
+        act: () => {
+          throw { message: 'SOMETHING_WENT_WRONG' };
+        },
+      }),
+      it('single story', {}),
+    ];
 
-    t.assert.snapshot(materialized);
-  });
-
-  it('skips stories with no actions', (t) => {
-    const stories = createStoryFactories().it('single materialized story', {
-      act: () => ({ toMeta: () => [] }),
-    });
-
-    const materialized = MaterializedStory.materialize(
-      stories,
-      createDevices()
-    );
+    const materialized = MaterializedStory.materialize(stories, [
+      Device.create({
+        name: 'desktop',
+        width: 1280,
+        height: 720,
+      }),
+    ]);
 
     t.assert.snapshot(materialized);
   });
 });
-
-function createDevices() {
-  return [
-    Device.create({
-      name: 'desktop',
-      width: 1280,
-      height: 720,
-    }),
-  ];
-}

@@ -1,4 +1,4 @@
-exports[`MaterializedStory > does fail-fast materialization error 1`] = `
+exports[`MaterializedStory converts stories to serializable objects > does fail-fast materialization error 1`] = `
 {
   "type": "left",
   "value": {
@@ -6,8 +6,8 @@ exports[`MaterializedStory > does fail-fast materialization error 1`] = `
     "body": {
       "story": {
         "type": "story",
-        "id": "single-failed-story",
-        "title": "single failed story",
+        "id": "failing-story",
+        "title": "failing story",
         "parents": []
       },
       "device": {
@@ -18,46 +18,5 @@ exports[`MaterializedStory > does fail-fast materialization error 1`] = `
       "cause": "{\\"message\\":\\"SOMETHING_WENT_WRONG\\"}"
     }
   }
-}
-`;
-
-exports[`MaterializedStory > handles positive materialization result 1`] = `
-{
-  "type": "right",
-  "value": [
-    {
-      "type": "story",
-      "id": "single-materialized-story",
-      "title": "single materialized story",
-      "parents": [],
-      "retries": 0,
-      "actions": [
-        {
-          "action": "wait",
-          "payload": {
-            "ms": 1000
-          }
-        },
-        {
-          "action": "screenshot",
-          "payload": {
-            "name": "FINAL"
-          }
-        }
-      ],
-      "device": {
-        "name": "desktop",
-        "width": 1280,
-        "height": 720
-      }
-    }
-  ]
-}
-`;
-
-exports[`MaterializedStory > skips stories with no actions 1`] = `
-{
-  "type": "right",
-  "value": []
 }
 `;

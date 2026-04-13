@@ -1,9 +1,11 @@
-import { StoryTree } from '../neutral/StoryTree';
-import { MaterializedStory } from '../neutral/MaterializedStory';
+import { StoryTree } from '../neutral/story/StoryTree';
+import { MaterializedStory } from '../neutral/story/MaterializedStory';
 import { AppArgs, NativeAppArgs } from '../neutral/AppArgs';
+import { Journal } from '../neutral/Journal';
 
 export function createNativeAppArgsConnectRunner<TArg>(
   stories: StoryTree<TArg>,
+  createJournal: () => Promise<Journal>,
 ): Promise<NativeAppArgs<TArg>> {
   return new Promise((resolve) => {
     window.onRunnerConnected = (args) => {
@@ -11,5 +13,7 @@ export function createNativeAppArgsConnectRunner<TArg>(
 
       return MaterializedStory.materialize(stories, args.devices);
     };
+
+    window.createJournal = createJournal;
   });
 }

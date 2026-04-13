@@ -1,2 +1,2 @@
-/* Preview Client */
+/* App Client */
 export { createNativeAppArgsConnectRunner } from './createNativeAppArgsConnectRunner';
