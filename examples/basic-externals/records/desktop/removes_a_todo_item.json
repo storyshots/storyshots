@@ -1,0 +1,16 @@
+{
+  "removes_a_todo_item": [
+    {
+      "method": "log",
+      "args": [
+        "TODO_ADDED"
+      ]
+    },
+    {
+      "method": "log",
+      "args": [
+        "TODO_DELETED"
+      ]
+    }
+  ]
+}

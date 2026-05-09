@@ -1,11 +1,11 @@
-import { UserDefinedManagerConfig } from '@storyshots/core/manager';
+import { ManagerConfig } from '@storyshots/core/manager';
 import { test as _test } from './tf';
 import { runUI } from './modes';
 
 type UIFixture = Awaited<ReturnType<typeof runUI>>['ui'];
 
 export const test = _test.extend<{
-  devices: UserDefinedManagerConfig['devices'];
+  devices: ManagerConfig['devices'];
   ui: UIFixture;
 }>({
   devices: [

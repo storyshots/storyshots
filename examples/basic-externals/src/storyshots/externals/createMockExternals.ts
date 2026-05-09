@@ -6,10 +6,6 @@ export function createMockExternals(): IExternals {
     analytics: {
       log: () => {},
     },
-    business: {
-      getBalanceAt: async () => 0,
-      applyCV: async () => {},
-    },
   };
 }
 
@@ -22,10 +18,6 @@ export function createJournalExternals(
     analytics: {
       ...externals.analytics,
       log: journal.asRecordable('log', externals.analytics.log),
-    },
-    business: {
-      ...externals.business,
-      applyCV: journal.asRecordable('applyCV', externals.business.applyCV),
     },
   };
 }

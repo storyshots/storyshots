@@ -50,7 +50,7 @@ function withAddingPetsEmulated() {
   return arrange(
     transform('findPetsByStatus', (response) => [...response, ...pets]),
     handle('addPet', async (arg) => {
-      const added: AddPetApiArg = await body(arg);
+      const added = await body(arg) as AddPetApiArg;
 
       pets.push(added);
     }),

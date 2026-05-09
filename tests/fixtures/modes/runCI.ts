@@ -1,14 +1,14 @@
 import { TF } from '../tf';
 import {
   runCI as _runCI,
-  UserDefinedManagerConfig,
+  ManagerConfig,
 } from '@storyshots/core/manager';
 import path from 'path';
 import { createWebpackPreviewServer } from './createWebpackPreviewServer';
 
 export async function runCI(
   tf: TF,
-  devices: UserDefinedManagerConfig['devices'],
+  devices: ManagerConfig['devices'],
 ) {
   return _runCI({
     devices,

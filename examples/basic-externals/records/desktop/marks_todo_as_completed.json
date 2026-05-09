@@ -1,0 +1,16 @@
+{
+  "marks_todo_as_completed": [
+    {
+      "method": "log",
+      "args": [
+        "TODO_ADDED"
+      ]
+    },
+    {
+      "method": "log",
+      "args": [
+        "TODO_TOGGLED"
+      ]
+    }
+  ]
+}

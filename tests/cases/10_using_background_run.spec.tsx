@@ -1,7 +1,7 @@
 import { test } from '../fixtures/tf';
 
 import { runCI, runUI } from '../fixtures/modes';
-import { UserDefinedManagerConfig } from '@storyshots/core/manager';
+import { ManagerConfig } from '@storyshots/core/manager';
 import { expect } from '@playwright/test';
 
 test('allows to run all', async ({ tf, page }) => {
@@ -135,7 +135,7 @@ test('throws when error has occurred', async ({ tf, page }) => {
 });
 
 // TODO: Unify devices
-const DEVICES: UserDefinedManagerConfig['devices'] = [
+const DEVICES: ManagerConfig['devices'] = [
   {
     name: 'desktop',
     width: 1480,
