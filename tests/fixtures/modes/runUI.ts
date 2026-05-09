@@ -1,5 +1,5 @@
 import { Implementation, TF } from '../tf';
-import { UserDefinedManagerConfig } from '@storyshots/core/manager';
+import { ManagerConfig } from '@storyshots/core/manager';
 import path from 'path';
 import { createWebpackPreviewServer } from './createWebpackPreviewServer';
 import { createStoryshotsServer } from '@storyshots/core/devkit/manager';
@@ -9,7 +9,7 @@ import { wait } from '@lib';
 export async function runUI(
   tf: TF,
   page: Page,
-  devices: UserDefinedManagerConfig['devices'],
+  devices: ManagerConfig['devices'],
 ) {
   const storyshots = await createStoryshotsServer({
     devices,
