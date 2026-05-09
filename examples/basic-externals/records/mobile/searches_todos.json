@@ -1,0 +1,16 @@
+{
+  "searches_todos": [
+    {
+      "method": "log",
+      "args": [
+        "TODO_ADDED"
+      ]
+    },
+    {
+      "method": "log",
+      "args": [
+        "TODO_ADDED"
+      ]
+    }
+  ]
+}

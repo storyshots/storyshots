@@ -1,0 +1,10 @@
+{
+  "adds_a_todo_item": [
+    {
+      "method": "log",
+      "args": [
+        "TODO_ADDED"
+      ]
+    }
+  ]
+}
