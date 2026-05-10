@@ -2,38 +2,30 @@
 sidebar_position: 3
 ---
 
-# Метрики
+# Metrics {#metrics}
 
-Тесты — это такой же код, качество которого требует пристального контроля. Но чтобы управлять чем-то, необходимо уметь
-это *измерять*.
+Tests are code too, and their quality requires careful oversight. But to manage something, you must be able to *measure* it.
 
-Рассмотрим основные показатели:
+Let's examine the key metrics:
 
-## 🛡️ Защита от регресса
+## 🛡️ Regression Protection {#regression-protection}
 
-Одна из главных функций тестов — **защита от регресса**. Она позволяет избежать нежелательного изменения поведения
-приложения при модификации деталей реализации, снижая вероятность случайных ошибок.
+One of the main functions of tests is **regression protection**. It helps avoid unintended changes in application behavior when modifying implementation details, reducing the likelihood of accidental errors.
 
-## 🔧 Устойчивость к рефакторингу
+## 🔧 Refactoring Resilience {#refactoring-resilience}
 
-Тесты не должны препятствовать рефакторингу или значительно увеличивать его затраты по времени. Рефакторинг кода должен
-быть **незаметным** для тестов.
+Tests should not hinder refactoring or significantly increase its time cost. Refactoring code should be **invisible** to tests.
 
-## 📈 Поддерживаемость
+## 📈 Maintainability {#maintainability}
 
-Тесты должны быть **простыми в написании и обновлении**. Если они требуют значительных ресурсов для поддержки, это
-обесценивает всю работу по оптимизации разработки — в данном контексте их проще не писать вовсе.
+Tests should be **simple to write and update**. If they require substantial resources to maintain, the entire effort to optimize development is undermined—making it simpler to just not write them at all.
 
-## ⚡ Быстродействие
+## ⚡ Performance {#performance}
 
-Если тесты выполняются слишком **медленно**, их будут запускать реже. А редкий запуск увеличивает вероятность появления
-дефектов, что усложняет их обнаружение. В худшем случае долгие тесты игнорируются вовсе, что сводит их пользу к нулю.
-Это также **негативно влияет на скорость и динамику рефакторинга**.
+If tests run too **slowly**, they will be executed less frequently. Less frequent execution increases the likelihood of defects appearing, making them harder to detect. In the worst case, long-running tests are ignored entirely, reducing their value to zero. This also **negatively impacts the speed and fluidity of refactoring**.
 
 :::note
-`storyshots` делает особый акцент на быстродействие, в том числе из-за специального UI-режима, интерактивность в котором
-требует высокой скорости выполнения тестов.
+`storyshots` places special emphasis on performance, partly due to its dedicated UI mode, where interactivity demands high test execution speed.
 :::
 
-Определив данные измерения, можно сформировать ряд [требований](/specification/requirements/borders), направленных на их
-максимизацию.
+Having defined these measurements, you can establish a set of [requirements](/specification/requirements/borders) aimed at maximizing them.

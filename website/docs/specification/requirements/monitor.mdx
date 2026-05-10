@@ -3,26 +3,37 @@ sidebar_position: 5
 ---
 
 import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
-import { Diagram } from '@site/src/Diagram';
 
-# Монитор
+
+# Monitor {#monitor}
 
 <BalancedMetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]} />
 
-Монитор включает основной результат работы UI части приложения — изображение интерфейса.
-Относится к секции [*результата*](/specification/requirements/borders#определение-границ).
+The Monitor includes the main output of the UI part of the application — the user interface image.
+It belongs to the [*result*](/specification/requirements/borders#define-boundaries) section.
 
 :::note
-Строго говоря, отображение интерфейса на экране пользователя также является сайд-эффектом, как и любая другая операция вывода. Однако для подчёркивания нюансов работы, данная спецификация выделяет UI в отдельный компонент.
+Strictly speaking, displaying the interface on the user's screen is also a side effect, just like any other output operation. However, to emphasize the nuances of operation, this specification treats UI as a separate component.
 :::
 
-## Верификация
+## Verification {#verification}
 
-Схема процесса выглядит следующим образом:
+The process flow is as follows:
 
-<Diagram src={require('./assets/screenshot.drawio.png')} />
+```mermaid
+flowchart LR
+  E["Baseline"] -- "Contains" --> J["Image"]
+  AUT["AUT"] -- "Generates" --> J2["Image'"]
 
-## Связь с библиотекой
+  subgraph BOX[" "]
+    direction TB
+    J
+    J2
+  end
 
-`storyshots` реализует [актора](/API/test-components/actor), который комбинирует автоматическое создание изображений через снимки экрана с
-возможностью создания промежуточных снимков.
+  T["Test"] -->|Compares| BOX
+```
+
+## Connection with the Library {#library-connection}
+
+`storyshots` implements an [actor](/API/test-components/actor) that combines automatic image generation via screenshots with the ability to create intermediate snapshots.

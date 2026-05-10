@@ -2,251 +2,242 @@
 sidebar_position: 3
 ---
 
-# UI режим
+# UI Mode {#ui-mode}
 
-UI режим — это специальное приложение, которое предоставляет интерактивный доступ к запуску, обновлению и просмотру
-историй, а также разработке основного функционала ровно в таком же формате, что и в обычном браузере.
+UI Mode is a special application that provides interactive access to running, updating, and viewing stories, as well as developing the core functionality, exactly in the same format as in a regular browser.
 
-Общий интерфейс выглядит следующим образом:
+The overall interface looks like this:
 
-![.](assets/main-aria.png)
+![.](@site/assets/ui/main-aria.png)
 
-## Навигатор
+## Navigator {#navigator}
 
-В левой части расположен навигатор, с помощью которого можно просмотреть список всех историй:
+On the left side is the navigator, which allows you to view the list of all stories:
 
-![.](assets/navigator.png)
+![.](@site/assets/ui/navigator.png)
 
-## Превью
+## Preview {#preview}
 
-При клике на историю открывается интерактивный режим предпросмотра:
+Clicking on a story opens an interactive preview mode:
 
-![.](assets/preview.png)
+![.](@site/assets/ui/preview.png)
 
-Во время предпросмотра `storyshots` выполняет следующие действия:
+During preview, `storyshots` performs the following actions:
 
-1. Подготавливает внешние источники данных с помощью функции `arrange`.
-2. Запускает приложение и отображает UI в зоне preview.
-3. Взаимодействует с интерфейсом в автоматическом режиме (функция `act`).
+1. Prepares external data sources using the `arrange` function.
+2. Launches the application and displays the UI in the preview area.
+3. Interacts with the interface automatically (the `act` function).
 
-Таким образом, состояние приложения автоматически подготавливается, предоставляя разработчику готовое окружение для
-работы.
+Thus, the application state is automatically prepared, providing the developer with a ready-to-use environment for work.
 
 :::note test-assistance
-`storyshots` позволяет проводить разработку и отладку, используя инструменты браузера, не выходя из режима написания
-тестов.
+`storyshots` allows you to develop and debug using browser tools without leaving the test writing mode.
 :::
 
 :::tip
-Чтобы перезапустить предпросмотр, достаточно кликнуть на выбранную историю ещё раз.
+To restart the preview, simply click on the selected story again.
 :::
 
-## Запуск
+## Run {#run}
 
-При наведении курсора на историю или группу историй появляются дополнительные действия, например запуск тестового
-сценария:
+When hovering over a story or a group of stories, additional actions appear, such as running a test scenario:
 
-![.](assets/run-action.png)
+![.](@site/assets/ui/run-action.png)
 
-После запуска формируется актуальный слепок, и отображается его статус относительно эталона:
+After running, a fresh baseline is generated, and its status relative to the reference is displayed:
 
-![.](assets/fresh.png)
+![.](@site/assets/ui/fresh.png)
 
 :::note
-При первом запуске теста слепок помечается как "новый" (синий кружок).
+On the first test run, the baseline is marked as "new" (blue circle).
 :::
 
-## Журнал
+## Log {#log}
 
-Журнал — это часть слепка поведения. Его можно просмотреть, кликнув на пункт "Records":
+The log is part of the behavior baseline. You can view it by clicking on the "Records" item:
 
-![.](assets/fresh-records.png)
+![.](@site/assets/ui/fresh-records.png)
 
-Кнопка "Accept" в верхнем правом углу позволяет принять слепок журнала, сделав его частью эталона:
+The "Accept" button in the top-right corner allows you to accept the log baseline, making it part of the reference:
 
-![.](assets/accepted-journal.png)
+![.](@site/assets/ui/accepted-journal.png)
 
 :::note
-Принятый журнал помечается зелёной галочкой.
+Accepted logs are marked with a green checkmark.
 :::
 
-## Снимки
+## Snapshots {#snapshots}
 
-Снимки экранов составляют основную часть слепка поведения приложения. Чтобы просмотреть конкретный снимок, выберите его
-название в списке:
+Screenshots form the main part of the application behavior baseline. To view a specific screenshot, select its name from the list:
 
-![.](assets/fresh-screenshot.png)
+![.](@site/assets/ui/fresh-screenshot.png)
 
 :::note
-"FINAL" — это название по умолчанию для снимков, которые создаются автоматически после завершения действий в истории.
+"FINAL" is the default name for screenshots automatically created after completing actions in a story.
 :::
 
-Кнопка "Accept" позволяет принять снимок как эталон, подтверждая текущее поведение приложения как корректное.
+The "Accept" button allows you to accept the screenshot as a reference, confirming the current application behavior as correct.
 
-![.](assets/accepted-screenshot.png)
+![.](@site/assets/ui/accepted-screenshot.png)
 
 :::note
-История считается пройденной, только если весь её слепок совпадает с эталоном.
+A story is considered passed only if its entire baseline matches the reference.
 :::
 
 :::tip
-Журналы и снимки можно принимать по отдельности.
+Logs and screenshots can be accepted separately.
 :::
 
-## Массовые действия
+## Bulk Actions {#bulk-actions}
 
-`storyshots` позволяет запускать несколько историй одновременно:
+`storyshots` allows running multiple stories simultaneously:
 
-![.](assets/bulk-run.png)
+![.](@site/assets/ui/bulk-run.png)
 
-После выполнения формируются слепки, которые можно принять все сразу:
+After execution, baselines are generated, which can be accepted all at once:
 
-![.](assets/bulk-accept.png)
+![.](@site/assets/ui/bulk-accept.png)
 
-Результат:
+Result:
 
-![.](assets/bulk-accept-result.png)
+![.](@site/assets/ui/bulk-accept-result.png)
 
-## Изменение журнала
+## Log Changes {#log-changes}
 
-Рассмотрим сценарий регресса. Изначально журнал выглядит так:
+Consider a regression scenario. Initially, the log looks like this:
 
-![.](assets/actual-journal.png)
+![.](@site/assets/ui/actual-journal.png)
 
-Удалим вызов из кода:
+Remove the call from the code:
 
-```ts title="До"
+```ts title="Before"
 externals.analytics.log('worked hard');
 ```
 
-```ts title="После"
+```ts title="After"
 // externals.analytics.log('worked hard');
 ```
 
-После перезапуска теста `storyshots` обнаружил разницу между актуальным журналом и эталоном. Красный крестик указывает на несоответствие.
+After restarting the test, `storyshots` detected a difference between the current log and the reference. The red cross indicates a mismatch.
 
-Откроем журнал:
+Open the log:
 
-![.](assets/fail-journal.png)
+![.](@site/assets/ui/fail-journal.png)
 
-Здесь видна разница между актуальным и эталонным поведением. Кнопка "Accept" позволяет принять текущий слепок как
-корректный.
+Here, the difference between the current and reference behavior is visible. The "Accept" button allows you to accept the current baseline as correct.
 
-## Изменение снимков
+## Snapshot Changes {#snapshot-changes}
 
-Рассмотрим историю с промежуточным снимком:
+Consider a story with an intermediate snapshot:
 
-![.](assets/inter-screens.png)
+![.](@site/assets/ui/inter-screens.png)
 
-Изменим текст на странице:
+Change the text on the page:
 
-```txt title="До"
+```txt title="Before"
 Account Balance (RUB)
 ```
 
-```txt title="После"
+```txt title="After"
 My balance (RUB)
 ```
 
-После перезапуска:
+After restarting:
 
-![.](assets/failed-screens.png)
+![.](@site/assets/ui/failed-screens.png)
 
-Каждый снимок содержит разницу. Пример:
+Each snapshot contains the difference. Example:
 
-![.](assets/inter-diff-screen.png)
+![.](@site/assets/ui/inter-diff-screen.png)
 
-Слева — эталонный снимок (красная обводка), справа — актуальный (зелёная обводка).
+Left — reference snapshot (red outline), right — current snapshot (green outline).
 
 :::tip
-Текст снизу обозначает кол-во пикселей которые оказались разными. Это может быть полезно для более тонкой конфигурации
-[алгоритма сравнения](/API/run-modes/manager-config#compare).
+The text below indicates the number of pixels that differ. This can be useful for fine-tuning the [comparison algorithm](/API/run-modes/manager-config#compare).
 :::
 
-Для более явного подчёркивания разницы также доступен просмотр карты изменений:
+For a more explicit highlighting of differences, the change map is also available:
 
-![.](assets/inter-diff-image.png)
+![.](@site/assets/ui/inter-diff-image.png)
 
-## Ошибки
+## Errors {#errors}
 
-Если сгенерировать слепок не удаётся, например, из-за отсутствия элемента, история помечается восклицательным знаком:
+If a baseline cannot be generated, for example due to a missing element, the story is marked with an exclamation point:
 
-![.](assets/error-story.png)
+![.](@site/assets/ui/error-story.png)
 
-Чтобы узнать подробности, кликните на статус в левом верхнем углу:
+To learn more details, click on the status in the top-left corner:
 
-![.](assets/status-btn.png)
+![.](@site/assets/ui/status-btn.png)
 
-Откроется панель с деталями ошибки:
+The error details panel will open:
 
-![.](assets/error-details.png)
+![.](@site/assets/ui/error-details.png)
 
 :::note
-`storyshots` использует библиотеку `playwright` для взаимодействия с интерфейсом.
+`storyshots` uses the `playwright` library to interact with the interface.
 :::
 
 :::tip
-Вкладка "Failures" содержит список историй, слепки которых отличаются от эталонных.
+The "Failures" tab contains a list of stories whose baselines differ from the reference.
 :::
 
-## Локатор
+## Locator {#locator}
 
-Для упрощения работы с селекторами используется инструмент "Локатор". Он находится на панели инструментов (иконка глаза):
+To simplify working with selectors, the "Locator" tool is used. It is located on the toolbar (eye icon):
 
-![.](assets/loc-story.png)
+![.](@site/assets/ui/loc-story.png)
 
-При активации и наведении на элемент отображается рекомендуемый селектор:
+When activated and hovering over an element, a recommended selector is displayed:
 
-![.](assets/loc-help.png)
+![.](@site/assets/ui/loc-help.png)
 
 :::tip
-При клике на элемент в режиме "локатор" его селектор будет скопирован в буфер обмена.
+Clicking on an element in "Locator" mode copies its selector to the clipboard.
 :::
 
-## Выбор устройства
+## Device Selection {#device-selection}
 
-Если `storyshots` настроен для нескольких устройств, можно выбрать устройство через панель конфигурации:
+If `storyshots` is configured for multiple devices, you can select a device via the configuration panel:
 
-![.](assets/config-btn.png)
+![.](@site/assets/ui/config-btn.png)
 
-Панель выглядит так:
+The panel looks like this:
 
-![.](assets/config-panel.png)
+![.](@site/assets/ui/config-panel.png)
 
-Выберите устройство, например, "mobile":
+Select a device, for example, "mobile":
 
-![.](assets/mobile-sel.png)
+![.](@site/assets/ui/mobile-sel.png)
 
-Теперь слепки будут формироваться для выбранного устройства:
+Now baselines will be generated for the selected device:
 
-![.](assets/mobile-fresh.png)
+![.](@site/assets/ui/mobile-fresh.png)
 
-## Полный запуск
+## Full Run {#full-run}
 
-Истории можно запустить сразу для нескольких устройств одновременно. Для этого их необходимо выбрать в панели
-конфигурации:
+Stories can be run simultaneously across multiple devices. To do this, select them in the configuration panel:
 
-![.](assets/run-comp.png)
+![.](@site/assets/ui/run-comp.png)
 
-Результат:
+Result:
 
-![.](assets/devices-fresh.png)
+![.](@site/assets/ui/devices-fresh.png)
 
-:::note Внимание
-Чем больше устройств используется, тем быстрее будет расти время выполнения тестов на проекте.
+:::note Attention
+The more devices used, the faster the test execution time will grow on the project.
 :::
 
-## Эмуляция
+## Emulation {#emulation}
 
-Режим предпросмотра по умолчанию отображает приложение в соответствии с размером рабочего окна:
+By default, the preview mode displays the application according to the size of the working window:
 
-![.](assets/def-preview.png)
+![.](@site/assets/ui/def-preview.png)
 
-Чтобы включить эмуляцию, выберите нужное устройство в пункте "Device to emulate". Теперь рабочая область будет автоматически
-подстроена под viewport выбранного устройства:
+To enable emulation, select the desired device in the "Device to emulate" option. Now the working area will automatically adjust to the viewport of the selected device:
 
-![.](assets/em-preview.png)
+![.](@site/assets/ui/em-preview.png)
 
 :::note
-`storyshots` не эмулирует устройство полностью, а только устанавливает заданные размеры экрана.
+`storyshots` does not fully emulate the device, but only sets the specified screen dimensions.
 :::

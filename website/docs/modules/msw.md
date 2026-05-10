@@ -4,25 +4,24 @@ sidebar_position: 6
 
 # @storyshots/msw-externals
 
-Подменяет обращения к серверу [не инвазивным методом](/patterns/replace#подмена-через-сайд-эффекты), с помощью
-библиотеки [`msw`](https://github.com/mswjs/msw).
+Replaces server calls using a [non-invasive method](/patterns/replace#mocking-through-side-effects) via the [`msw`](https://github.com/mswjs/msw) library.
 
-## Endpoints
+## Endpoints {#endpoints}
 
-Хранит мета информацию о переопределённых эндпоинтах.
+Stores metadata about overridden endpoints.
 
-Подключение:
+Usage:
 
 ```ts
 import { Endpoints } from '@storyshots/msw-externals';
 
 type Externals = {
-  // Мета описывается в общем типе Endpoints и хранится в externals.
+  // Metadata is defined in the general Endpoints type and stored in externals.
   endpoints: Endpoints;
 };
 ```
 
-В качестве значения по умолчанию, в `preview` зоне указать пустой объект:
+As a default value in the `preview` zone, specify an empty object:
 
 ```ts
 export const { run, it, describe } = createPreviewApp<Externals>({
@@ -31,40 +30,40 @@ export const { run, it, describe } = createPreviewApp<Externals>({
 });
 ```
 
-Далее эндпоинты регистрируются в `Endpoints` с помощью метода [`endpoint`](/modules/msw#endpoint).
+Then endpoints are registered in `Endpoints` using the [`endpoint`](/modules/msw#endpoint) method.
 
-## createMSWArrangers
+## createMSWArrangers {#createmswarrangers}
 
-Создаёт arrangers утилиты на базе [`@storyshots/arrangers`](/modules/arrangers):
+Creates arrangers utilities based on [`@storyshots/arrangers`](/modules/arrangers):
 
 ```ts
 import { createArrangers } from '@storyshots/arrangers';
 import { createMSWArrangers, Endpoints } from '@storyshots/msw-externals';
 
-// Создаются базовые функции arrabgers
+// Create base arrangers functions
 const arrangers = createArrangers<Endpoints>();
 
 const msw = createMSWArrangers(
-  // Указываем путь до хранения Endpoints в externals
+  // Specify the path to the Endpoints storage in externals
   arrangers.focus('endpoints'),
 );
 ```
 
-## endpoint
+## endpoint {#endpoint}
 
-Добавляет новый эндпоинт в мету:
+Adds a new endpoint to the metadata:
 
 ```ts
 it('...', {
   arrange: endpoint('findPetsByStatus', {
     url: '/api/pet/findByStatus',
-    // handle является опциональным
+    // handle is optional
     handle: () => [],
   }),
 });
 
 declare module '@storyshots/msw-externals' {
-  // Помимо описания эндпоинта необходимо аугментировать основной тип
+  // In addition to describing the endpoint, you must augment the main type
   interface Endpoints {
     findPetsByStatus: Endpoint<FindPetsByStatusApiResponse>;
   }
@@ -72,7 +71,7 @@ declare module '@storyshots/msw-externals' {
 ```
 
 :::note
-Для того чтобы не дублировать определения `endpoint` можно вынести в отдельную функцию:
+To avoid duplicating `endpoint` definitions, you can extract them into a separate function:
 
 ```ts
 it('...', {
@@ -95,17 +94,17 @@ declare module '@storyshots/msw-externals' {
 
 :::
 
-## record
+## record {#record}
 
-Делает переданные методы отслеживаемыми, также может принимать реализацию:
+Makes the provided methods trackable, and can also accept an implementation:
 
 ```ts
 it('...', {
   arrange: arrange(
     setup(),
-    // Вызовы методов теперь будут записаны в журнал
+    // Method calls are now recorded in the journal
     record('findPetsByStatus'),
-    // Для данного метода также определено поведение
+    // Behavior is also defined for this method
     record('getStatuses', () => [
       /* ... */
     ]),
@@ -113,23 +112,23 @@ it('...', {
 });
 ```
 
-## handle
+## handle {#handle}
 
-Позволяет подменить поведение существующего эндпоинта:
+Allows replacing the behavior of an existing endpoint:
 
 ```ts
 it('...', {
   arrange: arrange(
     setup(),
-    // Поведение findPetsByStatus теперь другое
+    // The behavior of findPetsByStatus is now different
     handle('findPetsByStatus', () => createFewPetsStub()),
   ),
 });
 ```
 
-## transform
+## transform {#transform}
 
-Преобразует возвращаемое значение метода:
+Transforms the return value of a method:
 
 ```ts
 it('...', {
@@ -138,32 +137,32 @@ it('...', {
 ```
 
 :::note
-Работает только с асинхронными функциями. Для всех других, рекомендуется [compose](/modules/arrangers#compose)
+Works only with async functions. For all others, use [compose](/modules/arrangers#compose)
 :::
 
 :::tip
-`endpoint`, `record` и `handle` являются такими же утилитами arrangers что и описанные в `@storyshots/arrangers`.
+`endpoint`, `record`, and `handle` are the same kind of arrangers utilities as those described in `@storyshots/arrangers`.
 
-Для них работают те же правила и их спокойно можно комбинировать между собой.
+The same rules apply, and they can be freely combined with each other.
 :::
 
-## toRequestHandlers
+## toRequestHandlers {#torequesthandlers}
 
-Преобразует `Endpoints` в нативные `RequestHandler`:
+Converts `Endpoints` into native `RequestHandler`:
 
 ```ts
 import { setupWorker } from 'msw/browser';
 
-// Преобразуем мету в RequestHandler[]
+// Convert metadata into RequestHandler[]
 const handlers = toRequestHandlers(externals.endpoints);
 
-// Далее можно подключать msw в приложение как обычно
+// Then you can connect msw to the app as usual
 setupWorker(...handlers).start()
 ```
 
-## params
+## params {#params}
 
-Геттер параметров запроса:
+Getter for request parameters:
 
 ```ts
 it('...', {
@@ -174,9 +173,9 @@ it('...', {
 });
 ```
 
-## query
+## query {#query}
 
-Геттер query-параметров запроса:
+Getter for query parameters of the request:
 
 ```ts
 it('...', {
@@ -187,9 +186,9 @@ it('...', {
 });
 ```
 
-## body
+## body {#body}
 
-Геттер json-body запроса:
+Getter for the JSON body of the request:
 
 ```ts
 it('...', {
@@ -200,9 +199,9 @@ it('...', {
 });
 ```
 
-## native
+## native {#native}
 
-Позволяет выбрасывать нативные `msw` исключения:
+Allows throwing native `msw` exceptions:
 
 ```ts
 it('...', {
@@ -215,6 +214,6 @@ it('...', {
 });
 ```
 
-:::warning Важно
-`native` выбрасывает исключение поэтому его нельзя расширить через `transform`.
+:::warning Important
+`native` throws an exception, so it cannot be extended via `transform`.
 :::

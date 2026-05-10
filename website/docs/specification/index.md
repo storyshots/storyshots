@@ -2,19 +2,18 @@
 sidebar_position: 6
 ---
 
-# Спецификация
+# Specification {#specification}
 
-Данная спецификация описывает модель тестирования приложений с упором на защиту от регресса, устойчивостью к
-рефакторингу, скорость и простоту поддержки.
+This specification describes a testing model focused on regression protection, resilience to refactoring, speed, and ease of maintenance.
 
-:::info Важно
-Модель ориентирована на системы с конечным и наблюдаемым поведением (веб-приложения, нативное ПО).
+:::info Important
+The model is designed for systems with finite and observable behavior (web applications, native software).
 :::
 
 :::tip tl;dr
-В данном [видео](https://youtu.be/2q9WMLWd5BM?si=ige9qvRXbE-pghrt) представлен краткий обзор концепции.
+A brief overview of the concept is presented in this [video](https://youtu.be/2q9WMLWd5BM?si=ige9qvRXbE-pghrt).
 :::
 
 :::note
-`storyshots` является реализацией данной спецификации.
+`storyshots` is an implementation of this specification.
 :::

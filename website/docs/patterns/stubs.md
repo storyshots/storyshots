@@ -4,22 +4,21 @@ sidebar_position: 5
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Написание заглушек
+# Writing Stubs {#writing-stubs}
 
-`storyshots` благодаря своей архитектуре сводит к минимуму действия требуемые при написании тестовых сценариев, однако,
-остаётся одна область которая будет требовать существенного внимания от разработчика, а именно - заглушки.
+`storyshots` minimizes the effort required to write test scenarios thanks to its architecture; however, there remains one area that demands significant attention from developers — stubs.
 
 :::note
-Заглушки занимают наибольший суммарный объём кода в тестах написанных с использованием `storyshots`.
+Stubs take up the largest total code volume in tests written using `storyshots`.
 :::
 
-## Заглушки фабрики
+## Factory Stubs {#factory-stubs}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
-Заглушки можно описать двумя основными способами:
+Stubs can be described in two main ways:
 
-- В виде статичного объекта:
+- As a static object:
 
 ```ts
 const userStub = {
@@ -32,7 +31,7 @@ const userStub = {
 };
 ```
 
-- И в виде фабрики:
+- Or as a factory:
 
 ```ts
 function createUserStub(): User {
@@ -47,51 +46,48 @@ function createUserStub(): User {
 }
 ```
 
-В большинстве случаев, рекомендуется использовать фабрики. Это объясняется следующими причинами:
+In most cases, factories are recommended. This is due to the following reasons:
 
-### Меньше времени на инициализацию
+### Less Initialization Time {#less-time-for-initialization}
 
-Статичные стабы будут создаваться сразу, при старте приложения, тем самым негативно влияя на время инициализации
-теста.
+Static stubs are created immediately at application startup, negatively affecting test initialization time.
 
 :::note
-Создаваться будут все стабы без исключения, даже если они не используются в выполняемом тесте.
+All stubs will be created without exception, even if they are not used in the running test.
 :::
 
-Фабрики лишены данной проблемы, так как они представляют собой _ленивые_ данные, которые будут созданы только тогда,
-когда они понадобятся в истории.
+Factories avoid this issue because they represent _lazy_ data, created only when needed in a story.
 
-### Упрощение изменений
+### Simplifying Changes {#simplifying-changes}
 
-Статичные объекты, а тем более константы опасно мутировать напрямую, ведь они могут повлиять на поведение других своих
-клиентов:
+Static objects, and especially constants, are dangerous to mutate directly, as they may affect the behavior of other clients:
 
 ```ts
 it('...', {
   arrange: (user) => ({
     asNonAdmin: async () => {
       /**
-       * Объект опасно изменять напрямую, ведь он может использоваться где то ещё.
+       * Mutating the object directly is dangerous, as it may be used elsewhere.
        */
       userStub.position.role.isAdmin = false;
 
       return userStub;
     },
     /**
-     * Другая функция ссылается на тот же объект и будет затронута поведением `asNonAdmin`,
-     * что может быть нежелательным.
+     * Another function references the same object and will be affected by `asNonAdmin` behavior,
+     * which may be undesirable.
      */
     getAdmin: () => userStub,
   }),
 });
 ```
 
-Поэтому, для того чтобы избежать нежелательных сайд-эффектов, объект клонируют напрямую:
+To avoid unintended side effects, the object must be cloned directly:
 
 ```ts
 it('displays living address', {
   arrange: (user) => ({
-    // Теперь эффект изолирован в функции `asFired`
+    // Now the effect is isolated within the `asFired` function
     asNonAdmin: async () => ({
       ...userStub,
       authorities: {
@@ -107,7 +103,7 @@ it('displays living address', {
 });
 ```
 
-Это нагружает синтаксис и усложняет чтение теста. С фабриками всё проще:
+This burdens the syntax and complicates test readability. With factories, it's simpler:
 
 ```ts
 it('displays living address', {
@@ -115,14 +111,14 @@ it('displays living address', {
     asFired: async () => {
       const user = createUserStub();
       /**
-       * Объект можно спокойно изменять напрямую, так как мы работаем с уникальной копией user.
+       * The object can be safely modified directly, as we are working with a unique copy.
        */
       user.position.role.isAdmin = false;
 
       return user;
     },
     /**
-     * Другая функция ссылается на свой экземпляр user.
+     * Another function references its own instance of user.
      */
     getAdmin: () => createUserStub(),
   }),
@@ -130,23 +126,20 @@ it('displays living address', {
 ```
 
 :::note
-Такое свойство фабрик (их _чистота_), делает их простыми с точки зрения расширяемости и повторного использования.
-Поэтому в данной документации все основные примеры демонстрируются с использованием преимущественно данного подхода.
+This property of factories (their _purity_) makes them simple to extend and reuse. Therefore, in this documentation, most examples demonstrate the use of this approach.
 :::
 
 :::tip
-Использование статичных переменных и их прямое изменение допускается (и даже приветствуется) в целях моделирования
-[совместимых поведений](/patterns/externals#эмуляция-externals).
+Using static variables and direct mutation is allowed (and even encouraged) for modeling [compatible behaviors](/patterns/externals#emulation-externals).
 :::
 
-## Модульные заглушки
+## Modular Stubs {#modular-stubs}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} degrades={[Metric.RefactoringAllowance]} />
 
-Одним из вариантов их упрощения является использование модульной структуры схожей с [модульной внешней средой](/patterns/externals#модульные-externals). Если
-расширяемой единицей в случае репозиториев был метод, то в случае с заглушками это будут её свойства:
+One way to simplify stubs is to use a modular structure similar to [modular external environments](/patterns/externals#modular-externals). If in repositories the extensible unit was a method, then for stubs it is their properties:
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 function createUserStub(): User {
@@ -156,16 +149,16 @@ function createUserStub(): User {
     living: {
       city: 'Moscow',
     },
-    /* И ещё 20+ свойств */
+    /* And 20+ more properties */
   };
 }
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 /**
- * Описать минимальный набор полей для всех историй или оставить пустым
+ * Define a minimal set of fields for all stories or leave empty
  */
 function createMinimalUserStub(): User {
   return {
@@ -178,60 +171,53 @@ it('displays living address', {
   arrange: (user) => ({
     getUser: async () => ({
       ...createMinimalUserStub(),
-      living: { city: 'Moscow' }, // История устанавливает только нужные ей поля
+      living: { city: 'Moscow' }, // The story sets only the fields it needs
     }),
   }),
 });
 ```
 
-Модульность позволяет историям определять только нужные им данные в заглушках, но это лишь один из инструментов
-сокращения их объёма.
+Modularity allows stories to define only the data they need in stubs, but this is just one tool for reducing their volume.
 
 :::note
-Заглушки также наследуют от репозиториев проблемы связанные с отвественностью, которые были описаны подробно в
-разделе [модульная внешняя среда](/patterns/externals#модульные-externals).
+Stubs also inherit the responsibility-related issues described in detail in the [modular external environment](/patterns/externals#modular-externals) section.
 :::
 
-:::warning Важно
-Следует применять с осторожностью решения для генерации заглушек на
-подобии [faker-js](https://github.com/faker-js/faker). Так как они зачастую производят [недереминированные](/specification/requirements/query#детерминированность) данные.
+:::warning Important
+Use caution with solutions for generating stubs similar to [faker-js](https://github.com/faker-js/faker). They often produce [non-deterministic](/specification/requirements/query#determinism) data.
 :::
 
-## Неизбыточные заглушки
+## Non-Redundant Stubs {#non-redundant-stubs}
 
 <MetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
-Следует определять только те методы, что на самом деле используются приложением.
+Only define methods that are actually used by the application.
 
 :::note
-Данный пункт имеет тесную связь с [модульными заглушками](/patterns/stubs#модульные-заглушки). Однако, если последний описывал конкретный способ
-разделения и последующей композиции, то данный раздел направлен на более абстрактное представление проблемы.
+This point is closely related to [modular stubs](/patterns/stubs#modular-stubs). However, while the latter describes a specific method of separation and composition, this section addresses a more abstract representation of the problem.
 :::
 
-Довольно частым виновником больших по объёму стабов является не само поведение, а типы описанные в исходном коде:
+A common cause of large stubs is not the behavior itself, but the types defined in the source code:
 
 ```ts
-// Все поля в модели обязательные и при этом их достаточно много
+// All fields in the model are required and there are many of them
 type User = {
   name: string;
   position: string;
   living: {
     city: string;
   };
-  /* И ещё 20+ свойств */
+  /* And 20+ more properties */
 };
 ```
 
 :::note
-Компилятор требует от разработчика объявить все обязательные поля описанные в модели, даже при написании заглушки для
-теста.
+The compiler requires developers to declare all required fields defined in the model, even when writing a stub for a test.
 :::
 
-Проблема заключается в том, что данные типы просто копируются из сторонних систем, например `swagger` и в конечном итоге
-не отражают реального положения вещей: приложение может использовать только 5 полей из 20, в то время как в заглушках
-объявляются все свойства без исключений.
+The problem lies in the fact that these types are often copied from external systems, such as `swagger`, and ultimately do not reflect the actual state: the application may use only 5 out of 20 fields, while stubs declare all properties without exception.
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 type User = {
@@ -243,11 +229,11 @@ type User = {
 };
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 /**
- * Делать модель более точной и избавляться от неиспользуемых полей
+ * Make the model more precise and eliminate unused fields
  */
 type User = {
   name: string;
@@ -255,19 +241,17 @@ type User = {
 };
 ```
 
-:::warning Важно
-На проектах зачастую используются разного рода генераторы интерфейсов API. Это удобный инструмент, однако итоговая
-точность моделей может быть [недостаточной](https://en.wikipedia.org/wiki/Algebraic_data_type).
+:::warning Important
+On projects, various API interface generators are often used. This is a convenient tool, but the final accuracy of models may be [insufficient](https://en.wikipedia.org/wiki/Algebraic_data_type).
 :::
 
-## Релевантные заглушки
+## Relevant Stubs {#relevant-stubs}
 
 <MetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability]} />
 
-Тестовые данные (или другими словами стабы), являются критически важным элементом тестового сценария. Важно, чтобы
-содержание заглушек соответствовало доменным требованиям и условиям диктуемым моделью:
+Test data (or, in other words, stubs) are a critical element of a test scenario. It is important that the content of stubs aligns with domain requirements and conditions dictated by the model:
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 function createUserStub(): User {
@@ -278,38 +262,33 @@ function createUserStub(): User {
 }
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 function createUserStub(): User {
   return {
-    name: 'Васильев Василий Васильевич', // Имя пользователя содержит ФИО
-    roles: ['admin'], // Роли по модели не могут быть пустыми
+    name: 'Васильев Василий Васильевич', // User name contains full name
+    roles: ['admin'], // Roles cannot be empty according to the model
   };
 }
 ```
 
-Релевантные по отношению к предметной области и модели заглушки приносят следующие преимущества в тесты:
+Relevant stubs, aligned with domain and model, bring the following benefits to tests:
 
-- Защита от регресса - заглушки обладают ровно теми свойствами, что и реальные данные на сервере. Это увеличивает
-  эффективность тестирования, ведь система верифицируется в идентичном реальному окружении.
-- Документация - за счёт использования более репрезентативных данных сами истории и снимки в эталоне больше
-  напоминают реальное приложение и могут использоваться в качестве дополнительного источника документации.
+- Regression protection — stubs have exactly the same properties as real server data. This increases testing effectiveness, as the system is verified in an environment identical to the real one.
+- Documentation — by using more representative data, stories and baseline snapshots resemble the real application more closely and can serve as an additional source of documentation.
 
 :::note
-Определение нерелевантных заглушек можно сравнить с тем что мы заставляем наше приложение общаться со "сломанным"
-сервером, что очевидно негативно повлияет на стабильность самих историй и увеличит их хрупкость.
+Defining irrelevant stubs is like forcing our application to communicate with a "broken" server, which obviously negatively impacts story stability and increases their fragility.
 :::
 
-## Достаточные заглушки
+## Sufficient Stubs {#sufficient-stubs}
 
 <MetricsTip improves={[Metric.Speed, Metric.Maintainability]} />
 
-Данные должны быть настолько разнообразными, насколько того требует покрытия основного и всех альтернативных сценариев
-работы приложения. С другой стороны, они должны сохранить свою не избыточность - соблюдаемую только тогда, когда из них
-нельзя убрать ничего и не потерять при этом в их достаточности.
+Data should be as diverse as required to cover the main and all alternative application scenarios. On the other hand, they must remain non-redundant — maintained only when nothing can be removed without losing their sufficiency.
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 function createUserStub(): User {
@@ -320,36 +299,35 @@ function createUserStub(): User {
 }
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 function createUserStub(): User {
   return {
     name: 'Vasiliy',
     /**
-     * Поле с адресом убрано так как оно не используется в приложении
-     * и как следствие не требуется для покрытия всех его сценариев.
+     * The address field is removed as it is not used in the application
+     * and thus not required to cover all its scenarios.
      */
   };
 }
 ```
 
 :::tip
-Данный паттерн тесно связан с [модульными заглушками](/patterns/stubs#модульные-заглушки).
+This pattern is closely related to [modular stubs](/patterns/stubs#modular-stubs).
 :::
 
-## Упрощённые заглушки
+## Simplified Stubs {#simplified-stubs}
 
 <MetricsTip improves={[Metric.Maintainability]} />
 
-Тестовые данные содержат в себе множество комплексных полей, такие как: идентификаторы, ссылки на другие сущности, даты.
-Следует устанавливать как можно более простые значения для таких свойств.
+Test data contain many complex fields, such as identifiers, references to other entities, and dates. Simple values should be used for such properties whenever possible.
 
 :::tip
-Это снижает сложность самих заглушек и при этом никак не влияет на покрытие тестов.
+This reduces the complexity of the stubs themselves without affecting test coverage.
 :::
 
-<p style={{ color: 'red' }}>Вместо этого:</p>
+<p style={{ color: 'red' }}>Instead of this:</p>
 
 ```ts
 function createUserStub(): User {
@@ -361,7 +339,7 @@ function createUserStub(): User {
 }
 ```
 
-<p style={{ color: 'green' }}>Делать это:</p>
+<p style={{ color: 'green' }}>Do this:</p>
 
 ```ts
 function createUserStub(): User {
@@ -373,7 +351,7 @@ function createUserStub(): User {
 }
 
 /**
- * Установить любую фиксированную дату, актуальную для всех историй. По необходимости её можно смещать в конкретных фабриках.
+ * Set any fixed date relevant to all stories. It can be adjusted as needed in specific factories.
  */
 declare function createConstDate(): Date;
 ```

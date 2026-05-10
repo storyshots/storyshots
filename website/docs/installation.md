@@ -1,44 +1,43 @@
----
+﻿---
 sidebar_position: 2
 ---
 
-# Быстрый старт
+# Quick Start {#quick-start}
 
-`storyshots` легко интегрируется даже в уже написанные приложения благодаря своей [архитектуре](/specification/scheme).
+`storyshots` integrates easily into existing applications thanks to its [architecture](/specification/arch).
 
-## Установка и сборка
+## Installation and Build {#installation-and-build}
 
 :::note
-На данный момент библиотека не публикуется ни в один из реестров пакетов, ввиду наличия не стабильной структуры пакетов.
-Компоненты устанавливаются из локальных артефактов, а не из публичного registry.
+At the moment, the library is not published to any package registries due to an unstable package structure.
+Components are installed from local artifacts, not from a public registry.
 :::
 
-В корне [проекта](https://github.com/storyshots/storyshots) установить зависимости:
+Install dependencies in the root of the [project](https://github.com/storyshots/storyshots):
 
 ```shell
 npm install
 ```
 
-Собрать пакеты и запаковать в архив:
+Build packages and package them into an archive:
 
 ```shell
 npm run build && npm run pack
 ```
 
-## Интеграция в проект
+## Integration into Project {#integration-into-project}
 
-По итогу будут сформированы артефакты `.tar`. Описание данных компонентов можно найти в
-разделах [архитектура](/specification/scheme) и [модули](/modules/).
+As a result, `.tar` artifacts will be generated. Descriptions of these components can be found in the [architecture](/specification/arch) and [modules](/modules/) sections.
 
 :::tip
-Для стандартного [CSR](https://developer.mozilla.org/en-US/docs/Glossary/CSR) проекта, использующего `react`, будет достаточен следующий набор:
+For a standard [CSR](https://developer.mozilla.org/en-US/docs/Glossary/CSR) project using `react`, the following set will be sufficient:
 
-- `@storyshots/core` - ядро `storyshots`.
-- `@storyshots/react` - клиент preview `react` приложений.
-- `@storyshots/exec-preview` - сервер preview.
-  :::
+- `@storyshots/core` – the core of `storyshots`.
+- `@storyshots/react` – the client preview for `react` applications.
+- `@storyshots/exec-preview` – the preview server.
+:::
 
-Данные модули необходимо разместить в папке проекта и поместить их под контроль VCS:
+These modules must be placed in the project folder and added to VCS control:
 
 ```plaintext
 project/
@@ -50,7 +49,7 @@ project/
 └── package.json
 ```
 
-Далее зависимости необходимо зарегистрировать:
+Next, register the dependencies:
 
 ```json title="package.json"
 {
@@ -62,40 +61,40 @@ project/
 }
 ```
 
-И установить:
+And install them:
 
 ```shell
 npm i
 ```
 
-## Описание превью
+## Preview Description {#preview-description}
 
 :::note
-Связанные со `storyshots` файлы в данном руководстве располагаются в `src/storyshots` (см. [дислокация тестов](/patterns/files#дислокация-тестов)).
+Files related to `storyshots` in this guide are located in `src/storyshots` (see [test location](/patterns/files#test-location)).
 :::
 
-После установки всё готово для описания [клиента preview](/specification/scheme#ipreviewclient) и первых историй. Начнём с preview:
+After installation, you're ready to define the [preview client](/specification/arch#ipreviewclient) and your first stories. Let's start with the preview:
 
 ```ts title="/src/storyshots/preview/config.ts"
 import { createPreviewApp } from '@storyshots/react';
 
-// Инициализация превью
+// Initialize the preview
 export const { it, run } = createPreviewApp({
   /*
-   Определение поведения "по умолчанию" для внешних зависимостей.
-   В данном случае это методы BE API.
+   Define default behavior for external dependencies.
+   In this case, it's BE API methods.
   */
   createExternals: (config) => ({
     getUser: async () => ({ id: 1, name: 'John Doe' }),
   }),
-  // Маркировка методов для записи в журнал вызовов
+  // Mark methods for logging calls
   createJournalExternals: (externals, config) => ({
     getUser: config.journal.asRecordable('getUser', externals.getUser),
   }),
 });
 ```
 
-После, опишем первые истории:
+Then, define your first stories:
 
 ```tsx title="/src/storyshots/stories/index.tsx"
 import { finder } from '@storyshots/core';
@@ -105,21 +104,21 @@ import { it } from '../preview/config';
 export const stories = [
   it('renders the application correctly'),
   it('handles missing user gracefully', {
-    // Модифицируем поведение сервера для данной истории
+    // Modify server behavior for this story
     arrange: (externals) => ({ ...externals, getUser: async () => null }),
   }),
   it('allows to login', {
-    // Эмулируем действия на странице
+    // Simulate actions on the page
     act: (actor) => actor.click(finder.getByRole('button', { name: 'Login' })),
   }),
 ];
 ```
 
 :::tip
-Истории можно [декомпозировать](/patterns/stories#разделение-историй).
+Stories can be [decomposed](/patterns/stories#story-splitting).
 :::
 
-После чего, запустим описанные истории реализовав [render по умолчанию](/patterns/stories#универсальный-render) с [внедрением зависимостей](/patterns/replace#подмена-через-инверсию):
+Then, run the defined stories by implementing the [default render](/patterns/stories#universal-render) with [dependency injection](/patterns/replace#mocking-through-inversion):
 
 ```tsx title="/src/storyshots/preview/index.tsx"
 import { map } from '@storyshots/core';
@@ -139,9 +138,9 @@ run(
 );
 ```
 
-## Описание менеджера
+## Manager Description {#manager-description}
 
-Далее необходимо описать [сервер preview](/specification/scheme#ipreviewserver):
+Next, define the [app server](/specification/arch#appserverfactory):
 
 ```ts title="/src/storyshots/manager/createAppServer.ts"
 import { createExecPreview } from '@storyshots/exec-preview';
@@ -149,24 +148,24 @@ import { createExecPreview } from '@storyshots/exec-preview';
 export function createAppServer() {
   return createExecPreview({
     ui: {
-      command: 'npx webpack-cli serve', // <- Скрипт запускающий приложение в dev режиме
-      at: 'http://localhost:8080', // <- Адрес dev сервера
+      command: 'npx webpack-cli serve', // <- Script to run the app in dev mode
+      at: 'http://localhost:8080', // <- Dev server address
     },
     ci: {
-      command: 'npx webpack-cli build', // <- Скрипт сборки артефакта
-      serve: './dist', // <- Расположение артефакта сборки
+      command: 'npx webpack-cli build', // <- Build script
+      serve: './dist', // <- Location of the build artifact
     },
   });
 }
 ```
 
-Также необходимо настроить используемый сборщик (в данном примере используется `webpack`), указав верный `entry`:
+Also, configure the used bundler (in this example, `webpack`), specifying the correct `entry`:
 
 ```ts title="webpack.config.ts"
 export default {
   entry:
-    // process.env.STORYSHOTS выставляется @storyshots/exec-preview автоматически
-    process.env.STORYSHOTS === 'true' // <- Выставляем entry до preview взависимости от режима сборки.
+    // process.env.STORYSHOTS is automatically set by @storyshots/exec-preview
+    process.env.STORYSHOTS === 'true' // <- Set entry for preview depending on the build mode.
       ? './src/storyshots/preview/index.tsx'
       : './src/index.tsx',
   // ... ///
@@ -174,10 +173,10 @@ export default {
 ```
 
 :::tip
-Более подробно про `@storyshots/exec-preview` можно прочитать в [данном разделе](/modules/exec).
+More details about `@storyshots/exec-preview` can be found in [this section](/modules/exec).
 :::
 
-После описания сервера, нужно определить общую конфигурацию тестирования:
+After defining the server, define the general testing configuration:
 
 ```ts title="/src/storyshots/manager/config.ts"
 import { ManagerConfig } from '@storyshots/core/manager';
@@ -185,7 +184,7 @@ import { ManagerConfig } from '@storyshots/core/manager';
 import { createAppServer } from './createAppServer';
 
 export default {
-  // Список тестируемых устройств
+  // List of tested devices
   devices: [
     {
       name: 'desktop',
@@ -193,37 +192,37 @@ export default {
       height: 920,
     },
   ],
-  // Описание путей до основных артефактов: снимков и журналов
+  // Paths to main artifacts: screenshots and records
   paths: {
     screenshots: path.join(process.cwd(), 'screenshots'),
     records: path.join(process.cwd(), 'records'),
   },
-  // Описание сервера превью
+  // App server configuration
   preview: createAppServer(),
 } satisfies ManagerConfig;
 ```
 
 :::tip
-Список всех доступных настроек доступен в [данном разделе](/API/run-modes/manager-config).
+A full list of available settings is available in [this section](/API/run-modes/manager-config).
 :::
 
-Далее UI режим запустить с помощью
+Then, start the UI mode using:
 
 ```shell
 storyshots --ui /src/storyshots/manager/config.ts
 ```
 
 :::note
-Для запуска всех тестов в фоновом режиме использовать:
+To run all tests in headless mode, use:
 
 ```shell
 storyshots /src/storyshots/manager/config.ts
 ```
-
 :::
 
-## Примеры
+## Examples {#examples}
 
-- [**Пример #1**](https://github.com/storyshots/storyshots/tree/master/examples/basic-externals) - `react` + `webpack` + стандартные `fetch` запросы.
-- [**Пример #2**](https://github.com/storyshots/storyshots/tree/master/examples/msw-externals) - `react` + `webpack` + `rtk-query`.
-- [**Пример #3**](https://github.com/storyshots/storyshots/tree/master/examples/next-app) - `next.js`.
+- [**Example #1**](https://github.com/storyshots/storyshots/tree/master/examples/basic-externals) вЂ“ `react` + `webpack` + standard `fetch` queries.
+- [**Example #2**](https://github.com/storyshots/storyshots/tree/master/examples/msw-externals) вЂ“ `react` + `webpack` + `rtk-query`.
+- [**Example #3**](https://github.com/storyshots/storyshots/tree/master/examples/next-app) вЂ“ `next.js`.
+

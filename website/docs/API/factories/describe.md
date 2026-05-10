@@ -2,9 +2,9 @@
 sidebar_position: 2
 ---
 
-# describe
+# describe {#describe}
 
-Часть семейства фабрик тестов. Оборачивает истории в семантическую группу.
+Part of the test factories family. Wraps stories into a semantic group.
 
 ```ts
 export const loginStories = describe('Login', [

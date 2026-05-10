@@ -2,18 +2,18 @@
 sidebar_position: 3
 ---
 
-# ManagerConfig
+# ManagerConfig {#managerconfig}
 
-Конфигурация для менеджера `storyshots`. Используется при запуске в режимах [UI](/API/run-modes/runUI) и [CI](/API/run-modes/runCI).
+Configuration for the `storyshots` manager. Used when running in [UI](/API/run-modes/runUI) and [CI](/API/run-modes/runCI) modes.
 
 ---
 
-## devices
+## devices {#devices}
 
-Описывает список [устройств](/API/test-components/story-config#device), в рамках которых запускаются истории.
+Describes the list of [devices](/API/test-components/story-config#device) on which stories are run.
 
 :::note
-Первый объект в списке `devices` становится [устройством по умолчанию](/ui/#запуск).
+The first object in the `devices` list becomes the [default device](/ui/#run).
 :::
 
 ```ts
@@ -36,39 +36,23 @@ export default {
 };
 ```
 
-## preview
+## preview {#preview}
 
-Принимает [сервер preview](/specification/scheme#ipreviewserver).
+Accepts an [app server](/specification/arch#appserverfactory).
 
 ```ts
-import { createExecPreview } from '@storyshots/exec-preview';
+import { createAppServer } from '../manager/createAppServer';
 
 export default {
-  preview: createExecPreview(/* конфигурация */),
+  preview: createAppServer(),
   /* ... */
 };
 ```
 
-## paths
+## runner {#runner}
 
-Содержит описание путей для артефактов `storyshots`.
-
-```ts
-export default {
-  paths: {
-    // Путь до папки с журналами
-    records: path.join(process.cwd(), 'records'),
-    // Путь до папки со снимками экрана
-    screenshots: path.join(process.cwd(), 'screenshots')
-  },
-  /* ... */
-};
-```
-
-## runner
-
-Объект обработчик тестовых заданий. Чаще всего представляет собой кластер из нескольких экземпляров браузера. Реализация
-по умолчанию позволяет контролировать их количество:
+Test task execution handler. In most cases, this is a pool of browser instances.  
+The default implementation lets you control the amount of parallel workers:
 
 ```ts
 export default {
@@ -78,98 +62,126 @@ export default {
 ```
 
 :::note
-Нет чёткой формулы определяющей рекомендуемое количество агентов. Подходящее значение стоит определять опытным путём.
+There is no strict formula for the recommended number of agents. Choose the right value experimentally.
 :::
 
-## capture
+## capture {#capture}
 
-Функция снятия снимка страницы в _стабильном_ состоянии.
+Page screenshot strategy for capturing the page in a _stable_ state.
 
 :::note
-Страница считается стабильной, если её визуальное представление не изменяется, то есть она "замирает".
+A page is considered stable when its visual representation stops changing.
 :::
 
-По умолчанию используются оптимальные настройки для алгоритма стабилизации, но их можно изменить:
+By default, `storyshots` uses an optimized stabilization algorithm, but you can override it:
 
 ```ts
 export default {
   /**
-   * Выполняет мнговенный снимок экрана, минуя стадию стабилизации.
-   * (Не рекомендуется для большинства сценариев)
+   * Takes an immediate screenshot and skips stabilization.
+   * (Not recommended for most scenarios.)
    */
   capture: CAPTURE.instantly,
   /* ... */
 };
 ```
 
-## compare
+## paths {#paths}
 
-Описывает алгоритм сравнения двух изображений.
-
-:::note
-По умолчанию `storyshots` использует алгоритм, учитывающий особенности
-человеческого цветовосприятия, что делает тесты менее хрупкими.
-:::
-
-### withPlaywright
-
-Делегирует сравнение снимков `playwright`:
+Contains the paths for `storyshots` artifacts.
 
 ```ts
 export default {
-  compare: COMPARE.withPlaywright(options),
+  paths: {
+    // Path to the folder with logs
+    records: path.join(process.cwd(), 'records'),
+    // Path to the folder with screenshots
+    screenshots: path.join(process.cwd(), 'screenshots')
+  },
+  /* ... */
+};
+```
+
+## agentsCount {#agentscount}
+
+Defines playwright agents count:
+
+```ts
+export default {
+  agentsCount: 4,
+  /* ... */
+};
+```
+
+:::note
+There is no strict formula determining the recommended number of agents. The optimal value should be determined experimentally.
+:::
+
+## compare {#compare}
+
+Describes the algorithm for comparing two images.
+
+:::note
+By default, `storyshots` uses an algorithm that accounts for human color perception, making tests less fragile.
+:::
+
+### withPlaywright {#withplaywright}
+
+Delegates screenshot comparison to `playwright`:
+
+```ts
+export default {
+  compare: Compare.withPlaywright(options),
   /* ... */
 };
 ```
 
 ---
 
-#### comparator
+### comparator {#comparator}
 
-Алгоритм сравнения пикселей:
+Pixel comparison algorithm:
 
 - ssim-cie94 - https://en.wikipedia.org/wiki/Structural_similarity_index_measure
-- pixelmatch - использует https://www.npmjs.com/package/pixelmatch
+- pixelmatch - uses https://www.npmjs.com/package/pixelmatch
 
-#### threshold
+#### threshold {#threshold}
 
-Погрешность при сравнении (от 0 до 1, где 0 это максимальная строгость). Работает только для pixelmatch
+Comparison tolerance (from 0 to 1, where 0 is maximum strictness). Works only for pixelmatch
 
-#### maxDiffPixels
+#### maxDiffPixels {#maxdiffpixels}
 
-Максимально допустимая разница в пикселях. 0 по умолчанию
+Maximum allowed difference in pixels. 0 by default
 
-##### maxDiffPixelRatio
+##### maxDiffPixelRatio {#maxdiffpixelratio}
 
-Максимально допустимая разница в пикселях (отношение: от 0 до 1). 0 по умолчанию
+Maximum allowed difference in pixels (ratio: from 0 to 1). 0 by default
 
-### withLooksSame
+### withLooksSame {#withlookssame}
 
-Использует [looks-same](https://github.com/gemini-testing/looks-same).
+Uses [looks-same](https://github.com/gemini-testing/looks-same).
 
 ```ts
 export default {
-  compare: COMPARE.withLooksSame(options),
+  compare: Compare.withLooksSame(options),
   /* ... */
 };
 ```
 
 :::note
-Доступны все основные [опции](https://github.com/gemini-testing/looks-same?tab=readme-ov-file#comparing-images) за
-исключением `createDiffImage` (diff создаётся всегда так как является обязательным для `storyshots`)
+All main [options](https://github.com/gemini-testing/looks-same?tab=readme-ov-file#comparing-images) are available
+except `createDiffImage` (diff is always created as it is mandatory for `storyshots`)
 :::
 
-### Оптимальный алгоритм
+### Optimal Algorithm {#optimal-algorithm}
 
-Не смотря на то, что библиотека поддерживает из коробки минимально необходимый набор алгоритмов, он может оказаться не
-подходящим под конкретные задачи проекта.
+Although the library provides a minimal required set of algorithms out of the box, it may not be suitable for specific project needs.
 
 :::tip
-Подходящий алгоритм, это такой алгоритм который обеспечивает минимальное количество ложных срабатываний (хрупких
-тестов), но при этом не пропускает дефекты (обеспечивает высокую защиту от регресса)
+The right algorithm is one that minimizes false positives (fragile tests) while still catching defects (ensuring high regression protection).
 :::
 
-Именно поэтому `storyshots` позволяет реализовать своё решение:
+That’s why `storyshots` allows you to implement your own solution:
 
 ```typescript
 {
@@ -178,17 +190,16 @@ export default {
 }
 ```
 
-- _actual_ снимок актуального поведения
-- _expected_ снимок эталонного поведения
-- _story_ объект истории включая [мета атрибуты](/API/factories/it#storyattributes)
+- _actual_ – screenshot of current behavior
+- _expected_ – baseline screenshot
+- _story_ – story object including [meta attributes](/API/factories/it#storyattributes)
 
-Результатом алгоритма является объект `ComparisonResult` в котором содержится:
+The result of the algorithm is a `ComparisonResult` object containing:
 
-- _equal_ - признак равенства двух снимков
-- _explanation_ - если два снимка не равны, содержит дополнительную информацию
-- _diff_ - ссылается на итоговое diff изображение
+- _equal_ – flag indicating whether the two screenshots are equal
+- _explanation_ – if screenshots are not equal, contains additional information
+- _diff_ – reference to the final diff image
 
 :::tip
-Интерфейс сравнения является ассинхронным, что открывает дополнительные возможности по использованию более продвинутых
-техник сравнения, например с использованием online сервисов.
+The comparison interface is asynchronous, opening up additional possibilities for advanced comparison techniques, such as using online services.
 :::

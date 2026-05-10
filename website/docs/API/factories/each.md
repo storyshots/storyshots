@@ -2,12 +2,11 @@
 sidebar_position: 3
 ---
 
-# each
+# each {#each}
 
-Часть семейства фабрик тестов. Генерирует истории исходя из переданного списка значений.
+Part of the test factories family. Generates stories based on the provided list of values.
 
 ```ts
 export const statusStories = each(['Online', 'Offline', 'Busy'], (status) =>
   it(`shows user status as ${status}`),
 );
-```

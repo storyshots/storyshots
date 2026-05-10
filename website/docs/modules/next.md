@@ -4,73 +4,72 @@ sidebar_position: 8
 
 # @storyshots/next
 
-Реализует [`клиент`](/specification/scheme#ipreviewclient) и [`сервер`](/specification/scheme#ipreviewserver) preview для `nextjs` приложений.
+Implements the [`client`](/specification/arch#ipreviewclient) preview and [`app server`](/specification/arch#appserverfactory) for Next.js applications.
 
-Для интеграции необходимо:
+To integrate, follow these steps:
 
-## Externals
+## Externals {#externals}
 
-Описать базовые контракты внешних зависимостей:
+Define the basic contracts for external dependencies:
 
 ```ts
 export type Externals = {
-  // В тестах подменяется функция getPosts
+  // In tests, the getPosts function is mocked
   getPosts(): Promise<Post[]>;
 };
 ```
 
-## createStoryFactories
+## createStoryFactories {#createstoryfactories}
 
-Связать базовые фабрики с типом `Externals` и указать реализации по умолчанию:
+Link base factories with the `Externals` type and specify default implementations:
 
 ```ts
 import { createStoryFactories } from '@storyshots/next';
-// Описывает подменяемые в тестах зависимости
+// Describes testable dependencies
 import { Externals } from '@/storyshots/arrangers';
 
-// Инициализация фабрик историй и утилит
+// Initialize story factories and utilities
 export const { it, describe, each, createOnStorySwitch } = createStoryFactories<Externals>({
-  // Определение поведения "по умолчанию" для внешних зависимостей
+  // Define default behavior for external dependencies
   createExternals: () => ({ getPosts: async () => [] }),
-  // Маркировка методов для записи в журнал вызовов
+  // Mark methods for call logging
   createJournalExternals: (externals) => externals,
 });
 ```
 
 :::note
-Подробнее фабрики по умолчанию описываются в [данном разделе](/modules/react#externalsfactory).
+Default factories are described in [this section](/modules/react#externalsfactory).
 :::
 
-## createOnStorySwitch
+## createOnStorySwitch {#createonstoryswitch}
 
-Используя специальную функцию переключатель, описать механизм подмены зависимостей:
+Using a special switch function, define the dependency substitution mechanism:
 
 ```ts
 import { stories } from '@/storyshots/stories';
 
-// createOnStorySwitch связывает фабрики с описанными историями
+// createOnStorySwitch ties factories to defined stories
 const onStorySwitch = createOnStorySwitch(stories);
 
-// Далее, можно описать две инструкции инициализации зависимостей
+// Then, define two initialization instructions for dependencies
 const getPosts = onStorySwitch({
-  // В тестовом окружении будет использоваться специальное поведение
+  // In test environment, use special behavior
   onStory: (externals) => externals.getPosts,
-  // В реальном окружении выполняется настоящий запрос
+  // In real environment, execute actual request
   otherwise: () => () => fetch('...'),
 });
 ```
 
 :::warning
-`createOnStorySwitch` рекомендуется использовать только для подмены зависимостей в основных точках входа, чтобы избежать
-утечки тестовых зависимостей.
+`createOnStorySwitch` should be used only for substituting dependencies at main entry points to avoid
+leaking test dependencies.
 :::
 
+## createStoryRootComponent {#createstoryrootcomponent}
 
-## createStoryRootComponent
+Link the `Root` component with the defined stories:
 
-Связать `Root` компонент с описанными историями:
-
-```ts title="Root.tsx"
+```tsx title="Root.tsx"
 'use client';
 
 import { createStoryRootComponent } from '@storyshots/next/client';
@@ -80,7 +79,7 @@ import { stories } from '@/storyshots/stories';
 export const Root = createStoryRootComponent(stories);
 ```
 
-Далее, компонент необходимо подключить как корневой:
+Next, connect the component as the root:
 
 ```tsx
 import React from 'react';
@@ -97,9 +96,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 }
 ```
 
-## ModeInjector
+## ModeInjector {#modeinjector}
 
-Следующим шагом необходимо подключить `ModeInjector`:
+Next, connect the `ModeInjector`:
 
 ```tsx
 import React from 'react';
@@ -110,7 +109,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en">
       <head>
-        {/* Должен выполняться до любого другого CSR кода на проекте */}
+        {/* Must run before any other CSR code in the project */}
         <ModeInjector />
       </head>
       <body>
@@ -121,9 +120,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
 }
 ```
 
-## createNextPreview
+## createNextPreview {#createnextpreview}
 
-Далее подключить сам сервер превью:
+Next, connect the app server:
 
 ```ts
 import { ManagerConfig } from '@storyshots/core/manager';
@@ -135,9 +134,9 @@ export default {
 } satisfies ManagerConfig;
 ```
 
-## extendNextConfig
+## extendNextConfig {#extendnextconfig}
 
-Расширить конфигурацию `nextjs`:
+Extend the Next.js configuration:
 
 ```ts
 import type { NextConfig } from 'next';
@@ -145,10 +144,10 @@ import { extendNextConfig } from '@storyshots/next/preview';
 import path from 'node:path';
 
 const nextConfig: NextConfig = extendNextConfig({
-  // Путь до файла где экспортируются истории
+  // Path to the file exporting stories
   storiesRoot: path.join(process.cwd(), 'storyshots', 'stories'),
   config: {
-    // Оригинальная конфигурация nextjs
+    // Original Next.js configuration
   },
 });
 
@@ -156,10 +155,10 @@ export default nextConfig;
 ```
 
 :::note
-`extendNextConfig` исключает тестовый код из production артефакта.
+`extendNextConfig` excludes test code from production artifacts.
 :::
 
-После этого можно описывать [истории](/specification/requirements/borders) как обычно:
+After this, you can define [stories](/specification/requirements/borders) as usual:
 
 ```ts
 [
@@ -171,14 +170,14 @@ export default nextConfig;
 ];
 ```
 
-## createSharedState
+## createSharedState {#createsharedstate}
 
-Позволяет эмулировать stateful поведения в историях:
+Allows emulating stateful behavior in stories:
 
 ```ts
 it('allows to create post', {
   arrange: (externals) => {
-    // Состояние будет идентичным не зависимо от runtime функций
+    // State will be identical regardless of runtime functions
     const posts = createSharedState<Post[]>('posts', []);
     
     return {
@@ -191,50 +190,49 @@ it('allows to create post', {
 ```
 
 :::note
-`createSharedState` создаёт общее состояние для браузерного и серверного окружения, но изолирует данные в рамках взятой
-истории.
+`createSharedState` creates shared state for both browser and server environments, but isolates data within the context of a given story.
 :::
 
-## Расширения
+## Extensions {#extensions}
 
-`@storyshots/next` дополнительно расширяет фабрику [it](/API/factories/it) следующими элементами:
+`@storyshots/next` extends the [it](/API/factories/it) factory with the following features:
 
-### at
+### at {#at}
 
-Принимает стартовый `url` истории:
+Takes the starting `url` for the story:
 
 ```tsx
 [
   it('renders home page', {
-    // Откроет приложение по корневому адресу (поведение по умолчанию)
+    // Opens the app at the root URL (default behavior)
     at: '/',
   }),
   it('renders products', {
-    // Сразу откроет список продуктов
+    // Immediately opens the products list
     at: '/products',
   })
 ];
 ```
 
-### arrange
+### arrange {#arrange}
 
-Подготавливает внешние зависимости для истории.
+Prepares external dependencies for the story.
 
-Эта функция используется для подготовки окружения перед запуском истории.
+This function is used to set up the environment before running the story.
 
 ```ts
 it('...', {
   arrange: (externals) => ({
     ...externals,
-    // Для текущей истории установить определённое поведение метода.
+    // Set specific behavior for the method in this story
     getUser: async () => ({ name: 'John Doe', age: 25 }),
   }),
 });
 ```
 
-Принимает [конфигурацию истории](/API/test-components/story-config) как второй аргумент.
+Accepts [story configuration](/API/test-components/story-config) as a second argument.
 
-Может также использоваться для разметки методов для логирования с помощью [Journal]/API/test-components/story-config#journal:
+Can also be used to mark methods for logging via [Journal](/API/test-components/story-config#journal):
 
 ```ts
 it('...', {
@@ -246,15 +244,15 @@ it('...', {
 ```
 
 :::note
-`journal.record` и `journal.asRecordable` работают только с асинхронными функциями.
+`journal.record` and `journal.asRecordable` work only with async functions.
 :::
 
-Также может использоваться для хранения временного состояния в контексте истории:
+Also used for storing temporary state within the story context:
 
 ```ts
 it('...', {
   arrange: (externals) => {
-    // count сохранится в контексте работающей истории.
+    // count will be preserved within the running story context
     const count = createSharedState('count', 0);
 
     return {

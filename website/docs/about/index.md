@@ -3,137 +3,132 @@ slug: /
 sidebar_position: 1
 ---
 
-# Об инструменте
+# About the Tool {#about-the-tool}
 
-Тесты веб-приложений довольно часто оказываются в одном из трёх состояний:
+Web application tests often end up in one of three states:
 
-- **они либо бесполезны**
-- **либо слишком дороги в поддержке**
-- **либо на них просто не остаётся времени**
+- **they are either useless**
+- **or too expensive to maintain**
+- **or there simply isn't time for them**
 
-Популярные схемы тестирования также имеют свои недостатки:
+Popular testing approaches also come with their own drawbacks:
 
-- **unit-тесты** легко писать, но они не видят реального UI-поведения и часто оказываются слишком привязаны к внутренней структуре
-- **e2e-тесты** дают уверенность, но медленные, хрупкие и часто выходят за зону контроля FE-команды
-- **компонентные тесты** выглядят как компромисс, но на практике нередко наследуют недостатки обоих подходов
+- **Unit tests** are easy to write, but they don’t capture real UI behavior and often become overly coupled to internal implementation details
+- **E2E tests** provide confidence, but are slow, fragile, and frequently fall outside the control of frontend teams
+- **Component tests** appear as a compromise, but in practice often inherit the weaknesses of both approaches
 
-В итоге тесты живут отдельно от разработки, а разработка — отдельно от тестов.
+As a result, tests live separately from development, and development happens separately from tests.
 
-## Что такое storyshots
+## What Is Storyshots {#what-is-storyshots}
 
-`storyshots` **делает тесты главным инструментом разработчика**.
+`storyshots` **makes tests the primary tool of development**.
 
-Это фреймворк и набор практик для *test-assisted* разработки веб-приложений, где тест **не пишется после**, а **возникает прямо в процессе разработки**.
-
-<details>
-  <summary>Это TDD?</summary>
-  <p>TDD ориентируется на написание теста <b>до</b> рабочего кода, а не <b>вовремя</b>, как это происходит в <code>storyshots</code>.</p>
-  <blockquote>Однако, <code>storyshots</code> поддерживает разные практики тестирования, в том числе и TDD</blockquote>
-</details>
-
-### Взаимодействие с UI
-
-Обычный процесс разработки выглядит так:
-1. Мы запускаем dev-сервер
-2. Открываем приложение в браузере
-3. Переходим на нужную страницу
-4. Вручную приводим UI в нужное состояние (заполняем формы, кликаем списки, выполняем цепочку действий)
-5. Только после этого начинаем писать код.
-
-При любом изменении исходников приложение перезапускается — и всё состояние, набитое вручную, теряется.
-
-Разработчику приходится снова и снова воспроизводить **один и тот же сценарий**.
+It’s a framework and set of practices for *test-assisted* web application development, where the test **doesn’t get written after**, but **emerges naturally during development**.
 
 <details>
-  <summary>А как-же HMR?</summary>
-  <p>Существуют механизмы частичного сохранения состояния (например HMR), но они не гарантируют корректную работу в комплексных кейсах или гибридных окружениях (CSR + SSR, изоморфный код, побочные эффекты).</p>
-  <p>К тому же <code>storyshots</code> не исключается HMR, а <b>дополняет</b> его.</p>
+  <summary>Is this TDD?</summary>
+  <p>TDD focuses on writing the test <b>before</b> the implementation, whereas <code>storyshots</code> operates <b>during</b> development.</p>
+  <blockquote>However, <code>storyshots</code> supports various testing practices, including TDD.</blockquote>
 </details>
 
-`storyshots` превращает этот ручной труд в **историю** — воспроизводимый, детерминированный UI-сценарий, который можно:
+### UI Interaction {#ui-interaction}
 
-- воспроизводить
-- останавливать
-- изменять
-- и использовать как **окружение разработки**
+The typical development workflow looks like this:
+1. We start the dev server
+2. Open the app in the browser
+3. Navigate to the desired page
+4. Manually put the UI into the required state (fill forms, click lists, perform a sequence of actions)
+5. Only then do we start writing code.
 
-Ключевую роль здесь играет **UI-режим**.
+Any change to the source code triggers a restart — and all manually built state is lost.
 
-## Тест, в котором можно разрабатывать
+The developer must repeatedly re-create **the same scenario**.
 
-[**UI-режим**](/ui/) - одна из ключевых особенностей `storyshots`:
+<details>
+  <summary>What about HMR?</summary>
+  <p>There are mechanisms for partial state preservation (e.g., HMR), but they don’t guarantee correctness in complex cases or hybrid environments (CSR + SSR, isomorphic code, side effects).</p>
+  <p>Moreover, <code>storyshots</code> doesn’t replace HMR — it <b>complements</b> it.</p>
+</details>
 
-![.](assets/ui_mode_scheme.png)
+`storyshots` turns this manual effort into a **story** — a reproducible, deterministic UI scenario that can be:
 
-В нём разработчик:
-* 🤚🖱️ **взаимодействует** с приложением как обычно
-* ⚙️ **автоматизирует** действия, превращая их в историю
-* 👨‍💻 **разрабатывает и отлаживает** код как в привычном браузере
-* 📸 **фиксирует** целевое поведение
-* 🛠️ **рефакторит** реализацию без опасений что-то сломать
+- reproduced
+- paused
+- modified
+- and used as a **development environment**
 
-**Тест и поведение создаются одновременно и неотделимы друг от друга.**
+The key element here is the **UI mode**.
 
-> Тесты больше не откладываются «на потом» — они естественным образом появляются вместе с новыми фичами.
+## A Test You Can Develop In {#test-for-development}
 
-В UI-режиме также можно:
+[**UI Mode**](/ui/) is one of the core features of `storyshots`:
 
-* 👀 наблюдать выполнение теста в реальном времени
-* ⏸️ останавливать сценарий и продолжать разработку с текущего состояния
-* 📱 эмулировать разные устройства
-* ⚡ быстро воспроизводить сложные окружения и состояния
+![.](@site/assets/ui_mode_scheme.png)
+
+In UI mode, the developer:
+* 🤚🖱️ **interacts** with the app as usual
+* ⚙️ **automates** actions, turning them into a story
+* 👨‍💻 **develops and debugs** code just like in a regular browser
+* 📸 **captures** the desired behavior
+* 🛠️ **refactors** the implementation without fear of breaking anything
+
+**The test and the behavior are created simultaneously and are inseparable.**
+
+> Tests are no longer postponed to "later" — they naturally emerge alongside new features.
+
+UI mode also enables:
+* 👀 observing test execution in real time
+* ⏸️ pausing the scenario and resuming development from the current state
+* 📱 emulating different devices
+* ⚡ rapidly reproducing complex environments and states
 
 :::info
-UI-режим - это **улучшенный** браузер для веб-разработчика, а не просто раннер тестов.
+UI mode is an **enhanced** browser for web developers, not just a test runner.
 :::
 
-## Верификация поведения, а не реализации
+## Behavior Verification, Not Implementation {#behavior-verification-not-implementation}
 
-`storyshots` проверяет приложение с помощью техники [golden master](https://en.wikipedia.org/wiki/Characterization_test).
+`storyshots` verifies the application using the [golden master](https://en.wikipedia.org/wiki/Characterization_test) technique.
 
-Верификации выполняются в **автоматическом** режиме, разработчику требуется лишь указать **что** и **когда** необходимо
-зафиксировать.
+Verification happens in **automatic mode** — the developer only needs to specify **what** and **when** to capture.
 
 :::note
-Специальные *паттерны* и *инструменты* `storyshots` были разработаны для того, чтобы существенно увеличить
-поддерживаемость эталонного тестирования именно в разрезе UI.
+Special *patterns* and *tools* in `storyshots` were designed to significantly improve maintainability of baseline testing specifically in the context of UI.
 :::
 
-:::tip Важно
-`storyshots` верифицирует **не реализацию**, а **то, что реально видит и получает пользователь**, а также любые **взаимодействия**
-с внешними системами, которые вы считаете важными.
+:::tip Important
+`storyshots` verifies **behavior**, not implementation — what the user actually sees and receives, as well as any **interactions** with external systems you consider important.
 :::
 
-## Стабильность на архитектурном уровне
+## Stability at the Architectural Level {#architectural-stability}
 
-`storyshots` на [архитектурном уровне](/specification/scheme) обеспечивает **закрытость тестов от деталей реализации**, что в свою очередь:
+`storyshots` ensures **test independence from implementation details** at the [architectural level](/specification/arch), which in turn:
 
-* Дополнительно усиливает **защиту от регресса**.
-* Позволяет разработчикам осуществлять даже самый **глобальный рефакторинг** кодовой базы.
-* Даёт интегрировать `storyshots` даже в **долгоживущие проекты** с объёмной кодовой базой.
+* Further strengthens **regression protection**.
+* Allows developers to perform even the most **extensive refactoring** of the codebase.
+* Enables integration into **long-lived projects** with large codebases.
 
-## Почему storyshots
+## Why Storyshots {#why-storyshots}
 
-- 💻 **UI-режим** - единая среда разработки и тестирования.
-- 🛡️ **Полноценные тесты** - легко писать, надёжно защищают от регресса.
-- 🚀 **Минимум тестового кода** - проще поддерживать и развивать.
-- 📝 **Живая документация** - генерируется автоматически.
-- 🔗 **Простота интеграции** - подходит даже для зрелых и больших проектов.
-- 💯 **Всё включено** - от готовых решений до проверенных паттернов и рекомендаций.
+- 💻 **UI Mode** — a unified environment for development and testing.
+- 🛡️ **Full-featured tests** — easy to write, reliably protect against regressions.
+- 🚀 **Minimal test code** — simpler to maintain and evolve.
+- 📝 **Living documentation** — generated automatically.
+- 🔗 **Easy integration** — suitable even for mature, large-scale projects.
+- 💯 **Everything included** — from ready-made solutions to proven patterns and recommendations.
 
 :::note
-`storyshots` не заменяет unit- или e2e-тесты, а закрывает пространство между ними — там, где важно реальное поведение
-UI, быстрый feedback и свобода изменений.
+`storyshots` does not replace unit or e2e tests — it fills the gap between them, where real UI behavior, fast feedback, and freedom to change are essential.
 :::
 
-## Кому подойдёт
+## Who It Suits {#who-it-suits}
 
-- командам, выбирающим стратегию тестирования на старте
-- командам с активной UI-разработкой и частым рефакторингом
-- проектам с долгоживущим frontend-кодом
-- приложениям с гибридным runtime (например, Next.js)
+- Teams choosing a testing strategy from the start
+- Teams with active UI development and frequent refactoring
+- Projects with long-lived frontend code
+- Applications with hybrid runtime (e.g., Next.js)
 
-## Начало работы
+## Getting Started {#getting-started}
 
-- ⚡ **Быстрый старт** — [Установка](/installation), [UI-режим](/ui/) и [примеры проектов](https://github.com/storyshots/storyshots/tree/master/examples)
-- 📘 **Глубокое погружение** — [спецификация](/specification/), [API](/API/) и [паттерны](/patterns/)
+- ⚡ **Quick Start** — [Installation](/installation), [UI Mode](/ui/), and [example projects](https://github.com/storyshots/storyshots/tree/master/examples)
+- 📘 **Deep Dive** — [Specification](/specification/), [API](/API/), and [Patterns](/patterns/)

@@ -1,29 +1,29 @@
-# masked
+# masked {#masked}
 
-[Маскирует](/API/test-components/actor#маскирование) указанные элементы на всех снимках в переданных историях:
+[Mask](/API/test-components/actor#masking) the specified elements on all snapshots in the provided stories:
 
 ```ts
-// Закроет элемент отображения текущей даты специальной ширмой
+// Will cover the current date display element with a special mask
 masked(
   {
-    // Список маскируемых элементов
+    // List of elements to mask
     mask: [finder.getByTestId('very-dynamic-element')],
-    // Цвет ширмы
+    // Mask color
     color: 'pink',
   },
   stories,
 );
 ```
 
-:::note Слияние
-При композиции `masked` функций:
+:::note Merging
+When composing `masked` functions:
 
 ```ts
 masked(config_1, masked(config_0, stories));
 ```
 
-`config_1` и `config_0` будут слиты вместе по следующим правилам:
+`config_1` and `config_0` will be merged according to the following rules:
 
-- Маскируемые элементы (`config.mask`) будут объеденины.
-- Цвет ширмы будет установлен исходя из самой последней конфигурации (в примере выше это будет `config_1.color`).
+- Masked elements (`config.mask`) will be combined.
+- The mask color will be taken from the latest configuration (in the example above, this will be `config_1.color`).
   :::

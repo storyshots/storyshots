@@ -2,67 +2,67 @@
 sidebar_position: 2
 ---
 
-# finder
+# finder {#finder}
 
-Специальный объект для конструирования селекторов.
+A special object for constructing selectors.
 
 ---
 
-## getByRole
+# getByRole {#getbyrole}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-role)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-role) method.
 
-## getByText
+## getByText {#getbytext}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-text)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-text) method.
 
-## getByLabel
+## getByLabel {#getbylabel}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-label)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-label) method.
 
-## getByPlaceholder
+## getByPlaceholder {#getbyplaceholder}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-placeholder)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-placeholder) method.
 
-## getByAltText
+## getByAltText {#getbyalttext}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-alt-text)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-alt-text) method.
 
-## getByTitle
+## getByTitle {#getbytitle}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-title)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-title) method.
 
-## getByTestId
+## getByTestId {#getbytestid}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-test-id)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-get-by-test-id) method.
 
-## locator
+## locator {#locator}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-locator)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-locator) method.
 
-## filter
+## filter {#filter}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-filter)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-filter) method.
 
-## nth
+## nth {#nth}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-nth)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-nth) method.
 
-## first
+## first {#first}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-first)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-first) method.
 
-## last
+## last {#last}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-last)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-last) method.
 
-## and
+## and {#and}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-and)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-and) method.
 
-## get
+## get {#get}
 
-Позволяет расширять селекторы используя специальные трансформеры:
+Allows extending selectors using special transformers:
 
 ```ts
 function byButtonSeverity(severity: string): FinderTransformer {

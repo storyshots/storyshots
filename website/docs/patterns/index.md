@@ -2,10 +2,10 @@
 sidebar_position: 7
 ---
 
-# Паттерны
+# Patterns {#patterns}
 
-Данный раздел содержит рекомендации для написания более качественных тестов с помощью `storyshots`.
+This section contains recommendations for writing higher-quality tests using `storyshots`.
 
 :::tip
-Некоторые из представленных паттернов могут применяться и при использовании иных тестовых фреймворков.
+Some of the patterns presented here can also be applied when using other testing frameworks.
 :::

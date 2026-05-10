@@ -2,6 +2,6 @@
 sidebar_position: 4
 ---
 
-# API
+# API {#api}
 
-Раздел описывает основные публичные интерфейсы библиотеки и их возможности.
+This section describes the main public interfaces of the library and their capabilities.

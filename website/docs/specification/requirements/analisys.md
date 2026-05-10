@@ -2,158 +2,173 @@
 sidebar_position: 6
 ---
 
-import { Diagram } from '@site/src/Diagram';
+# Analysis {#analysis}
 
-# Анализ
+This model is designed for testing systems with finite and observable behavior.
 
-Данная модель предназначена для тестирования систем с конечным и наблюдаемым поведением.
+```mermaid
+flowchart LR
+  subgraph A["Arguments"]
+    direction TB
+    U["User"]
+    Q["Queries"]
+  end
 
-<Diagram src={require('./assets/test-arch.drawio.png')} />
+  subgraph F["Function"]
+    direction TB
+    AUT["AUT"]
+  end
 
-Модель применима к следующим классам систем:
+  subgraph R["Result"]
+    direction TB
+    C["Commands"]
+    M["Monitor"]
+  end
 
-- **FE-компонент** приложения, где BE выносится за границы AUT.
-- **Full-stack** приложение, где за границы выносятся обращения к внешним сервисам и системным службам.
-- **Web-сервис**, где события *пользователя* заменяются обычным обращением к API, а *монитор* становится слепком ответа от
-  методов.
-- **Util-библиотека** — в случае своей изолированности, остаются только обращения к функциям и слепки их результатов.
+  U --> AUT
+  Q --> AUT
+  AUT --> C
+  AUT --> M
+```
 
-Однако, её основной фокус — это системы с конечным и наблюдаемым поведением.
+The model applies to the following classes of systems:
 
-## Границы тестирования
+- **FE-component** of an application, where BE is moved outside the AUT.
+- **Full-stack** application, where interactions with external services and system services are moved outside.
+- **Web-service**, where user events are replaced with standard API calls, and the **Monitor** becomes a **baseline** of responses from methods.
+- **Util-library** — in case of isolation, only function calls and **baseline** results remain.
 
-:::info Важный факт
-Границы тестирования определяются клиентами тестируемого компонента.
+However, its primary focus is on systems with finite and observable behavior.
+
+## Testing Boundaries {#testing-boundaries}
+
+:::info Important fact
+Testing boundaries are defined by clients of the component being tested.
 :::
 
-Разберём на примерах подробнее.
+Let’s examine this in more detail with examples.
 
-#### FE-компонент
+#### FE-component {#fe-component}
 
-Клиенты:
+Clients:
 
-* Пользователь системы:
-  * Вход: события взаимодействия.
-  * Выход: визуальное представление UI.
-* BE и внешние сервисы:
-  * Вход: запросы от AUT.
-  * Выход: данные, возвращаемые из AUT.
+* System user:
+  * Input: interaction events.
+  * Output: visual UI representation.
+* BE and external services:
+  * Input: queries from AUT.
+  * Output: data returned by AUT.
 
-#### Util-библиотека
+#### Util-library {#util-library}
 
-Клиенты:
+Clients:
 
-* Пользователь API:
-  * Вход: вызовы методов.
-  * Выход: возвращаемые значения.
+* API user:
+  * Input: method calls.
+  * Output: returned values.
 
-Изменение стека не изменяет модель. Изменяется только расположение границ тестирования.
+Changing the stack does not alter the model — only the location of testing boundaries changes.
 
-## Гибкость тестирования
+## Testing Flexibility {#testing-flexibility}
 
-Возьмём к примеру Web-сервис. При тестировании API справедливо может возникнуть вопрос, что делать с БД? В текущей
-модели это сводится к простому — *"БД должна быть частью AUT или лежать на границах тестирования?"*
+Take a web service as an example. When testing the API, a common question arises: what to do with the database? In the current model, this reduces to a simple question — *"Should the database be part of the AUT or lie on the testing boundaries?"
 
-* Если БД становится частью AUT:
-  * Увеличиться защита от регресса и устойчивость к рефакторингу.
-  * БД должна стать внутренним состоянием AUT.
-* Если БД выходит за границы AUT:
-  * Уменьшается защита от регресса, но вырастает быстродействие.
-  * Взаимодействие с БД осуществляется по контракту через внешний слой.
+* If the database becomes part of the AUT:
+  * Regression protection increases and resilience to refactoring improves.
+  * The database must become internal state of the AUT.
+* If the database lies outside the AUT:
+  * Regression protection decreases, but performance increases.
+  * Database interaction occurs via contract through an external layer.
 
-Описываемая модель тестирования не уходит в конкретику — она описывает возможные варианты и помогает оценить их
-последствия.
+The described testing model does not go into specifics — it outlines possible options and helps assess their consequences.
 
-## Защита от регресса
+## Regression Protection {#regression-protection}
 
-#### Свойства
+#### Properties {#properties}
 
-* Недетерминированные операции локализованы в слое внешних запросов.
-* Основная логика сосредоточена внутри AUT.
-* Наблюдаемое поведение фиксируется через:
-  * слепки UI;
-  * зафиксированные команды взаимодействия с внешними системами.
+* Non-deterministic operations are localized in the external request layer.
+* Core logic is concentrated inside the AUT.
+* Observable behavior is captured through:
+  * UI **baselines**;
+  * recorded interaction commands with external systems.
 
-#### Ограничения
+#### Limitations {#limitations}
 
-Модель не предназначена для выявления расхождений между AUT и **реальными** внешними системами.
+The model is not intended to detect discrepancies between the AUT and **real** external systems.
 
-Проверяется корректность взаимодействия AUT с **моделью внешнего мира**, заданной **контрактами интерфейсов**.
+It verifies the correctness of AUT’s interaction with the **model of the external world**, defined by **interface contracts**.
 
-## Устойчивость к рефакторингу
+## Refactoring Resilience {#refactoring-resilience}
 
-Решение является устойчивым к изменению **деталей реализации AUT**, за исключением:
+The solution is resilient to changes in the **implementation details** of the AUT, except for:
 
-* Изменение реализации пользовательского интерфейса.
-* Изменение контрактов взаимодействия с внешней средой.
+* Changes in the user interface implementation.
+* Changes in contracts for interaction with the external environment.
 
-Изменения UI компенсируются использованием семантических селекторов.
+UI changes are compensated by using semantic selectors.
 
-Изменения контрактов внешней среды частично решаются использованием специальных паттернов: адаптер, фасад и другие.
+External contract changes are partially addressed using special patterns: adapter, facade, and others.
 
-Источники хрупкости **локализованы на границах системы**.
+Sources of fragility are **localized at system boundaries**.
 
-## Поддерживаемость
+## Maintainability {#maintainability}
 
-#### Свойства
+#### Properties {#properties}
 
-* Верификация поведения полностью автоматизирована.
-* Тесты описывают только входные данные и сценарии.
-* Архитектурное требование: явное или неявное выделение портов ввода и вывода.
+* Behavior verification is fully automated.
+* Tests describe only input data and scenarios.
+* Architectural requirement: explicit or implicit separation of input and output ports.
 
-Допустимые способы интеграции:
+Acceptable integration approaches:
 
-* Явное разделение I/O через инверсию зависимостей.
-* Неявная подмена поведения через сайд-эффекты (monkey‑patching).
+* Explicit I/O separation via dependency inversion.
+* Implicit behavior substitution via side effects (monkey-patching).
 
-#### Ограничения
+#### Limitations {#limitations}
 
-Основной объём тестового кода приходится на:
+The majority of test code is devoted to:
 
-* описание пользовательских сценариев;
-* описание моделей внешних API.
+* describing user scenarios;
+* describing models of external APIs.
 
-С ростом сложности внешних контрактов возрастает сложность тестов.
+As external contracts grow in complexity, test complexity increases.
 
 :::tip
-По этой причине в данном руководстве были описаны специальные [паттерны](/patterns/) работы с данной категорией данных.
+For this reason, special [patterns](/patterns/) for working with this type of data are described in this guide.
 :::
 
-## Быстродействие
+## Performance {#performance}
 
-#### Свойства
+#### Properties {#properties}
 
-* Отсутствие внешнего состояния.
-* Возможность параллельного выполнения тестов.
+* No external state.
+* Tests can be executed in parallel.
 
-#### Ограничения
+#### Limitations {#limitations}
 
-Рост покрытия увеличивает время выполнения тестов.
+Increased coverage leads to longer test execution time.
 
-## Вывод
+## Conclusion {#conclusion}
 
-Описываемая модель тестирования представляет тестируемое приложение в виде знакомой гексагональной архитектуры:
+The described testing model represents the tested application in a familiar hexagonal architecture:
 
-![#](./assets/hexagonal-architecture.webp)
+![#](@site/assets/hexagonal-architecture.webp)
 
-* На границах системы располагается тонкий слой взаимодействия с внешней средой приложения: БД, устройства, веб-сервисы, Runtime API и прочее.
-* Ядро же включает в себя всё остальное.
+* The outer layers contain a thin interaction layer with the application's external environment: databases, devices, web services, Runtime API, etc.
+* The core includes everything else.
 
-Выделяются конкретные категории внешних *портов*: входящих данных и исходящих сайд-эффектов. Таким образом ядро становится функцией от входящих данных. Её результатом становятся сайд-эффекты на внешний мир.
+Specific categories of external *ports* are identified: incoming data and outgoing side effects. Thus, the core becomes a function of incoming data, with results being side effects on the external world.
 
-За счёт fp-like моделирования, на данную структуру хорошо укладываются тесты и это не *просто совпадение*, а следствие
-простого факта — тесты это **ещё один пользователь системы**. Нюанс заключается в том, что этот пользователь работает с
-тестируемым приложением не в целевом окружении, а *изолированном*.
+Thanks to the fp-like modeling, this structure fits well with testing — this is not *just a coincidence*, but a consequence of a simple fact: tests are **another user of the system**. The nuance is that this user interacts with the tested application not in the target environment, but in an **isolated** one.
 
-Изоляция обеспечивает:
-* детерминизм;
-* управляемость;
-* воспроизводимость;
-* высокую скорость выполнения.
+Isolation provides:
+* determinism;
+* manageability;
+* reproducibility;
+* high execution speed.
 
-Ограничения модели:
-* сниженная защита от регресса по сравнению с e2e‑тестами;
-* необходимость описания внешней среды в тестах.
+Model limitations:
+* Reduced regression protection compared to e2e tests;
+* Need to describe the external environment within tests.
 
-Модель является компромиссным решением при тестировании компонентов системы в изоляции, когда использование e2e не
-является целесообразным.
+The model is a compromise solution for testing system components in isolation, when using e2e testing is not practical.

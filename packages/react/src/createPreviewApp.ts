@@ -3,7 +3,7 @@ import { createRun } from './createRun';
 import { ExternalsFactory } from './types';
 
 /**
- * https://storyshots.github.io/storyshots/API/createPreviewApp
+ * https://storyshots.github.io/storyshots/modules/react
  */
 export function createPreviewApp<TExternals>(
   factory: ExternalsFactory<TExternals>,
@@ -11,7 +11,7 @@ export function createPreviewApp<TExternals>(
   return {
     ...createBindStoryFactories<TExternals>(),
     /**
-     * https://storyshots.github.io/storyshots/API/createPreviewApp#run
+     * https://storyshots.github.io/storyshots/modules/react#run
      */
     run: createRun(factory),
   };

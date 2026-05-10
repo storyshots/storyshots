@@ -2,7 +2,7 @@ import { Arrangers } from './arrangers-types';
 import { EMPTY_PATH, focus } from './transformers/focus';
 
 /**
- * https://storyshots.github.io/storyshots/modules/arrangers#createarrangers
+ * https://storyshots.github.io/storyshots/modules/arrangers#create-arrangers
  */
 export function createArrangers<TExternals>() {
   return focus(EMPTY_PATH) as Arrangers<TExternals, TExternals>;

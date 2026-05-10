@@ -6,7 +6,7 @@ declare module '@storyshots/core' {
     arrange?(externals: TArg, config: StoryConfig): TArg;
 
     /**
-     * https://storyshots.github.io/storyshots/API/factories/it#render
+     * https://storyshots.github.io/storyshots/modules/react#render
      */
     render?(externals: TArg, config: StoryConfig): React.ReactNode;
   }

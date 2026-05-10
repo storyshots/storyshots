@@ -17,7 +17,7 @@ type Config = {
 };
 
 /**
- * https://storyshots.github.io/storyshots/modules/proxy#createproxyserver
+ * https://storyshots.github.io/storyshots/modules/exec#createexecpreview
  */
 export function createExecPreview(config: Config): PreviewServerFactory {
   return (mode) =>
