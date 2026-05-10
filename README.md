@@ -26,7 +26,7 @@ Learn more in the [documentation](https://storyshots.github.io/storyshots/).
 
 UI mode is the main feature of Storyshots: an interactive Chromium-based development environment that automatically reproduces application state, runs scenario actions, and validates behavior snapshots.
 
-![Storyshots UI mode scheme](website/docs/about/assets/ui_mode_scheme.png)
+![Storyshots UI mode scheme](website/assets/ui_mode_scheme.png)
 
 In UI mode, developers:
 
