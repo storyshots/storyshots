@@ -2,17 +2,11 @@
 sidebar_position: 2
 ---
 
-# filter
+# filter {#filter}
 
-Отсеивает [истории](/specification/requirements/borders) не удовлетворяющие предикату:
+Filters out [stories](/specification/requirements/borders) that do not satisfy the predicate:
 
 ```ts
-// Оставляем истории в тексте которых упоминается user
+// Keep stories that mention 'user' in their title
 filter(stories, (story) => story.title.includes('user'));
 ```
-
-:::note
-`filter` только исключает выделенные истории из запуска.
-
-В UI-режиме истории по-прежнему будут отображаться.
-:::

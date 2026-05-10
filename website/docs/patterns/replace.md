@@ -4,104 +4,103 @@ sidebar_position: 4
 
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Подмена поведений
+# Behavior Mocking {#behavior-mocking}
 
-`storyshots` требует подмены компонентов: [*запросы*](/specification/requirements/query) и [*команды*](/specification/requirements/command) на функции заглушки,
-для того чтобы сделать эталонное тестирование возможным.
+`storyshots` requires mocking components: [*queries*](/specification/requirements/query) and [*commands*](/specification/requirements/command) into stub functions,
+so that baseline testing becomes possible.
 
-## Подмена через инверсию
+## Mocking Through Inversion {#mocking-through-inversion}
 
 <MetricsTip improves={[Metric.Maintainability]} degrades={[Metric.RefactoringAllowance]} />
 
-Инверсия зависимостей является одним из способов подмены поведений.
+Dependency inversion is one way to mock behavior.
 
-Рассмотрим следующий пример:
+Consider the following example:
 
 ```ts
 async function placeAnOrder(order: OrderRepository) {
-  showLoading('Создание заказа');
+  showLoading('Creating order');
 
   await order.createOrder();
 
   hideLoading();
 
-  showMessage('Заказ был успешно создан');
+  showMessage('Order was successfully created');
 }
 ```
 
-Функция `placeAnOrder` принимает в качестве аргумента любое значение, реализующее интерфейс `OrderRepository`.
+The `placeAnOrder` function accepts any value implementing the `OrderRepository` interface as an argument.
 
-В реальном коде в функцию `placeAnOrder` передается репозиторий выполняющий обращения к серверу:
+In real code, the `orderRepository` that makes server calls is passed into `placeAnOrder`:
 
 ```ts
 placeAnOrder(orderRepository);
 ```
 
-В окружении `storyshots` ту же функцию можно использовать с заглушками:
+In the `storyshots` environment, the same function can be used with stubs:
 
 ```ts
 placeAnOrder(mockOrderRepository);
 ```
 
 :::note
-Поведение `placeAnOrder` изменится, однако исходный код самой функции будет идентичным. Это и называется _расширением_.
+The behavior of `placeAnOrder` will change, but the function's source code remains identical. This is called _extension_.
 :::
 
-### Инверсия зависимостей
+### Dependency Inversion {#dependency-inversion}
 
-С помощью интерфейса `OrderRepository` зависимость между `placeAnOrder` и `orderRepository` была инвертирована.
-Репозиторий удалось подменить только потому, что `placeAnOrder` теперь не зависит от `orderRepository` напрямую.
+Using the `OrderRepository` interface, the dependency between `placeAnOrder` and `orderRepository` has been inverted.
+This allowed replacing the repository only because `placeAnOrder` no longer depends on `orderRepository` directly.
 
-В то же время, если реализация `placeAnOrder` изменится:
+However, if the implementation of `placeAnOrder` changes:
 
 ```ts
 async function placeAnOrder(order: OrderRepository) {
-  showLoading('Создание заказа');
+  showLoading('Creating order');
 
   await order.createOrder();
-  // Добавился новый метод
+  // New method added
   await order.scheduleDelivery();
 
   hideLoading();
 
-  showMessage('Заказ был успешно создан');
+  showMessage('Order was successfully created');
 }
 ```
 
-То `orderRepository` придётся измениться, чтобы удовлетворять новому интерфейсу.
+Then `orderRepository` must also be updated to satisfy the new interface.
 
 :::note
-Интерфейсы являются частью своих клиентов, так как именно пользователи (клиенты) диктуют требования
-системам (интерфейсам), которыми пользуются.
+Interfaces are part of their clients, as it is the users (clients) who dictate the requirements
+of the systems (interfaces) they use.
 :::
 
-### Инверсия в React
+### Dependency Inversion in React {#dependency-inversion-in-react}
 
-Инверсия зависимостей зачастую сопровождается механизмами внедрение зависимостей (dependency injection). DI
-можно разделить на две стадии:
+Dependency inversion is often accompanied by dependency injection (DI) mechanisms. DI can be divided into two stages:
 
-- Создание зависимостей
-- Внедрение зависимостей
+- Creating dependencies
+- Injecting dependencies
 
-React предоставляет свой аналог DI, так называемый контекст, где `Provider` является компонентом устанавливающим
-зависимости, а `Consumer` позволяет их считывать, сквозь дерево компонентов.
+React provides its own DI equivalent, called context, where the `Provider` component sets dependencies,
+and the `Consumer` allows reading them through the component tree.
 
 :::note
-С одной стороны это позволяет уменьшить связанность компонентов и повышает их гибкость. С другой - уменьшает возможности
-для статической типизации.
+On one hand, this reduces component coupling and increases their flexibility. On the other hand, it reduces opportunities
+for static typing.
 :::
 
-В таком случае можно создать корневой провайдер определяющий подменяемые зависимости:
+In this case, you can create a root provider defining replaceable dependencies:
 
 ```tsx
 type Externals = {
   repositories: {
-    /* методы обращения к серверу */
+    /* methods for server calls */
   };
   env: {
-    /* методы работы с Web API */
+    /* methods for working with Web API */
   };
-  /* и другие */
+  /* and others */
 };
 
 const Context = createContext<Externals | undefined>();
@@ -109,7 +108,7 @@ const Context = createContext<Externals | undefined>();
 export const Externals: React.FC<
   React.PropsWithChildren<{ externals: Externals }>
 > = ({ externals, children }) => {
-  return <Context.Provider externals={externals}>{children}</Context.Provider>;
+  return <Context.Provider value={externals}>{children}</Context.Provider>;
 };
 
 export const useExternals = () => {
@@ -123,7 +122,7 @@ export const useExternals = () => {
 };
 ```
 
-Далее объявить фабрики для реального и тестового окружений:
+Next, declare factories for real and test environments:
 
 ```ts
 declare function createExternals(): Externals;
@@ -132,21 +131,21 @@ declare function createMockExternals(): Externals;
 ```
 
 :::tip
-Тестовый код желательно отделять от реального окружения (см. [Дислокация тестов](/patterns/files#дислокация-тестов)).
+It is recommended to separate test code from the real environment (see [Test Location](/patterns/files#test-location)).
 :::
 
-Точка входа в реальное окружение может выглядеть так:
+The entry point for the real environment might look like this:
 
 ```tsx
 export const Main: React.FC = () => (
-  // В реальном окружении используются реальные externals.
+  // In the real environment, real externals are used.
   <Externals externals={createExternals()}>
     <App />
   </Externals>
 );
 ```
 
-В тестах `externals` подменяются на тестовые данные:
+In tests, `externals` are replaced with test data:
 
 ```ts title="preview.ts"
 export const { run, it } = createPreviewApp({
@@ -159,7 +158,7 @@ export const { run, it } = createPreviewApp({
 run(
   map(stories, (story) => ({
     render: (externals) => (
-      // В окружении storyshots внедряются тестовые зависимости
+      // In the storyshots environment, test dependencies are injected
       <Externals externals={externals}>
         <App />
       </Externals>
@@ -169,60 +168,57 @@ run(
 );
 ```
 
-### Оценка
+### Evaluation {#evaluation}
 
-Достоинства данного метода:
+Advantages of this method:
 
-- **Строгость** - инвертируемые зависимости нельзя использовать до того, как они будут созданы. Это очевидное свойство
-  дополнительно контролируется компилятором.
-- **Безопасность** - данный метод идеально совмещается с TypeScript и обеспечивает максимальную корректность на
-  статическом уровне.
-- **Влиятельность** - с помощью данного метода подмены, тесты оказывают дополнительное влияние на архитектуру
-  приложения, делая её более расширяемой и адаптивной к изменениям.
+- **Strictness** – invertible dependencies cannot be used before they are created. This property is obvious
+  and additionally enforced by the compiler.
+- **Safety** – this method integrates perfectly with TypeScript and ensures maximum correctness at the static level.
+- **Influence** – this mocking approach exerts additional influence on the application architecture, making it more extensible
+  and adaptive to changes.
 
-Недостатки:
+Disadvantages:
 
-- **Многословность** - инверсия требует создание новой промежуточной сущности, интерфейса.
-- **Требовательность** - код должен быть структурирован таким образом, чтобы поддерживать инверсию. Библиотеки, даже
-  самые популярные, далеко не всегда позволяют расширять свои поведения данным образом.
-- **Зависимость** - данный метод подмены сильнее связывает тесты с внутренним устройством кода проекта, усложняя
-  рефакторинг.
+- **Verbosity** – inversion requires creating a new intermediate entity, an interface.
+- **Demanding** – the code must be structured in a way that supports inversion. Libraries, even the most popular ones,
+  do not always allow extending their behavior this way.
+- **Dependency** – this mocking method more tightly couples tests to the internal structure of the project code,
+  complicating refactoring.
 
 :::tip
-Данный метод подмены рекомендуется для новых проектов с небольшой кодовой базой и пока ещё податливой внутренней
-структурой.
+This mocking method is recommended for new projects with small codebases and still malleable internal structures.
 :::
 
-## Подмена через сайд-эффекты
+## Mocking Through Side Effects {#mocking-through-side-effects}
 
 <MetricsTip improves={[Metric.RefactoringAllowance]} degrades={[Metric.Maintainability]} />
 
-Помимо явной подмены через инверсию, также можно заменять зависимости путём их явного модифицирования.
+In addition to explicit mocking through inversion, dependencies can also be replaced by directly modifying them.
 
-Рассмотрим пример:
+Consider the following example:
 
 ```ts
 const orderRepository = {
-  // Обращение к серверу
+  // Server call
   createOrder: () => fetch('...'),
 };
 
 async function placeAnOrder() {
-  showLoading('Создание заказа');
+  showLoading('Creating order');
 
   await orderRepository.createOrder();
 
   hideLoading();
 
-  showMessage('Заказ был успешно создан');
+  showMessage('Order was successfully created');
 }
 ```
 
-`placeAnOrder` использует `orderRepository`. Для того чтобы протестировать функцию, можно подменить поведение
-репозитория напрямую:
+`placeAnOrder` uses `orderRepository`. To test the function, you can directly replace the repository's behavior:
 
 ```ts
-// Подменяем метод `createOrder` на заглушку на прямую.
+// Directly replace the `createOrder` method with a stub.
 orderRepository.createOrder = () => {
   /* ... */
 };
@@ -231,13 +227,12 @@ placeAnOrder();
 ```
 
 :::note
-В `storyshots`, все истории существуют в изолированных друг от друга окружениях, поэтому влияние подобного рода подмены
-на другие тесты исключается.
+In `storyshots`, all stories exist in isolated environments, so the impact of such mocking on other tests is eliminated.
 :::
 
-### Monkey-patching в React
+### Monkey-Patching in React {#monkey-patching-in-react}
 
-При данном типе подмены, рекомендуется использовать репозитории как глобальные singleton объекты:
+With this type of mocking, it is recommended to use repositories as global singleton objects:
 
 ```ts title="repositories.ts"
 export const orderRepository = {
@@ -252,10 +247,10 @@ export const productRepository = {
   /* ... */
 };
 
-/* И другие репозитории */
+/* And other repositories */
 ```
 
-В конкретном компоненте, репозитории используются напрямую, по ссылке:
+In a specific component, repositories are used directly by reference:
 
 ```ts
 export const UserPage: React.FC = () => {
@@ -265,35 +260,35 @@ export const UserPage: React.FC = () => {
 };
 ```
 
-В тестах, следует объявить фабрику заглушек на основе глобальных репозиториев:
+In tests, declare a factory for stubs based on global repositories:
 
 ```ts
-// Реестр используемых в приложении репозиторев
+// Registry of repositories used in the application
 const registry = {
   orderRepository,
   userRepository,
   productRepository,
 };
 
-// Фабрика по созданию заглушек для каждого из репозиториев
+// Factory for creating stubs for each repository
 declare function createMockRepositories(): typeof registry;
 ```
 
 :::tip
-Реестр репозиториев можно объявить сразу, на уровне реального кода, в таком случае в тестах его создавать не придется,
-что уменьшит связанность.
+The repository registry can be declared at the real code level, in which case it does not need to be created in tests,
+reducing coupling.
 :::
 
-Далее объявить компонент, который будет осуществлять внедрение описанных зависимостей:
+Next, declare a component that will inject the described dependencies:
 
-```ts
+```tsx
 type Props = React.PropsWithChildren<{ repositories: typeof registry }>;
 
 const RepositoryReplacer: React.FC<Props> = ({ repositories, children }) => {
   useMemo(() => {
     /**
-     * *Опционально* можно помечать не замоканные методы как не реализованные по умолчанию.
-     * Это упростит отладку и исключит нежелательные сайд-эффекты.
+     * *Optionally* mark non-mocked methods as not implemented by default.
+     * This simplifies debugging and prevents unwanted side effects.
      */
     markAllAsNotImplemented();
 
@@ -316,7 +311,7 @@ function injectImplementations(overrides: Props['repositories']) {
 }
 ```
 
-Интеграция `storyshots`:
+Integration with `storyshots`:
 
 ```ts title="preview.ts"
 export const { run, it } = createPreviewApp({
@@ -329,7 +324,7 @@ export const { run, it } = createPreviewApp({
 run(
   map(stories, (story) => ({
     render: (repositories) => (
-      // В окружении storyshots внедряются тестовые зависимости
+      // In the storyshots environment, test dependencies are injected
       <RepositoryReplacer repositories={repositories}>
         <App />
       </RepositoryReplacer>
@@ -339,12 +334,12 @@ run(
 );
 ```
 
-:::warning Внимание
-Зависимости подменяются не сразу, а на этапе выполнение `render` функции `RepositoryReplacer`. Это означает, что если
-подменяемые функции используются до этого, например на этапе загрузки модуля, то их реализация останется оригинальной:
+:::warning Attention
+Dependencies are not replaced immediately, but at the time of `render` function execution in `RepositoryReplacer`. This means that if
+the dependencies are used before this point—for example, during module loading—their implementation remains original:
 
 ```ts title="index.ts"
-// getVersion не будет подменён так выполнится раньше чем сработает подмена в RepositoryReplacer.
+// getVersion will not be mocked because it runs before RepositoryReplacer replacement.
 const version = manifestRepository.getVersion();
 
 export const App = () => {
@@ -352,29 +347,27 @@ export const App = () => {
 };
 ```
 
-Зависимости можно подменять и раньше, но тогда для них не будет работать функция `arrange`.
+Dependencies can be replaced earlier, but then the `arrange` function will not work for them.
 :::
 
-### Оценка
+### Evaluation {#evaluation}
 
-Достоинства:
+Advantages:
 
-- **Компактность** - метод не требует создания большого числа дополнительных сущностей.
-- **Независимость** - за счёт своей не явности, такой способ подмены идеально подходит для использования в legacy
-  стемах.
-- **Глобальность** - с помощью данного вида подмены, можно заменять поведения даже там, где это не предусматривалось
-  изначальное - например в сторонних библиотеках.
+- **Conciseness** – the method does not require creating many additional entities.
+- **Independence** – due to its implicit nature, this method is ideal for use in legacy systems.
+- **Global scope** – with this kind of mocking, behavior can be replaced even in places not originally designed for it—
+  for example, in third-party libraries.
 
-Недостатки:
+Disadvantages:
 
-- **Не строгость** - нет никакой гарантии что подменяются все зависимости, что используются в приложении.
-- **Не безопасность** - корректность сайд-эффектов нельзя в полной мере проверить с помощью статических типов.
+- **Lack of strictness** – there is no guarantee that all dependencies used in the application are replaced.
+- **Lack of safety** – the correctness of side effects cannot be fully verified using static types.
 
 :::tip
-Подмены через инверсию и сайд-эффекты можно комбинировать:
+Mocking through inversion and side effects can be combined:
 
-- Репозитории можно подменять методом инверсии, так как они являются частью приложения и находятся под полным контролем
-  разработчиков
-- Web-API следует заменять через сайд-эффекты, так как он является глобальным и общедоступным. Библиотека
-  [`@storyshots/web-api-mocks`](/modules/web-api) как раз это и выполняет.
-  :::
+- Repositories can be mocked using inversion, as they are part of the application and fully under developer control.
+- Web-API should be mocked via side effects, as it is global and publicly accessible. The library [`@storyshots/web-api-mocks`](/modules/web-api)
+  performs exactly this.
+:::

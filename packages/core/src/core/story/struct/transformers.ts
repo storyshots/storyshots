@@ -3,7 +3,7 @@ import { Group, Story, StoryTree } from './types';
 import { StoryID } from '../story-id';
 
 /**
- * https://storyshots.github.io/storyshots/API/operators/map
+ * https://storyshots.github.io/storyshots/API/utils/map
  */
 export function map<TArg>(
   stories: ExtendableStoryTree<TArg>,
@@ -17,7 +17,7 @@ export function map<TArg>(
 }
 
 /**
- * https://storyshots.github.io/storyshots/API/operators/filter
+ * https://storyshots.github.io/storyshots/API/utils/filter
  */
 export function filter<TArg>(
   stories: ExtendableStoryTree<TArg>,

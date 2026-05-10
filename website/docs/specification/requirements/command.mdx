@@ -3,30 +3,30 @@ sidebar_position: 4
 ---
 
 import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
-import { Diagram } from '@site/src/Diagram';
 
-# Команды
+
+# Commands {#commands}
 
 <BalancedMetricsTip
   improves={[Metric.RegressionProtection, Metric.Maintainability, Metric.Speed]}
 />
 
-Команды включают _неявные_ исходящие данные программы — результаты её работы, наблюдаемые за пределами AUT. Относится к секции [_результата_](/specification/requirements/borders#определение-границ).
+Commands include _implicit_ outgoing data from the application — the results of its execution observable beyond the AUT. This relates to the [_outcome_](/specification/requirements/borders#define-boundaries) section.
 
-## Сайд-эффект
+## Side-Effect {#side-effects}
 
-Сайд-эффект — _наблюдаемый_ клиентами результат работы функции, который существует за _пределами_ её возвращаемого значения.
+A side-effect is a _visible_ result of a function's execution, existing _beyond_ its return value.
 
 :::note
-В контексте данной спецификации, говоря о "функции", имеется ввиду AUT, то есть целая программа, которую необходимо сделать _тестируемой_.
+In the context of this specification, when referring to a "function," we mean the AUT — the entire program that needs to be made _testable_.
 
-Соответственно, сайд-эффект — это результат работы AUT, выходящий за пределы самой _тестируемой программы_.
+Thus, a side-effect is a result of the AUT's execution that extends beyond the _testable program_ itself.
 :::
 
 <details>
-  <summary>`throw new Error()` сайд-эффект?</summary>
+  <summary>Is `throw new Error()` a side-effect?</summary>
   <p>
-    Рассмотрим простую функцию деления:
+    Consider a simple division function:
     ```ts
     function divide(a: number, b: number): number {
       if (b === 0) {
@@ -35,12 +35,12 @@ import { Diagram } from '@site/src/Diagram';
 
       return a / b;
     }
-````
+```
 
-    * Нельзя сказать, что выброшенное исключение является возвращаемым результатом работы функции: его нельзя записать в переменную и оно требует специальной обработки.
-    * К тому же, глядя исключительно на сигнатуру `function divide(a: number, b: number): number` невозможно понять, какие исключения выбрасываются и выбрасываются ли вообще.
+    * It cannot be said that the thrown exception is the function's return value: it cannot be assigned to a variable and requires special handling.
+    * Moreover, looking only at the signature `function divide(a: number, b: number): number`, it's impossible to determine which exceptions are thrown, or if any are thrown at all.
 
-    Теперь взглянем на альтернативную версию:
+    Now let's examine an alternative version:
 
     ```ts
     function divide(a: number, b: number): Either<number, CanNotDivideByZero> {
@@ -52,147 +52,158 @@ import { Diagram } from '@site/src/Diagram';
     }
 ```
 
-    * Теперь ошибка явно возвращается из функции как значение.
-    * Сигнатура делает функцию прозрачной, сообщая о возможном исключении.
+    * Now the error is explicitly returned from the function as a value.
+    * The signature makes the function transparent, indicating the possibility of an exception.
 
-    На таком контрасте видно, что исключения являются сайд-эффектами, однако они не выходят за пределы AUT и потому не рассматриваются как команды в контексте тестирования.
+    This contrast clearly shows that exceptions are side-effects. However, since they do not leave the AUT, they are not considered commands in the context of testing.
   </p>
 </details>
 
-## Внешняя среда
+## External Environment {#external-environment}
 
-Проще всего понять определение на следующем примере:
+The definition is easiest to understand through the following example:
 
 ```ts
 declare function getUsers(): Promise<User[]>;
 declare function addUser(body: UserBody): Promise<User[]>;
 
 /**
- * Функция getUsers возвращает список пользователей из БД.
+ * The getUsers function returns a list of users from the database.
  *
- * При первом запуске список пуст, так как пользователи ещё не добавлены.
+ * On the first run, the list is empty, as users have not yet been added.
  */
 await getUsers(); // []
 
 /**
- * Функция addUser добавляет нового пользователя в БД, ничего при этом не возвращая.
+ * The addUser function adds a new user to the database, returning nothing.
  */
 await addUser({ name: 'Vasiliy' });
 
 /**
- * При повторном вызове getUsers результат изменится.
+ * On subsequent calls, getUsers returns a different result.
  *
- * Функция addUser изменила внешнее состояние, которое повлияло на результат getUsers.
+ * The addUser function changed the external state, which affected the behavior of getUsers.
  */
 await getUsers(); // [{ id: 1, name: 'Vasiliy' }]
 ```
 
-- `addUser` вернул `void` в качестве результата.
-- Но, при этом `addUser` осуществила действие, которое повлияло на работу стороннего клиента — функцию `getUsers`.
+- `addUser` returns `void` as its result.
+- Yet, `addUser` performs an action that affects the behavior of an external client — the `getUsers` function.
 
-Помимо простых команд, существуют функции которые одновременно осуществляют сайд-эффект и возвращают результат:
+Besides simple commands, there are functions that perform both side-effects and return a result:
 
 ```ts
-// Сканирует штрих-код с камеры устройства
+// Scans a barcode from the device's camera
 const code = await scanBarCodeWithCamera();
 
-// Запрашивает разрешения у пользователя
+// Queries permissions from the user
 const granted = askForPermissions(permisions);
 
-// Активировать вибрацию на телефоне, выбрасывает исключение при неудаче
+// Vibrates the phone, throws an exception on failure
 vibratePhone();
 
-// Показать системное окно подтверждение
+// Shows a system confirmation dialog
 const confirmed = window.confirm('Are you sure?');
 ```
 
-Все перечисленные функции объединяет одно очень важное свойство — все они выполняют сайд-эффекты во *внешнюю среду*.
+All the listed functions share one important property — they all perform side-effects in the *external environment*.
 
 :::note
-Внешняя среда — это данные, живущие за пределами AUT. Сайд-эффект изменяет эти данные, что в свою очередь может сделать поведение AUT недетерминированным.
+The external environment refers to data living beyond the AUT. A side-effect modifies this data, which in turn may make the AUT's behavior non-deterministic.
 :::
 
-## Способ верификации
+## Verification Method {#verification-method}
 
-Согласно установленным условиям верификации, необходимо:
+According to the established verification conditions, it is necessary to:
 
-- Выразить сайд-эффекты в виде значений, для того чтобы их можно было записать в эталон.
-- Не выполнять сайд-эффекты AUT в тестовом окружении в целях управляемости.
+- Express side-effects as values, so they can be recorded in the baseline.
+- Avoid executing side-effects in the test environment to ensure control.
 
-Для этого используется комбинация _подмены_ и _журналирования_.
+This is achieved through a combination of _mocking_ and _logging_.
 
-При стандартном подходе реализация команды лишается сайд-эффектов и факт вызова записывается в журнал:
+With the standard approach, the command implementation loses its side-effects, and the call is recorded in the journal:
 
 ```ts
 function showNativeNotification(config: NotificationConfig) {
   /*
-   Важно записывать полную информацию о функции, когда и с какими параметрами она вызывается,
-   так как всё это является частью контракта взаимодействия.
+   It's important to record full function information — when and with what parameters it was called,
+   as this is part of the interaction contract.
   */
   journal.record('showNativeNotification', config);
-  // Ничего не выполняем в тестах
+  // Do nothing in tests
 }
 
 /**
- * В начале журнал вызовов пуст — []
+ * Initially, the call journal is empty — []
  */
 
 // ...
 
 /**
- * После первого вызова в журнале появится запись с информацией о вызове и переданных аргументах.
+ * When method is called, journal will record invocation by recording a function name and arguments.
  * [["showNativeNotification", [{ title: 'Hello, User!' }]]]
  */
 await showNativeNotification({ title: 'Hello, User!' });
 
 /**
- * Журнал будет пополняться при вызове подобных функций далее.
+ * The journal accumulates calls to such functions.
  */
 ```
 
-Во время тестов программа вызывает методы и заполняет журнал. В конце работы журнал сравнивается с [эталоном](/specification/requirements/borders#верификация), чтобы
-проверить корректность работы приложения.
+During tests, the program calls methods and populates the journal. At the end, the journal is compared with the [baseline](/specification/requirements/borders#verification) to verify the application's correctness.
 
-Схема процесса:
+Process flow:
 
-<Diagram src={require('./assets/journal.drawio.png')} />
+```mermaid
+flowchart LR
+  E["Baseline"] -- "Contains" --> J["Journal"]
+  AUT["AUT"] -- "Generates" --> J2["Journal'"]
 
-Журнал становится **слепком сайд-эффектов AUT**. Данный артефакт может использоваться разработчиком для валидации _контракта взаимодействия_ с внешним миром.
+  subgraph BOX[" "]
+    direction TB
+    J
+    J2
+  end
+
+  T["Test"] -->|Compares| BOX
+```
+
+The journal becomes a **baseline of the AUT's side-effects**. This artifact can be used by developers to validate the _interaction contract_ with the external world.
 
 :::note
-При такой модели, если наблюдаемое поведение нарушилось, но при этом эталон журнала не изменился, это может означать следующее:
+With this model, if observed behavior is broken but the baseline journal remains unchanged, this may indicate:
 
-- Нарушилось поведение внешних систем
-- Изменились контракты взаимодействия
+- External system behavior has changed
+- Interaction contracts have been altered
 
-В обоих случаях, регресс порождён внешними изменениями, а не повреждением внутренней реализации.
+In both cases, the regression was caused by external changes, not by internal implementation damage.
 :::
 
 <details>
-  <summary>Сигналы</summary>
+  <summary>Signals</summary>
   <p>
-    Можно выделить отдельную категорию команд, которые хоть и выполняют сайд-эффект, однако его результат никак не влияет на работу AUT:
+    A distinct category of commands can be identified — functions that perform side-effects, but whose results do not affect the AUT's operation:
 
     ```ts
-    // Функция отправляет чек по email
+    // This function sends a receipt by email
     const success = sendReceiptByEmail(receipt);
     ```
 
-    Всё что обрабатывается AUT — факт успешности выполнения сайд-эффекта, но не его результат. Можно сказать, что такие функции просто посылают *сигналы* во внешние системы (**fire and forget**).
+    The only thing the AUT processes is the success status of the side-effect execution, not its outcome. These functions can be seen as simply sending *signals* to external systems (**fire and forget**).
 
-    Тем не менее, в целях тестирования также стоит выделять такие функции в команды, по следующим причинам:
+    Nevertheless, for testing purposes, such functions should still be treated as commands for the following reasons:
 
-    * Журнал верифицирует контракт взаимодействия. Сигналы должны быть совместимы с интерфейсом внешних систем.
-    * Сигналы не должны уходить во внешние системы во время тестирования, в целях управляемости.
+    * The journal verifies the interaction contract. Signals must be compatible with external system interfaces.
+    * Signals must not be sent to external systems during testing, for control purposes.
   </p>
 </details>
 
-### Эмуляция
+### Emulation {#emulation}
 
-Для команд также существует иной метод верификации, а именно — эмуляция:
+Another verification method for commands is emulation:
 
 ```ts
-// В тесте поведение getUsers и addUser эмулируется
+// In tests, the behavior of getUsers and addUser is emulated
 const users: User[] = [];
 
 async function getUsers(): Promise<User[]> {
@@ -204,32 +215,32 @@ async function addUser(body: UserBody): Promise<User[]> {
 }
 
 async function test() {
-  // Отображается список с пустым набором пользователей
+  // Displays an empty user list
   snapshot(renderUI(await getUsers())); // []
 
   await addUser({ name: 'Vasiliy' });
 
-  // Отображается список с добавленным пользователем
+  // Displays a list with the added user
   snapshot(renderUI(await getUsers())); // [{ id: 1, name: 'Vasiliy' }]
 }
 ```
 
 :::note
-`addUser` по-прежнему осуществляет сайд-эффект по отношению `getUsers`, однако, он **не выходит за пределы AUT**. Программа остаётся детерминируемой, а значит — тестируемой.
+`addUser` still performs a side-effect relative to `getUsers`, but it **does not leave the AUT**. The program remains deterministic, and thus testable.
 :::
 
-Данный метод позволяет обеспечить большую защиту от регресса, так как поведение внешней системы теперь эмулируется, что приближает условия работы AUT к целевым.
+This method provides stronger regression protection, as the external system's behavior is now emulated, bringing the AUT's operating conditions closer to the target.
 
-Но, взамен сам тестовый сценарий усложняется, в нём появляется **дополнительная логика**.
+However, in exchange, the test scenario becomes more complex, introducing **additional logic**.
 
 :::tip
-Если поведение внешней системы тривиальное, а AUT — сложное, то отдавайте предпочтение эмуляции. В противном случае используйте журналы.
+If the external system's behavior is trivial and the AUT is complex, prefer emulation. Otherwise, use journals.
 :::
 
-## Связь с библиотекой
+## Library Connection {#library-connection}
 
-`storyshots` позволяет тестировать функции, подобные `addUser`, двумя способами:
+`storyshots` allows testing functions like `addUser` in two ways:
 
-- С использованием [журнала вызовов](/specification/requirements/command#способ-верификации) (рекомендуется для большинства случаев).
-- С помощью [эмуляции поведения](/patterns/externals#эмуляция-externals) (усложняет тесты, но повышает защиту от регресса).
-- Компонент "команды" хранится в объекте `externals` и подменяется с помощью [arrange](/modules/react#arrange)
+- Using the [call journal](/specification/requirements/command#verification-method) (recommended for most cases).
+- Using [behavior emulation](/patterns/externals#emulation-externals) (increases test complexity but enhances regression protection).
+- The "command" component is stored in the `externals` object and substituted via [arrange](/modules/react#arrange)

@@ -20,7 +20,7 @@ export type StoryEnvironment = {
    */
   device: Device;
   /**
-   * https://storyshots.github.io/storyshots/API/test-components/story-config#previewing
+   * https://storyshots.github.io/storyshots/modules/react#previewing
    */
   previewing: boolean;
 };

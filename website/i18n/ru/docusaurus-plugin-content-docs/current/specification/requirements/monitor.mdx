@@ -1,0 +1,40 @@
+---
+sidebar_position: 5
+---
+
+import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
+
+
+# Монитор {#monitor}
+
+<BalancedMetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]} />
+
+Монитор включает основной результат работы UI части приложения — изображение интерфейса.
+Относится к секции [*результата*](/specification/requirements/borders#define-boundaries).
+
+:::note
+Строго говоря, отображение интерфейса на экране пользователя также является сайд-эффектом, как и любая другая операция вывода. Однако для подчёркивания нюансов работы, данная спецификация выделяет UI в отдельный компонент.
+:::
+
+## Верификация {#verification}
+
+Схема процесса выглядит следующим образом:
+
+```mermaid
+flowchart LR
+  E["Эталон"] -- "Содержит" --> J["Изображение"]
+  AUT["AUT"] -- "Генерирует" --> J2["Изображение'"]
+
+  subgraph BOX[" "]
+    direction TB
+    J
+    J2
+  end
+
+  T["Тест"] -->|Сравнивает| BOX
+````
+
+## Связь с библиотекой {#library-connection}
+
+`storyshots` реализует [актора](/API/test-components/actor), который комбинирует автоматическое создание изображений через снимки экрана с
+возможностью создания промежуточных снимков.

@@ -1,12 +1,12 @@
-# resized
+# resized {#resized}
 
-Устанавливает [размеры экрана](/API/test-components/actor#resize) для переданных историй:
+Sets [screen dimensions](/API/test-components/actor#resize) for the provided stories:
 
 ```ts
 resized(
-  // Принимает объект конфигурацию истории
+  // Accepts a story configuration object
   ({ device }) =>
-    // На мобильных устройствах экран будет растянут по высоте чтобы вместить весь контент страницы
+    // On mobile devices, the screen will be stretched vertically to fit the entire page content
     device.name === 'mobile' ? { height: 1200 } : undefined,
   stories,
 );

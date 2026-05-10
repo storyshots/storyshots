@@ -4,185 +4,179 @@ sidebar_position: 3
 
 import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
 
-# Запросы
+# Queries {#queries}
 
 <BalancedMetricsTip improves={[Metric.Maintainability, Metric.Speed]} />
 
-Запросы включают в себя *неявные* входящие данные в программу.
-Относится к секции [*аргументов*](/specification/requirements/borders#определение-границ).
+Queries include *implicit* inputs into the program.
+Relates to the [*arguments*](/specification/requirements/borders#define-boundaries) section.
 
-Рассмотрим простой пример — метод класса `Date`, используемый для получения текущей даты.
+Consider a simple example — the `Date` class method used to get the current date.
 
 ```ts
 +new Date(); // 1741963243818
 
 await wait(5_000);
 
-// Функция получения текущей даты возвращает разный результат в зависимости от времени запуска
+// The function returning the current date returns different results depending on the execution time
 +new Date(); // 1741963320257
 ```
 
-Обратите внимание, что функция получения текущей даты вернула разный результат, хотя аргументы, переданные в неё, не
-изменились.
+Note that the current date function returned different results, even though the arguments passed to it did not change.
 
-Это ключевое свойство недетерминированных функций.
+This is a key property of nondeterministic functions.
 
-## Детерминированность
+## Determinism {#determinism}
 
-Детерминированными называются функции, результат которых полностью определяется их входными
-аргументами:
+Deterministic functions are those whose result is fully determined by their input arguments:
 
 ```ts
-// Функция double является детерминированной
+// The double function is deterministic
 const double = (n: number) => n * 2;
 
-// Если вызвать её с тем же аргументом повторно
+// If called again with the same argument
 double(5); // 10
 
-// Результат будет одинаковым
+// The result will be the same
 double(5); // 10
 ```
 
-Источником недетерминированного поведения является скрытое изменяемое окружение — данные, влияющие на результат функции,
-но не передаваемые ей явно.
+The source of nondeterministic behavior is hidden mutable environment — data affecting the function's result but not explicitly passed to it.
 
-В дальнейшем, для простоты, будем называть его **состоянием**.
+In the following, for simplicity, we will refer to it as **state**.
 
 ```ts
-let counter = 0; // Внешняя переменная counter образует состояние incr
+let counter = 0; // The external counter variable forms the state of incr
 function incr() {
   counter += 1;
   
   return counter;
 }
 
-// incr не детерминированная 
+// incr is nondeterministic
 incr(); // 1
 incr(); // 2
 incr(); // 3
 ```
 
-Для того чтобы сделать функцию `incr` детерминированной, необходимо избавиться от состояния:
+To make the `incr` function deterministic, we must eliminate the state:
 
 ```ts
 function incr(initial = 0) {
-  //          ^^^^^^^ аргумент initial не является скрытым состоянием
+  //          ^^^^^^^ the initial argument is not hidden state
   return {
     value: initial + 1,
     next: () => incr(initial + 1),
   };
 }
 
-// incr теперь детерминированная функция
+// incr is now a deterministic function
 const iter_0 = incr();
 
 iter_0.value // 1
 
-// iter_0.next также является детерминированной и возвращает один и тот-же результат
+// iter_0.next is also deterministic and returns the same result
 const iter_1 = iter_0.next();
 
 iter_1.value // 2
 ```
 
 :::warning
-Данный пример иллюстрирует принцип моделирования состояния, а не рекомендуемый стиль реализации.
+This example illustrates the principle of modeling state, not a recommended implementation style.
 :::
 
-## Изменяемое окружение
+## Mutable Environment {#mutable-environment}
 
-Наличие скрытого изменяемого окружения в AUT делает её поведение непредсказуемым и непригодным для эталонного
-тестирования.
+The presence of hidden mutable environment in the AUT makes its behavior unpredictable and unsuitable for baseline testing.
 
-Поэтому необходимо:
+Therefore, it is necessary to:
 
-* Избавиться от внешнего состояния, поместив интерфейс доступа в слой [аргументов](/specification/requirements/borders#определение-границ).
-* Подменяемый интерфейс должен быть максимально *тонким* и *простым*, для того чтобы сохранить защиту от регресса.
+* Eliminate external state by placing access interfaces in the [arguments](/specification/requirements/borders#define-boundaries) layer.
+* The substitute interface should be as *thin* and *simple* as possible to maintain regression protection.
 
 ```ts
 function formatDate(date: Date) {
-  //                ^^^^ зависимость становится обратной
+  //                ^^^^ dependency becomes inverted
   // ... //
 }
 
 function test() {
-  // Теперь, поведение функции легко контролируется
+  // Now, the function's behavior is easily controllable
   snapshot(formatDate(new Date(2026, 1, 1, 12, 0, 0, 0, 0)));
 }
 ```
 
 <details>
-  <summary>Принцип подстановки</summary>
+  <summary>Substitution Principle</summary>
   <p>
-    Выделяя и подменяя запросы, тестовое окружение должно передавать такие детерминированные альтернативы, которые
-    *совместимы* с ожидаемым программой интерфейсом:
+    By isolating and replacing queries, the test environment should provide deterministic alternatives that are
+    *compatible* with the expected program interface:
     
     ```ts
     declare function formatDate(date: Date);
     
-    // Тест валидный, так как передаётся объект с совместимым интерфейсом
+    // Test is valid, as a compatible interface is passed
     snapshot(formatDate(new Date(2026, 1, 1, 12, 0, 0, 0, 0)));
     
-    // Тест невалидный, типы не совместимы
+    // Test is invalid, types are incompatible
     snapshot(formatDate(dayjs()));
     ```
     
-    Другими словами, подставляемое значение должно быть **валидным подтипом** ожидаемого.
-
-    В противном случае, тест будет проверять поведения *невозможные в реальной среде исполнения*.
+    In other words, the substituted value must be a **valid subtype** of the expected one.
+    
+    Otherwise, the test will verify behavior that is *impossible in the real runtime environment*.
   </p>
 </details>
 
-Далее рассмотрим конкретные категории функций, зависящих от неявного изменяемого окружения.
+Next, we will examine specific categories of functions dependent on implicit mutable environment.
 
-## Запросы к серверу
+## Server Queries {#server-queries}
 
-Сетевые запросы к серверу — самая простая категория недетерминированных функций:
+Network queries to the server are the simplest category of nondeterministic functions:
 
 ```ts
-// Результат getUserById напрямую зависит от текущего наполнения БД
+// The result of getUserById directly depends on the current database state
 getUserById(1); // { name: 'Vasiliy' }
 
-// Спустя некоторое время...
+// After some time...
 
 getUserById(1); // 404
 ```
 
 :::note
-К компоненту "запросы" относятся только те сетевые запросы, что не изменяют наблюдаемых данных в БД (см. [команды](/specification/requirements/command)).
+Only network queries that do not modify observable data in the database are considered part of the "queries" component (see [commands](/specification/requirements/command)).
 :::
 
-## События среды
+## Environment Events {#environment-events}
 
-Некоторые события среды, также можно отнести к данной категории:
+Some environment events can also be classified under this category:
 
 ```ts
 
 /**
- * Подписывается на событие выхода компьютера из сна.
- * Передаёт в обработчик общее время сна.
+ * Listens for the event when the computer wakes up.
+ * Passes the total sleep duration to the handler.
  */
 declare function onComputerWakeUp(handle: (sleptForMS: number) => void);
 ```
 
-Функционал, зависящий от `onComputerWakeUp`, будет сложно протестировать: мало того что она не детерминированная, так ещё и
-зависит от трудно воспроизводимого окружения (помещения компьютера в сон).
+Functionality depending on `onComputerWakeUp` will be difficult to test: not only is it nondeterministic, but it also depends on a hard-to-reproduce environment (putting the computer to sleep).
 
-Рассмотрим следующий пример:
+Consider the following example:
 
 ```ts
-// Показать уведомление
-const notification = showMessage('Сообщение прочитано');
+// Show a notification
+const notification = showMessage('Message read');
 
-// Закрыть через 5 секунд
+// Close after 5 seconds
 setTimeout(() => notification.close(), 5_000);
 ```
 
-В рамках AUT `setTimeout` и настоящей спецификации можно рассматривать как детерминированную, однако, если оставить её
-как есть, то она увеличит время выполнения тестов, что сильно повредит [быстродействию](/specification/metrics#-быстродействие). 
+Within the AUT, `setTimeout` and the current specification can be considered deterministic; however, leaving it as-is will increase test execution time, significantly harming [performance](/specification/metrics#performance).
 
-## Анимации
+## Animations {#animations}
 
-Начнём с того, что реализуем функцию таймер:
+Let’s start by implementing a timer function:
 
 ```ts
 async function* onEachSecond(): AsyncGenerator<Date> {
@@ -195,18 +189,18 @@ async function* onEachSecond(): AsyncGenerator<Date> {
 ```
 
 :::note
-Функция `onEachSecond` возвращает не один объект `Date`, а целую *асинхронную последовательность*.
+The `onEachSecond` function returns not a single `Date` object, but an entire *asynchronous sequence*.
 :::
 
-На базе `onEachSecond` реализуем анимацию:
+Based on `onEachSecond`, implement an animation:
 
 ```ts
 /**
- * Анимации, будь то JS или CSS, всегда базируются на временном счётчике.
+ * Animations, whether JS or CSS, are always based on a time counter.
  */
 const startedAt = new Date();
 
-// onEachSecond() может контролировать скорость и направление анимации
+// onEachSecond() can control the animation speed and direction
 for await (const now of onEachSecond()) {
   const duration = sub(now, startedAt);
 
@@ -214,23 +208,21 @@ for await (const now of onEachSecond()) {
 }
 ```
 
-Таким образом, анимации по своей природе также относятся к недетерминированному поведению.
+Thus, animations are inherently nondeterministic in nature.
 
 :::note
-В рамках тестирования AUT интерес представляет не бесконечный процесс анимации, а её *дискретные наблюдаемые состояния*.
+Within AUT testing, the focus is not on the infinite animation process, but on its *discrete observable states*.
 :::
 
-:::warning Внимание
-Если оставить `setTimeout`, `setInterval`, анимации и другие подобные элементы без изменений, это не только увеличит
-время выполнения тестов, но и усложнит их написание.
+:::warning Attention
+Leaving `setTimeout`, `setInterval`, animations, and similar elements unchanged will not only increase test execution time but also complicate test writing.
 :::
 
-## Связь с библиотекой
+## Library Integration {#library-integration}
 
-`storyshots` реализует следующие варианты подмены недетерминированного поведения:
+`storyshots` implements the following approaches for replacing nondeterministic behavior:
 
-* Анимации, мигающие курсоры и transitions подменяются библиотекой **автоматически**.
-* Для JS анимаций следует использовать [previewing](/API/test-components/story-config#previewing) флаг.
-* Компоненты Web API, такие, как `setTimeout`, `Date` и другие, можно заменить [инвазивным](/patterns/replace#подмена-через-инверсию) и [неинвазивным](/patterns/replace#подмена-через-сайд-эффекты)
-  способом.
-* Компонент "запросы" хранится в объекте `externals` и подменяется с помощью [arrange](/modules/react#arrange)
+* Animations, blinking cursors, and transitions are replaced by the library **automatically**.
+* For JS animations, use the [previewing](/modules/react#previewing) flag.
+* Web API components such as `setTimeout`, `Date`, and others can be replaced using [invasive](/patterns/replace#mocking-through-inversion) and [non-invasive](/patterns/replace#mocking-through-side-effects) methods.
+* The "queries" component is stored in the `externals` object and replaced using [arrange](/modules/react#arrange)

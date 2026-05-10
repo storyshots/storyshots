@@ -4,73 +4,73 @@ sidebar_position: 4
 
 # @storyshots/web-api-mocks
 
-Подменяет `Date`, таймеры и локальные хранилища на их [тестируемые аналоги](/specification/requirements/query)
-через [инвазивный метод](/patterns/replace#подмена-через-сайд-эффекты).
+Replaces `Date`, timers, and local storage with their [testable counterparts](/specification/requirements/query)
+through an [invasive method](/patterns/replace#mocking-through-side-effects).
 
-## install
+## install {#install}
 
-Подменяет недетерминированный браузерный API. Возвращает [Clock](/modules/web-api#clock).
+Replaces non-deterministic browser APIs. Returns a [Clock](/modules/web-api#clock).
 
 ```ts
 import { install } from '@storyshots/web-api-mocks';
 
-// Замораживает время на странице на отметке 13.01.2024 12:00
+// Freezes time on the page at 13.01.2024 12:00
 export const clock = install({ now: new Date(2024, 0, 13, 12) });
 ```
 
-:::warning Внимание
-Для корректной работы должна вызываться до выполнения любого другого кода на странице.
+:::warning Attention
+Must be called before any other code on the page executes.
 :::
 
-## clock
+## clock {#clock}
 
-Объёкт управления временем.
+Time control object.
 
-Работает по следующим правилам:
+Operates under the following rules:
 
-- Дата остаётся фиксированной и не изменяется с течением времени.
-- Таймеры (`setTimeout`, `setInterval`) на странице выполняются в обычном режиме.
+- The date remains fixed and does not change over time.
+- Timers (`setTimeout`, `setInterval`) on the page execute normally.
 
 :::tip
-`clock` доступен в глобальном объекте `window`, что делает доступным его использование в [`exec`](/API/test-components/actor#exec).
+`clock` is available on the global `window` object, making it usable in [`exec`](/API/test-components/actor#exec).
 :::
 
-### tick
+### tick {#tick}
 
-Проматывает время вперёд на указанное кол-во ms.
+Advances time forward by the specified number of ms.
 
-Рассмотрим поведение:
+Consider the following behavior:
 
 ```ts
-// Уведомление закрывается через 5 секунд
+// Notification closes after 5 seconds
 setTimeout(() => closeNotification(), 5_000);
 ```
 
-Для того чтобы не ждать в истории так долго, можно воспользоваться специальным методом `tick`:
+To avoid waiting for 5 seconds in the history, use the special `tick` method:
 
 ```ts
 it('closes notification', {
   act: (actor) =>
     actor
       .screenshot('NotificationShown')
-      // Перемотать на 5 секунд вперёд
+      // Fast-forward 5 seconds
       .exec(() => window.clock.tick(5_000))
       .screenshot('NotificationHidden'),
 });
 ```
 
 :::note
-Метод влияет только на таймеры, текущая дата остаётся не тронутой. См. [unfreeze](/modules/web-api#unfreeze)
+The method affects only timers; the current date remains unchanged. See [unfreeze](/modules/web-api#unfreeze)
 :::
 
-### setSystemTime
+### setSystemTime {#setsystemtime}
 
-Устанавливает текущую дату:
+Sets the current date:
 
 ```ts
 it('...', {
   arrange: (externals) => {
-    // Для данной истории дата будет установлена как 13.01.2024
+    // For this story, the date will be set to 13.01.2024
     clock.setSystemTime(new Date(2024, 0, 13));
 
     return externals;
@@ -79,17 +79,17 @@ it('...', {
 ```
 
 :::note
-Метод влияет только на текущую дату, таймеры не пересчитываются.
+The method affects only the current date; timers are not recalculated.
 :::
 
-### unfreeze
+### unfreeze {#unfreeze}
 
-Размораживает текущую дату:
+Unfreezes the current date:
 
 ```ts
 it('...', {
   arrange: (externals) => {
-    // Для данной истории дата будет изменяться с течением времени
+    // For this story, the date will change over time
     clock.unfreeze();
 
     return externals;
@@ -97,23 +97,23 @@ it('...', {
 });
 ```
 
-:::warning Внимание
-Функция `unfreeze` по сути возвращает естественное течение времени на страницу, частично отменяя действия
-`@storyshots/web-api-mocks`.
+:::warning Attention
+The `unfreeze` function effectively restores natural time flow on the page, partially undoing the effects
+of `@storyshots/web-api-mocks`.
 
-Полезен крайне редко, например при использовании [`debounce`](https://lodash.com/docs/4.17.15#debounce).
-В остальном, не рекомендуется к применению.
+Use only in rare cases, for example when using [`debounce`](https://lodash.com/docs/4.17.15#debounce).
+Otherwise, it is not recommended.
 :::
 
-## Состояние
+## State {#state}
 
-`@storyshots/web-api-mocks` также подменяет локальные хранилища на те, что хранят свои данные во временной памяти.
+`@storyshots/web-api-mocks` also replaces local storage with in-memory storage that persists data temporally.
 
 ```ts
-// Данная запись будет автоматически стёрта при запуске новой истории
+// This write will be automatically cleared when a new story runs
 localStorage.setItem('token', '...');
 ```
 
 :::note
-`IndexedDB` не заменяется данным модулем.
+`IndexedDB` is not replaced by this module.
 :::

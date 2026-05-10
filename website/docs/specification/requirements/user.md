@@ -3,29 +3,27 @@ sidebar_position: 2
 ---
 
 import { BalancedMetricsTip, Metric } from '@site/src/MetricsTip';
-import { Diagram } from '@site/src/Diagram';
 
-# Пользователь
+# User {#user}
 
 <BalancedMetricsTip improves={[Metric.RegressionProtection, Metric.RefactoringAllowance, Metric.Maintainability]} />
 
-Являясь частью секции [*аргументов*](/specification/requirements/borders#определение-границ) данный блок описывает
-последовательность действий, которые пользователь предпринимает взаимодействуя с приложением.
+Being part of the [*arguments*](/specification/requirements/borders#define-boundaries), this block describes the sequence of actions a user performs while interacting with the application.
 
-Пример действий пользователя:
-<Diagram src={require('./assets/user-events.drawio.png')} />
+Example user actions:
+```mermaid
+flowchart LR
+  I["Input"] --> C["Click"] --> E["Press &quot;Esc&quot;"] --> D["..."]
+```
 
 :::note
-Компонент "пользователь" должен быть выделяемым, для того чтобы взятую последовательность действий можно было закрепить
-за конкретным эталоном (результатом).
+The "user" component must be selectable so that a specific sequence of actions can be tied to a particular baseline (result).
 :::
 
-## Связь с библиотекой
+## Connection with the library {#library-connection}
 
-В библиотеке `storyshots` объекты [`actor`](/API/test-components/actor) и [`finder`](/API/test-components/finder) совместно представляют пользователя — агента, способного выполнять
-различные действия на странице.
+In the `storyshots` library, the [`actor`](/API/test-components/actor) and [`finder`](/API/test-components/finder) objects together represent the user — an agent capable of performing various actions on the page.
 
 :::note
-`storyshots` делает компонент "пользователь" выделяемым с помощью first class сущностей (в данном случае
-объекта `actor`).
+`storyshots` makes the "user" component selectable by using first-class entities (in this case, the `actor` object).
 :::

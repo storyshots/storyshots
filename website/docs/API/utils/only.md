@@ -2,17 +2,17 @@
 sidebar_position: 3
 ---
 
-# only
+# only {#only}
 
-Делает историю доступной только для определённых устройств:
+Makes a story available only for specific devices:
 
 ```ts
-// userStories будут доступны для запуска только на desktop устройствах
+// userStories will be available for execution only on desktop devices
 only(['desktop'], userStories);
 ```
 
 :::note
-`only` только исключает истории из запуска для выбранных устройств.
+`only` only excludes stories from execution for the selected devices.
 
-В UI-режиме истории по-прежнему будут отображаться.
+In UI mode, stories will still be displayed.
 :::

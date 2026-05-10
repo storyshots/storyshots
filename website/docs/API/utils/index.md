@@ -2,6 +2,6 @@
 sidebar_position: 4
 ---
 
-# Утилиты
+# Utilities {#utilities}
 
-Утилиты - это различные функции, оперирующие над объектами [историй](/specification/requirements/borders).
+Utilities are various functions operating on [stories](/specification/requirements/borders) objects.

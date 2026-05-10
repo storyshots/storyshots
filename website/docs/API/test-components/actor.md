@@ -2,179 +2,175 @@
 sidebar_position: 1
 ---
 
-# actor
+# actor {#actor}
 
-Актор представляет собой [пользователя](/specification/requirements/user). Осуществляет взаимодействие с приложением эмулируя действия на странице.
+An actor represents a [user](/specification/requirements/user). It interacts with the application by emulating actions on the page.
 
 ---
 
-## hover
+# hover {#hover}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-hover)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-hover) method
 
-## click
+## click {#click}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-click)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-click) method
 
-## dblclick
+## dblclick {#dblclick}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-dblclick)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-dblclick) method
 
-## fill
+## fill {#fill}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-fill)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-fill) method
 
-## wait
+## wait {#wait}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-frame#frame-wait-for-timeout)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-frame#frame-wait-for-timeout) method
 
-:::warning Внимание
-Данный метод предназначен исключительно для отладки.
+:::warning Attention
+This method is intended solely for debugging.
 :::
 
-## scrollTo
+## scrollTo {#scrollto}
 
-Использует оригинальный метод
+Uses the original method
 [`playwright`](https://playwright.dev/docs/api/class-locator#locator-scroll-into-view-if-needed)
 
-## select
+## select {#select}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-select-option)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-select-option) method
 
-## keyboard
+## keyboard {#keyboard}
 
-### press
+### press {#press}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-press)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-press) method
 
-### down
+### down {#down}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-down)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-down) method
 
-### up
+### up {#up}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-up)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-keyboard#keyboard-up) method
 
-## mouse
+## mouse {#mouse}
 
-### move
+### move {#move}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-move)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-move) method
 
-### down
+### down {#down}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-down)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-down) method
 
-### up
+### up {#up}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-up)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-up) method
 
-### wheel
+### wheel {#wheel}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-wheel)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-mouse#mouse-wheel) method
 
-## clear
+## clear {#clear}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-clear)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-clear) method
 
-## highlight
+## highlight {#highlight}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-highlight)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-highlight) method
 
-:::warning Внимание
-Данный метод предназначен исключительно для отладки.
+:::warning Attention
+This method is intended solely for debugging.
 :::
 
-## drag
+## drag {#drag}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-drag-to)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-drag-to) method
 
-## blur
+## blur {#blur}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-blur)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-blur) method
 
-## pressSequentially
+## pressSequentially {#presssequentially}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-press-sequentially)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-press-sequentially) method
 
-## waitFor
+## waitFor {#waitfor}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-locator#locator-wait-for)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-locator#locator-wait-for) method
 
-## waitForURL
+## waitForURL {#waitforurl}
 
-Использует оригинальный метод [`playwright`](https://playwright.dev/docs/api/class-page#page-wait-for-url)
+Uses the original [`playwright`](https://playwright.dev/docs/api/class-page#page-wait-for-url) method
 
-## resize
+## resize {#resize}
 
-Изменяет viewport браузера в соответствии с конфигурацией:
+Changes the browser viewport according to the configuration:
 
 ```ts
 actor.resize({ width: 1440, height: 920 });
 ```
 
 :::tip
-`resize` также влияет и на размер снимка экрана. Рекомендуется использовать данный метод для съёмки длинных форм и
-списков.
+`resize` also affects the screenshot size. It is recommended to use this method when capturing long forms and lists.
 :::
 
 :::note
-Размер сохраняется для всех последующих действий и может быть переопределён последующим `resize`.
+The size is preserved for all subsequent actions and can be overridden by a subsequent `resize`.
 :::
 
-## screenshot
+## screenshot {#screenshot}
 
-Осуществляет промежуточные снимки во время действий на странице.
+Takes intermediate screenshots during page interactions.
 
 :::note
-Если вызывается последним в цепочке - переопределяет параметры последнего снимка создаваемого по умолчанию.
+If called last in the chain, it overrides the parameters of the last screenshot created by default.
 :::
 
-:::warning Внимание
-Наименование снимка должно содержать только латинские символы, так как оно используется в качестве наименований файлов в
-эталоне. Использование специальных символов также запрещено.
+:::warning Attention
+Screenshot names must be in PascalCase format. Underscores are allowed as well.
 :::
 
 ```ts
 actor
-  // Сделать снимок начального состояния формы
+  // Take a screenshot of the initial form state
   .screenshot('Initial')
   .do(fillForm())
-  // Назвать конечный снимок как Filled
+  // Name the final screenshot 'Filled'
   .screenshot('Filled');
 ```
 
-### Маскирование
+### Masking {#masking}
 
-На снимках можно маскировать элементы, это может быть полезно при работе с динамически изменяемыми данными:
+Elements can be masked on screenshots, which can be useful when working with dynamically changing data:
 
 ```ts
 actor
   .do(fillForm())
-  // Маскируем компонент отображающий время
+  // Mask the component displaying time
   .screenshot('Filled', { mask: [finder.get(appClock())] });
 ```
 
-:::warning Внимание
-Данное свойство рекомендуется применять как можно реже, так как оно снижает защиту от регресса. Следует отдавать
-предпочтение [иным методам](/patterns/replace) подмены [внешней среды](/specification/requirements/query).
+:::warning Attention
+This property is recommended to be used as rarely as possible, as it reduces regression protection. Prefer [alternative methods](/patterns/replace) for [mocking external dependencies](/specification/requirements/query).
 :::
 
-## uploadFile
+## uploadFile {#uploadfile}
 
-Загружает один или несколько файлов в целевой элемент:
+Uploads one or more files to the target element:
 
 ```ts
 actor.uploadFile(finder.get(uploadTrigger()), 'path/to/file_0.ext');
 ```
 
 :::note
-Первым аргументом `uploadFile` принимает элемент, по клику на который открывается проводник файлов для загрузки.
+The first argument to `uploadFile` accepts the element that triggers the file dialog when clicked.
 :::
 
 :::tip
-Путь к файлам считается относительно рабочей директории проекта. Поэтому рекомендуется для простоты располагать их в
-одном месте:
+File paths are resolved relative to the project's working directory. Therefore, it is recommended to keep them in a single location for simplicity:
 
 ```ts
 function getPath(file: string) {
@@ -189,9 +185,9 @@ actor.uploadFile(finder.get(uploadTrigger()), [
 
 :::
 
-## do
+## do {#do}
 
-Позволяет расширять действия пользователя используя специальные трансформеры:
+Allows extending user actions using special transformers:
 
 ```ts
 function enterCredentials(): ActorTransformer {
@@ -204,7 +200,7 @@ function enterCredentials(): ActorTransformer {
 actor.do(enterCredentials());
 ```
 
-Функция также принимает [окружение истории](/API/test-components/story-config) как второй аргумент:
+The function also accepts [story configuration](/API/test-components/story-config) as a second argument:
 
 ```ts
 function closePopup(): ActorTransformer {
@@ -215,34 +211,41 @@ function closePopup(): ActorTransformer {
 }
 ```
 
-## stop
+## toMeta {#tometa}
 
-Останавливает выполнение всех последующих действий:
+Converts actor actions to meta objects used by `storyshots`.
+
+:::note
+When the resulting array is empty, the test is considered empty and is not run by the test runner.
+:::
+
+## stop {#stop}
+
+Stops execution of all subsequent actions:
 
 ```ts
 actor
-  .hover() // Выполнится
-  .stop() // После данной точки, все последующие действия не будут выполнены
+  .hover() // Will execute
+  .stop() // After this point, all subsequent actions will not be executed
   .click()
   .fill();
 ```
 
-:::warning Внимание
-Данный метод предназначен исключительно для отладки.
+:::warning Attention
+This method is intended solely for debugging.
 :::
 
-## exec
+## exec {#exec}
 
-Вызывает переданную функцию в контексте страницы.
+Executes the provided function in the page context.
 
 ```ts
 actor
   .do(submit())
-  // Будет выполнен сразу после submit
+  // Will run immediately after submit
   .exec(() => window.alert('Code has been injected'));
 ```
 
-:::warning Внимание
-Функции, передаваемые в `exec` не могут иметь [внешних зависимостей](/specification/requirements/query) за исключением
-глобальных объектов `Browser API`.
+:::warning Attention
+Functions passed to `exec` cannot have [external dependencies](/specification/requirements/query) except for global `Browser API` objects.
 :::

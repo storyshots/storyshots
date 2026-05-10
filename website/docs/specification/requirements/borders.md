@@ -2,94 +2,121 @@
 sidebar_position: 1
 ---
 
-import { Diagram } from '@site/src/Diagram';
+# Test Boundaries {#test-boundaries}
 
-# Границы тестирования
+Let's start by noting that any test scenario can be divided into three main stages:
 
-Начнём с того, что любой тестовый сценарий можно разделить на три основных этапа:
+1. **Input preparation**: initializing arguments for the program under test.
+2. **Function execution**: interacting with the program to obtain its output.
+3. **Verification**: checking the resulting output against established conditions.
 
-1. **Подготовка входных данных**: инициализация аргументов для тестируемой программы.
-2. **Выполнение функций**: взаимодействие с программой для получения результатов её работы.
-3. **Верификация**: проверка полученных результатов на соответствие установленным условиям.
+Using these stages, we can define what are known as _test boundaries_.
 
-С помощью этих этапов можно выделить так называемые _границы тестирования_.
+## Defining Boundaries {#define-boundaries}
 
-## Определение границ
+Any application can be modeled in the following way:
 
-Любое приложение можно смоделировать в следующем виде:
+```mermaid
+flowchart LR
+  subgraph A["Arguments"]
+    direction TB
+    U["User"]
+    Q["Queries"]
+  end
 
-<Diagram src={require('./assets/test-arch.drawio.png')} />
+  subgraph F["Function"]
+    direction TB
+    AUT["AUT"]
+  end
 
-:::note
-Стрелки на диаграмме указывают направление потока информации.
-:::
+  subgraph R["Result"]
+    direction TB
+    C["Commands"]
+    M["Monitor"]
+  end
 
-### Аргументы
-
-Входящие в приложение данные. Состоят из двух компонентов:
-
-- **Пользователь**: пользовательские события (например, клики мыши, нажатия клавиш).
-- **Запросы**: неявные входящие данные (например, веб-сервисы, локальные хранилища).
-
-### Результат
-
-Результат работы приложения. Включают:
-
-- **Монитор**: отображаемый пользовательский интерфейс.
-- **Команды**: неявные исходящие данные (например, обновления БД, включение фонарика на телефоне).
-
-### Функция
-
-Компонент, преобразующий аргументы в результат. Представлен блоком AUT (сокр. application under test) и является
-основным объектом тестирования.
-
-Для повышения защиты от регресса рекомендуется включать как можно больше функциональности в тестируемый блок AUT. Это
-достигается за счёт **упрощения и минимизации оставшихся секций**, а именно аргументов и результата.
-
-:::note Нулевая сумма
-Секции связаны между собой, так как формируют единую программу, таким образом, увеличение объёма одной секции, приведёт
-к уменьшению размеров остальных частей.
-:::
-
-## Верификация
-
-Модель верификации поведения выглядит следующим образом:
-
-<Diagram src={require('./assets/testing.drawio.png')} />
-
-Где:
-
-- **Слепок** — это артефакт поведения AUT, представленный в виде _значения_.
-- **Эталон** — это хранилище, содержащее слепок _ожидаемого_ поведения приложения.
-
-Данная модель использует популярный метод
-тестирования [golden master](https://blog.thecodewhisperer.com/permalink/surviving-legacy-code-with-golden-master-and-sampling).
+  U --> AUT
+  Q --> AUT
+  AUT --> C
+  AUT --> M
+```
 
 :::note
-Стоит заметить, что данная модель не доказывает _корректность_ работы программы в привычном понимании. Она лишь помогает
-отследить девиации в поведении AUT.
-
-Однако, регресс — это частный случай девиации, поэтому этого вполне достаточно.
+Arrows on the diagram indicate the direction of information flow.
 :::
 
-**Преимущество** данного метода заключается в его простоте: управление эталоном и верификация легко автоматизируются.
+### Arguments {#arguments}
 
-Но данная техника имеет высокую цену:
+Data entering the application. Consists of two components:
 
-- **Выделяемые аргументы** — аргументы должны чётко закрепляться за конкретным сценарием тестирования.
-- **Детерминированность** как самого приложения, так и окружения в котором оно выполняется.
-- **First class результат** — результат AUT должен быть чем-то что можно *записать* в эталон и *сравнить*.
+- **User**: user events (e.g., mouse clicks, key presses).
+- **Queries**: implicit incoming data (e.g., web services, local storage).
 
-Начало работы положено — границы тестирования уже чётко выделяют аргументы, результат и само приложение.
+### Result {#result}
 
-Осталось дело техники: пройтись по слоям и установить необходимые свойства для каждого из компонентов в отдельности.
+The outcome of the application's execution. Includes:
+
+- **Monitor**: the user interface displayed to the user.
+- **Commands**: implicit outgoing data (e.g., database updates, turning on a phone flashlight).
+
+### Function {#function}
+
+The component that transforms inputs into outputs. Represented by the AUT (application under test) block and is the primary object of testing.
+
+To increase protection against regressions, it is recommended to include as much functionality as possible within the testable AUT block. This is achieved by **simplifying and minimizing the remaining sections**, namely inputs and outputs.
+
+:::note Zero-sum
+The sections are interconnected, as they form a single program. Therefore, increasing the size of one section will lead to a reduction in the size of the others.
+:::
+
+## Verification {#verification}
+
+The verification model of behavior looks as follows:
+
+```mermaid
+flowchart LR
+  E["Baseline"] -- "Contains" --> S["Baseline"]
+  AUT["AUT"] -- "Generates" --> S2["Baseline'"]
+  T["Test"] -- "Compares" --> C["Baseline / Baseline'"]
+
+  subgraph C [" "]
+    direction TB
+    S
+    S2
+  end
+```
+
+Where:
+
+- **Baseline** — an artifact of AUT behavior, represented as a _value_.
+- **Golden Master** — a repository containing the baseline of the _expected_ application behavior.
+
+This model uses the popular testing technique known as [golden master](https://blog.thecodewhisperer.com/permalink/surviving-legacy-code-with-golden-master-and-sampling).
+
+:::note
+It should be noted that this model does not prove the _correctness_ of the program in the conventional sense. It merely helps detect deviations in AUT behavior.
+
+However, regression is a specific case of deviation, so this is sufficient.
+:::
+
+**Advantage** of this method lies in its simplicity: managing the golden master and verification can be easily automated.
+
+But this technique comes at a high cost:
+
+- **Well-defined inputs** — inputs must be clearly tied to specific test scenarios.
+- **Determinism** — both the application and its execution environment must be deterministic.
+- **First-class output** — the AUT output must be something that can be *recorded* into the golden master and *compared*.
+
+The foundation is laid — test boundaries clearly separate inputs, outputs, and the application itself.
+
+The rest is technical detail: go through each layer and set the necessary properties for each component individually.
 
 <details>
-  <summary>Реализация границ в `storyshots`</summary>
+  <summary>Implementation of boundaries in `storyshots`</summary>
   <p>
-    `storyshots` объединяет управление слоями в единую сущность — историю, где:
-    - **Аргументы** описываются в функциях `act` и `arrange`.
-    - **AUT** выполняется в функции `render`.
-    - **Результат** — это снимки UI и журнал сайд-эффектов программы.
-</p>
+    `storyshots` combines layer management into a single entity — a story, where:
+    - **Inputs** are described in `act` and `arrange` functions.
+    - **AUT** is executed in the `render` function.
+    - **Output** is the UI snapshots and program side-effect logs.
+  </p>
 </details>

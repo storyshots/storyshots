@@ -4,15 +4,15 @@ sidebar_position: 7
 
 # @storyshots/exec-preview
 
-[Сервер](/specification/scheme#ipreviewserver) `preview`. Поднимает сервер приложения используя исходные скрипты проекта.
+[App server](/specification/arch#appserverfactory). Starts the application server using the project's original scripts.
 
 :::tip
-`@storyshots/exec-preview` является рекомендуем сервером preview для большинства приложений.
+`@storyshots/exec-preview` is the recommended app server for most applications.
 :::
 
-## createExecPreview
+## createExecPreview {#createexecpreview}
 
-Создаёт сервер на базе переданных режимов разработки:
+Creates an app server based on the provided development modes:
 
 ```ts
 import { ManagerConfig } from '@storyshots/core/manager';
@@ -21,25 +21,25 @@ import { createExecPreview } from '@storyshots/exec-preview';
 export default {
   preview: createExecPreview({
     ui: {
-      command: 'npx webpack-cli serve', // <- Скрипт запускающий приложение в dev режиме
-      at: 'http://localhost:8080', // <- Адрес dev сервера
+      command: 'npx webpack-cli serve', // <- Script to start the app in dev mode
+      at: 'http://localhost:8080', // <- Dev server address
     },
     ci: {
-      command: 'npx webpack-cli build', // <- Скрипт сборки артефакта
-      serve: './dist', // <- Расположение артефакта сборки
+      command: 'npx webpack-cli build', // <- Build artifact script
+      serve: './dist', // <- Location of the built artifact
     },
   }),
   /* ... */
 } satisfies ManagerConfig;
 ```
 
-`createExecPreview` запускает команды выставляя `process.env.STORYSHOTS` в `true`:
+`createExecPreview` runs the commands by setting `process.env.STORYSHOTS` to `true`:
 
 ```ts title="webpack.config.ts"
 export default {
   entry:
     process.env.STORYSHOTS === 'true'
-      ? './src/storyshots/preview/index.tsx' // <- Для storyshots меняем entry проекта
+      ? './src/storyshots/preview/index.tsx' // <- For storyshots, change the project entry
       : './src/index.tsx',
   // ... ///
 };

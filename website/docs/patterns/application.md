@@ -1,145 +1,130 @@
 import { MetricsTip, Metric } from '@site/src/MetricsTip';
-import { Diagram } from '@site/src/Diagram';
 
-# Порядок работ
 
-[Golden master](https://en.wikipedia.org/wiki/Characterization_test) тестирование содержит в себе определённые нюансы
-использования. `storyshots` не является исключением, далее приводятся рекомендации работ в различных условиях.
+# Work Order {#work-order}
 
-## Сценарии работ
+Golden master testing contains certain nuances of usage. `storyshots` is no exception, and the following recommendations are provided for working in various conditions.
+
+## Work Scenarios {#work-scenarios}
 
 <MetricsTip improves={[Metric.RegressionProtection, Metric.Maintainability]} />
 
-В целях повышения эффективности тестирования рекомендуется придерживаться следующих практик:
+To improve testing efficiency, it is recommended to follow these practices:
 
-### При разработке без API
+### When Developing Without API {#when-developing-without-api}
 
-Если при старте работ нет готового API, рекомендуется:
+If a ready API is not available at the start of work, it is recommended to:
 
-1. Согласовать контракты с backend разработчиком
-2. По согласованным контрактам реализовать заглушки репозиториев в `externals`
-3. Описать `storyshots` истории согласно требованиям
-4. Сгенерировать слепок и сохранить его в эталон
-5. Выполнить интеграцию по факту готовности API
+1. Agree on contracts with the backend developer
+2. Implement stubs in `externals` according to the agreed contracts
+3. Describe `storyshots` stories according to requirements
+4. Generate a baseline and save it in the baseline repository
+5. Perform integration once the API is ready
 
 :::note
-Чем тоньше слои взаимодействия с сервером ([*запросы*](/specification/requirements/query) и [*команды*](/specification/requirements/command)) тем больше FE-разработчик сможет
-разработать функционала без BE-реализации.
+The finer the layers of interaction with the server ([*queries*](/specification/requirements/query) and [*commands*](/specification/requirements/command)), the more frontend functionality can be developed without backend implementation.
 :::
 
 :::tip
-Эталонные списки можно использовать как источник документации, например при поиске уже реализованных компонентов в
-системе.
+Baseline lists can be used as a documentation source, for example, when searching for already implemented components in the system.
 :::
 
-:::warning Внимание
-Если по итогам backend реализации контракт был изменён - необходимо скорректировать заглушки и повторить шаги выше.
+:::warning Attention
+If the contract is changed after backend implementation, stubs must be adjusted and the steps above repeated.
 :::
 
-### При разработке с API
+### When Developing With API {#when-developing-with-api}
 
-Если при старте работ присутствует готовое API, рекомендуется:
+If a ready API is available at the start of work, it is recommended to:
 
-1. Сформировать контракт исходя из реальных API методов
-2. По существующим контрактам реализовать заглушки репозиториев в `externals`
-3. Описать `storyshots` истории согласно требованиям
-4. Сгенерировать слепок и сохранить его в эталон
-5. Выполнить интеграцию с реальным API методом
+1. Form a contract based on actual API methods
+2. Implement stubs in `externals` based on existing contracts
+3. Describe `storyshots` stories according to requirements
+4. Generate a baseline and save it in the baseline repository
+5. Perform integration with the actual API method
 
 :::note
-Шаги 1 и 2 можно пропустить если заглушки уже были реализованы ранее.
+Steps 1 and 2 can be skipped if stubs were already implemented earlier.
 :::
 
 :::tip
-Рекомендуется наполнять заглушки данными из макетов, даже если реальные API возвращают не пустую информацию.
+It is recommended to populate stubs with data from mockups, even if real APIs return non-empty information.
 :::
 
-### При дефекте
+### When Handling Defects {#when-defect}
 
-Возникновение дефектов - неизбежная участь любого проекта. Тем не менее с учётом наличия `storyshots` тестов на проекте,
-стоит также обратить особое внимание на причину его возникновения. По какой причине тесты прошли, а дефект всё равно
-имеет место быть.
+Defects are an inevitable part of any project. However, given that `storyshots` tests are in place, special attention should be paid to the root cause of the defect’s appearance. Why did the tests pass, yet the defect still exists?
 
-Рекомендуется следующий набор действий:
+The recommended sequence of actions is as follows:
 
-1. Настроить заглушки. Можно использовать HAR слепок сетевых запросов
-2. Настроить действия. Можно использовать шаги воспроизведения
-3. Написать историю, где дефект воспроизводится
-4. Исправить дефект
-5. Убедиться что в истории дефект больше не воспроизводится
-6. Зафиксировать эталон
-7. Проверить на реальном окружении
+1. Set up stubs. HAR snapshots of network queries can be used.
+2. Set up actions. Steps to reproduce can be used.
+3. Write a story where the defect is reproduced.
+4. Fix the defect.
+5. Ensure the defect no longer occurs in the story.
+6. Commit the baseline.
+7. Verify in a real environment.
 
-Таким образом, данный дефект больше не воспроизведется с данными предусловиями.
+Thus, this defect will not reoccur under the given preconditions.
 
 :::tip
-При следовании данной стратегии, разработка приложения больше будет напоминать _итеративный_ процесс при котором каждая
-новая версия является стабильней чем предыдущая.
+Following this strategy makes application development resemble an _iterative_ process, where each new version is more stable than the previous one.
 :::
 
 :::note
-Стоит понимать, что `storyshots` не тестирует приложение целиком. Напротив, библиотека выстраивает баланс между
-поддерживаемостью тестов и той защитой, что они дают. Поэтому, совершенно нормальна ситуация, при которой некоторые
-дефекты фиксируются без закрытия тестами.
+It should be understood that `storyshots` does not test the application as a whole. On the contrary, the library strikes a balance between test maintainability and the protection they provide. Therefore, it is perfectly normal for some defects to be detected without being caught by tests.
 :::
 
-### При рефакторинге
+### When Refactoring {#when-refactoring}
 
-`storyshots` всячески способствует рефакторингу предоставляя защиту от случайного регресса. Рекомендуется следующий
-порядок работ:
+`storyshots` greatly supports refactoring by providing protection against accidental regressions. The recommended workflow is as follows:
 
-1. Определить область действия
-2. Если рефакторинг крупный, разделить его на под-шаги
-3. После каждого шага, запускать тесты в UI режиме
-4. После реализации шага и выполнения тестов выполнять коммит.
-5. Повторить шаги 3 и 4 пока вся работа не будет выполнена
+1. Define the scope of work
+2. If the refactoring is large, break it into sub-steps
+3. After each step, run tests in UI mode
+4. After completing a step and running tests, commit the changes.
+5. Repeat steps 3 and 4 until all work is complete
 
-## Разделение эталонов
+## Baseline Separation {#baseline-separation}
 
 <MetricsTip improves={[Metric.RegressionProtection]} degrades={[Metric.Maintainability, Metric.Speed]} />
 
-`storyshots` верифицирует поведение приложения с помощью сравнения слепков его поведений. По большей части это снимки
-экранов.
+`storyshots` verifies application behavior by comparing baselines of its behavior. Most often, these are screenshots.
 
-Мночисленные достоинства визуального тестирования омрачаются и весомыми недостатками одним из которых является высокая
-чуствительность к окружению выполнения. Можно выделить две основные группы:
+Numerous advantages of visual testing are offset by significant drawbacks, one of which is high sensitivity to the execution environment. Two main categories can be identified:
 
-- _[*Запросы*](/specification/requirements/query)_ - подменяется программными средствами
-- _Среда исполнения_ - контролируется в ручную
+- [*Queries*](/specification/requirements/query) — substituted programmatically
+- Execution environment — manually controlled
 
 :::note
-Операционная система и даже определённое аппаратное обеспечение влияют на то, какой снимок получится в итоговом
-результате.
+The operating system and even specific hardware affect the final screenshot result.
 :::
 
-При командной разработке используются разные машины, со своими операционными системами. Для таких
-обстоятельсв предлагается следующая схема работы:
+In team development, different machines with different operating systems are used. For such cases, the following workflow is proposed:
 
-<Diagram src={require('./assets/ci-scheme.drawio.png')} />
+![scheme](@site/assets/ci-scheme.drawio.png)
 
-- **Локальный эталон** - эталон, уникальный для каждого из разработчиков. Исключается из VCS.
-- **Глобальный эталон** - общий эталон, использующийся как единый источник истинного поведения. Генерируется на
-  едином сервере.
+- **Local Baseline** — a unique baseline for each developer. Excluded from VCS.
+- **Global Baseline** — a shared baseline used as a single source of truth for correct behavior. Generated on a single server.
 
 :::note
-Создание глобального эталона выполняется в [фоновом режиме](/API/run-modes/runCI). Шаблоны реализации для CI/CD можно посмотреть [тут](https://github.com/storyshots/storyshots/tree/master/examples/ci-templates).
+Creating a global baseline is done in [background mode](/API/run-modes/runCI). CI/CD template implementations can be found [here](https://github.com/storyshots/storyshots/tree/master/examples/ci-templates).
 :::
 
-В такой схеме, при разработке, предлагается следующий порядок работ:
+In this setup, the recommended workflow during development is:
 
-- Создается ветка под отдельную задачу
-- Генерируется локальный слепок поведения
-- Разрабатываются истории и создаются новые снимки в локальном эталоне
-- По завершению работ, создается MR
-- В рамках реквеста, выполняется скрипт, создающий глобальный эталон из данной ветки
-- Глобальный эталон добавляется в ветку с помощью коммита автоматически
-- Ревьювер просматривает MR вместе со снимками из глобального эталона
+- Create a branch for a specific task
+- Generate a local behavior baseline
+- Develop stories and create new screenshots in the local baseline
+- Upon completion, create a merge request (MR)
+- Within the request, run a script that generates a global baseline from this branch
+- Automatically commit the global baseline into the branch
+- Reviewer examines the MR together with screenshots from the global baseline
 
 :::tip
-Журналы не чуствительны к окружению, поэтому их можно не разделять
+Logs are not environment-sensitive, so they do not need to be separated.
 :::
 
-:::warning Внимание
-При возникновении регресса в MR, следует не просто перезапускать CI/CD генерацию глобального эталона, а делать откат
-предидущего коммита генерации, для того чтобы лишний раз не захламлять историю и не путать ревьювера MR.
+:::warning Attention
+If a regression occurs in the MR, do not simply restart CI/CD to regenerate the global baseline. Instead, revert the previous baseline generation commit to avoid cluttering the history and confusing the MR reviewer.
 :::

@@ -100,8 +100,6 @@ For full setup and API surface, see [Installation](https://storyshots.github.io/
 
 ## Learn More
 
-Documentation is temporarily available only in Russian. Feel free to contribute.
-
 - Learn more: [storyshots.github.io/storyshots](https://storyshots.github.io/storyshots/)
 - Installation: [storyshots.github.io/storyshots/installation](https://storyshots.github.io/storyshots/installation)
 - UI Mode: [storyshots.github.io/storyshots/ui](https://storyshots.github.io/storyshots/ui/)
